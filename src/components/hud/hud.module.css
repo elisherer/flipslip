@@ -19,7 +19,7 @@
   -webkit-user-drag: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-  z-index: 1;
+  z-index: 2;
 
   top: 4px;
   left: 50%;
@@ -35,7 +35,7 @@
   -webkit-user-drag: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-  z-index: 1;
+  z-index: 2;
 
   top: 1em;
   right: 1em;
@@ -50,7 +50,7 @@
   -webkit-user-drag: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-  z-index: 1;
+  z-index: 2;
 
   top: 1em;
   left: 1em;

@@ -5,7 +5,7 @@ import { Perf } from "r3f-perf";
 import { PCFShadowMap } from "three";
 
 import Lights from "@/components/lights";
-import LevelLoader from "@/levels/level-loader";
+import LevelRenderer from "@/levels/level-renderer";
 import levelStyles from "@/levels/level.module.css";
 import { useGameState } from "@/providers/game-state-provider";
 import LevelStateProvider from "@/providers/level-state-provider";
@@ -38,7 +38,7 @@ export function LevelCanvas() {
         <Lights />
         <SceneProvider>
           <LevelStateProvider>
-            <LevelLoader
+            <LevelRenderer
               debug={debug}
               onFinishLevel={() => {
                 gameApi.levelComplete(levelIndex);

@@ -205,10 +205,27 @@ const TileMaps: Record<string, Record<number, string | TileDefinition | TileDefi
         },
       },
     ],
-    219: {
+    219: /*{
       model: "wall-corner",
       correction: { position: [-0.4, 0, 0.4] },
-    },
+    }*/ [
+      // |-
+      {
+        model: "wall",
+        correction: {
+          scale: [1, 1, 0.6],
+          position: [0, 0, 0.2],
+        },
+      },
+      {
+        model: "wall",
+        correction: {
+          rotation: [0, Math.PI / 2, 0],
+          scale: [1, 1, 0.5],
+          position: [-0.3, 0, 0],
+        },
+      },
+    ],
     220: {
       model: "wall-corner-low",
       correction: { position: [-0.4, 0, 0.4] },

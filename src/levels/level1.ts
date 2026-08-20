@@ -64,10 +64,10 @@ export default levelFrom({
   },
   players: [
     {
-      position: [3, 0, 1],
+      position: [2, 0, 2],
     },
     {
-      position: [3, 0, 1],
+      position: [4, 0, 2],
     },
   ],
 });

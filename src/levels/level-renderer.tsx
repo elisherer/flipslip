@@ -18,7 +18,7 @@ type LevelProps = {
   onFinishLevel: () => void;
 };
 
-export default function LevelLoader({ onFinishLevel: _ }: LevelProps) {
+export default function LevelRenderer({ onFinishLevel: _ }: LevelProps) {
   useBackgroundMusic(Music.LEVEL1);
   const [{ debug }] = useGameState();
   const [{ level, toggled }] = useLevelState();
@@ -50,11 +50,25 @@ export default function LevelLoader({ onFinishLevel: _ }: LevelProps) {
           const layerKey = i + ":" + key;
 
           const cell = level.layers[i][z][x];
-          if (cell.type === CellType.TOGGLE && i === 0) {
+          if (cell.type === CellType.WALL && debug) {
+            objects.push(
+              <mesh key={layerKey} position={[0, i * 0.5 - 0.75, 0]}>
+                <boxGeometry args={[1, 0.5, 1]} />
+                <meshStandardMaterial color="white" wireframe={true} />
+              </mesh>,
+            );
+          } else if (cell.type === CellType.TOGGLE_WALL && debug) {
+            objects.push(
+              <mesh key={layerKey} position={[0, i * 0.5 - 0.75, 0]}>
+                <boxGeometry args={[1, 0.5, 1]} />
+                <meshStandardMaterial color={cell.toggle_id === ToggleId.BLUE ? "blue" : "red"} wireframe={true} />
+              </mesh>,
+            );
+          } else if (cell.type === CellType.TOGGLE) {
             objects.push(
               <KitModel
                 key={layerKey}
-                position={[0, -1, 0]}
+                position={[0, i * 0.5 - 1, 0]}
                 kit="prototype"
                 model="button-floor-square"
                 animate={toggled ? "toggle-on" : "toggle-off"}
@@ -63,17 +77,7 @@ export default function LevelLoader({ onFinishLevel: _ }: LevelProps) {
               />,
             );
           } else if (cell.type === CellType.FINISH && i === 0) {
-            objects.push(
-              <Portal position={[0, -0.99, 0]} />,
-              // <KitModel
-              //   key={layerKey}
-              //   position={[0, -0.99, 0]}
-              //   kit="prototype"
-              //   model="indicator-special-lines"
-              //   receiveShadow
-              //   castShadow
-              // />,
-            );
+            objects.push(<Portal position={[0, -0.99, 0]} />);
           }
 
           const tilesC = level.tiles[i][z][x];
@@ -117,7 +121,7 @@ export default function LevelLoader({ onFinishLevel: _ }: LevelProps) {
       }
     }
     return a;
-  }, [level.layers, toggled]);
+  }, [level.layers, toggled, debug]);
 
   return (
     <>
