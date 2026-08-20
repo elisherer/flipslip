@@ -1,0 +1,27 @@
+@property --color-start {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: rgb(87, 87, 87);
+}
+
+@property --color-middle {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: rgb(35, 35, 35);
+}
+
+@property --color-end {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: rgb(0, 0, 0);
+}
+
+.level {
+  background: radial-gradient(circle, var(--color-start) 0%, var(--color-middle) 35%, var(--color-end) 100%) rgb(255, 240, 246);
+  transition: --color-start 0.5s ease, --color-middle 0.5s ease, --color-end 0.5s ease;
+}
+/*.level[data-level="0"] {*/
+/*  --color-start: rgb(84, 198, 255);*/
+/*  --color-middle: rgb(70, 186, 243);*/
+/*  --color-end: rgb(36, 163, 228) ;*/
+/*}*/

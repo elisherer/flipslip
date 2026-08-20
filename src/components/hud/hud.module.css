@@ -1,0 +1,67 @@
+.cover {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  z-index: 1;
+}
+
+.topCenter {
+  position: absolute;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  z-index: 1;
+
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5em;
+}
+
+.topRight {
+  position: absolute;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  z-index: 1;
+
+  top: 1em;
+  right: 1em;
+  display: flex;
+  gap: 0.5em;
+}
+
+.topLeft {
+  position: absolute;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  z-index: 1;
+
+  top: 1em;
+  left: 1em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.logo {
+  width: 12em;
+  height: 3em;
+  background: url("../../assets/logo.png") no-repeat center;
+  background-size: contain;
+}

@@ -1,0 +1,48 @@
+# 404 fallback
+<ifModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule (.*) index.html [QSA,L]
+</ifModule>
+
+# GZip
+<ifModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript text/javascript image/svg+xml
+</ifModule>
+
+# Cache-Control
+<filesMatch "\.(css|jpg|jpeg|png|gif|svg|js|ico|webp|woff|woff2)$">
+    <IfModule mod_headers.c>
+        Header set Cache-Control "max-age=2628000, public"
+    </IfModule>
+</filesMatch>
+<filesMatch "\.(woff2)$">
+    <IfModule mod_headers.c>
+        Header set Access-Control-Allow-Origin "*"
+    </IfModule>
+</filesMatch>
+<filesMatch "(service-worker\.js|\.html)$">
+  ExpiresDefault "now"
+  FileETag None
+  <ifModule mod_headers.c>
+      Header unset ETag
+      Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+      Header set Pragma "no-cache"
+      Header set Expires "Sat, 01 Jan 2000 00:00:00 GMT"
+  </ifModule>
+</filesMatch>
+
+# Force HTTPS
+<IfModule mod_headers.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301,NE]
+    Header always set Content-Security-Policy "upgrade-insecure-requests;"
+</IfModule>
+
+# Security
+<IfModule mod_headers.c>
+    Header unset X-Powered-By
+    Header always append X-Frame-Options DENY
+</IfModule>

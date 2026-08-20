@@ -1,0 +1,141 @@
+.carousel {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5em;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.track {
+  position: relative;
+  width: 100%;
+  height: 16em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.nav[data-side="left"] {
+  left: 1em;
+}
+
+.nav[data-side="right"] {
+  right: 1em;
+}
+
+.nav[aria-disabled="true"] {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+
+.playButton[aria-disabled="true"] {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+
+.card {
+  position: absolute;
+  width: 10em;
+  height: 13em;
+  border-radius: 1em;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  color: white;
+  font-family: inherit;
+  transition:
+    transform 0.35s ease,
+    opacity 0.35s ease;
+  cursor: pointer;
+}
+
+.card[data-current="true"] {
+  cursor: default;
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.card[data-locked="true"][data-current="true"] {
+  cursor: not-allowed;
+}
+
+.cardNumber {
+  font-size: 2.5em;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.cardLabel {
+  font-size: 1em;
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.cardLock svg {
+  height: 2em;
+  width: 2em;
+  fill: white;
+  opacity: 0.85;
+}
+
+.cardComplete svg {
+  height: 1.5em;
+  width: 1.5em;
+  fill: #4caf50;
+}
+
+.playButton {
+  width: auto;
+  padding: 0 1.5em;
+  gap: 0.5em;
+  border-radius: 1.5em;
+}
+
+.playButton svg {
+  height: 1.5em;
+  width: 1.5em;
+}
+
+.dots {
+  display: flex;
+  gap: 0.5em;
+}
+
+.dot {
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+
+.dot[data-active="true"] {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.dot[data-locked="true"] {
+  background: rgba(255, 255, 255, 0.15);
+}

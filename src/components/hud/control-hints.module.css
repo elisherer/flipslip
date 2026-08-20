@@ -1,0 +1,209 @@
+.controlHints {
+  --control-hint-accent: #7dd3fc;
+  --control-hint-key-size: 1.75rem;
+  --control-hint-key-gap: 0.18rem;
+  --control-hint-label-gap: 0.14rem;
+  --control-hint-label-size: 0.84rem;
+  position: fixed;
+  left: 50%;
+  bottom: 3.55rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  max-width: min(90vw, 54rem);
+  padding: 0;
+  color: rgba(255, 255, 255, 0.5);
+  transform: translateX(-50%);
+  pointer-events: none;
+  user-select: none;
+}
+
+.controlHintsGroups {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.34rem;
+  flex-wrap: wrap;
+}
+
+.controlHintGroup {
+  display: grid;
+  column-gap: 0.24rem;
+  justify-items: center;
+}
+
+.controlHintGroup.isDirectional {
+  row-gap: 0;
+}
+
+.controlHintGroup.isTop {
+  align-self: flex-end;
+  grid-template-columns: auto auto;
+  grid-template-rows: var(--control-hint-key-size) var(--control-hint-key-gap) var(--control-hint-key-size);
+}
+
+.controlHintGroup.isBottom {
+  align-self: flex-end;
+  grid-template-columns: auto auto;
+  grid-template-rows: var(--control-hint-key-size) var(--control-hint-key-gap) var(--control-hint-key-size);
+}
+
+.controlHintGroup.isStack {
+  align-self: flex-end;
+  grid-template-rows: var(--control-hint-key-size) var(--control-hint-key-gap) var(--control-hint-key-size) auto;
+  justify-items: start;
+}
+
+.controlHintGroup.isTop .controlHintKeys {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.controlHintGroup.isTop .controlHintLabel {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.controlHintGroup.isBottom .controlHintKeys {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.controlHintGroup.isBottom .controlHintLabel {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.controlHintStackRow {
+  display: flex;
+  align-items: center;
+  gap: 0.24rem;
+}
+
+.controlHintStackRow.isTop {
+  grid-row: 1;
+}
+
+.controlHintStackRow.isBottom {
+  grid-row: 3;
+}
+
+.controlHintStackLabel {
+  grid-row: 4;
+  justify-self: center;
+  margin-top: var(--control-hint-label-gap);
+  color: rgba(255, 255, 255, 0.52);
+  font-family: Arial, sans-serif;
+  font-size: var(--control-hint-label-size);
+  font-weight: bold;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(31, 41, 55, 0.22);
+  white-space: nowrap;
+}
+
+.controlHintGroup.labelBelow .controlHintLabel {
+  grid-column: 1 / -1;
+  grid-row: auto;
+  margin-top: var(--control-hint-label-gap);
+}
+
+.controlHintGroup.isBottom.labelBelow {
+  grid-template-rows: var(--control-hint-key-size) var(--control-hint-key-gap) var(--control-hint-key-size) auto;
+}
+
+.controlHintGroup.isBottom.labelBelow .controlHintLabel {
+  grid-row: 4;
+}
+
+.controlHintGroup.labelInline .controlHintLabel {
+  align-self: center;
+  justify-self: start;
+}
+
+.controlHintGroup.isBottom.labelInline {
+  padding-bottom: calc(var(--control-hint-label-size) + var(--control-hint-label-gap));
+}
+
+.controlHintGroup.labelNone .controlHintLabel {
+  display: none;
+}
+
+.controlHintKeys {
+  display: flex;
+  gap: var(--control-hint-key-gap);
+  min-height: var(--control-hint-key-size);
+  align-items: center;
+}
+
+.controlHintKeys.isDirectional {
+  display: grid;
+  grid-template-columns: repeat(3, var(--control-hint-key-size));
+  grid-template-rows: repeat(2, var(--control-hint-key-size));
+  gap: var(--control-hint-key-gap);
+  min-height: calc(var(--control-hint-key-size) * 2 + var(--control-hint-key-gap));
+}
+
+.controlHintKeys.isDirectional .controlHintKey:first-child {
+  grid-column: 2;
+}
+
+.controlHintKeys.isDirectional .controlHintKey:nth-child(2) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.controlHintKeys.isDirectional .controlHintKey:nth-child(3) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.controlHintKeys.isDirectional .controlHintKey:nth-child(4) {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.controlHintKey {
+  box-sizing: border-box;
+  display: inline-grid;
+  min-width: var(--control-hint-key-size);
+  height: var(--control-hint-key-size);
+  padding: 0 0.44rem;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.74);
+  background: rgba(170, 174, 180, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 0.28rem;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.16);
+  font-size: var(--control-hint-label-size);
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  line-height: 1;
+  transition: background-color 90ms ease, border-color 90ms ease, color 90ms ease, transform 90ms ease;
+}
+
+.controlHintKeys.isDirectional .controlHintKey {
+  width: var(--control-hint-key-size);
+  padding: 0;
+}
+
+.controlHintKey.isWide {
+  min-width: 4.35rem;
+}
+
+.controlHintKey.isActive {
+  color: rgba(28, 32, 38, 0.92);
+  background: var(--control-hint-accent);
+  border-color: rgba(255, 255, 255, 0.62);
+  transform: translateY(1px);
+}
+
+.controlHintLabel {
+  color: rgba(255, 255, 255, 0.52);
+  font-family: Arial, sans-serif;
+  font-size: var(--control-hint-label-size);
+  font-weight: bold;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(31, 41, 55, 0.22);
+  white-space: nowrap;
+}

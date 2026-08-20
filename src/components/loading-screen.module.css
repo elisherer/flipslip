@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: linear-gradient(135deg, #2b8641 0%, #9aca3c 100%);
+  --portal-dark: #2b8641;
+  --portal-middle: #79c03d;
+  --portal-light: #9aca3c;
+}
+.logo {
+  width: 16em;
+  height: 10em;
+  background: url("../assets/logo.png") no-repeat center;
+  background-size: contain;
+}

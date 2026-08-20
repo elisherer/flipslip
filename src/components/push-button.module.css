@@ -1,0 +1,31 @@
+
+.pushButton {
+  height: 3em;
+  width: 3em;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  fill: black;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pushButton[data-small] {
+  height: 2em;
+  width: 2em;
+}
+.pushButton:hover {
+  background: rgba(128, 128, 128, 0.2);
+}
+.pushButton:active {
+  background: rgba(64, 64, 64, 0.2);
+}
+.pushButton svg {
+  height: 2em;
+  width: 2em;
+}
+.pushButton[data-small] svg {
+  height: 1.3em;
+  width: 1.3em;
+}
