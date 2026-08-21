@@ -63,7 +63,7 @@ export default function Player({ index, ...props }: { index: number } & Componen
           const [x, y, z] = levelRef.current.players[index].position;
           const [nx, nz] = [x + dx, z + dz];
           api.moveTo(index, [nx, y, nz]);
-          movingRef.current = canEnterCell(levelRef.current.level, index, levelRef.current.toggled, nx, nz);
+          movingRef.current = canEnterCell(levelRef.current.level, index, levelRef.current.toggled, x, z, nx, nz);
         },
       ),
     );
@@ -111,7 +111,7 @@ export default function Player({ index, ...props }: { index: number } & Componen
         const [x, y, z] = player.position;
         const [nx, nz] = [x + dx, z + dz];
         api.moveTo(index, [nx, y, nz]);
-        movingRef.current = canEnterCell(levelState.level, index, levelState.toggled, nx, nz);
+        movingRef.current = canEnterCell(levelState.level, index, levelState.toggled, x, z, nx, nz);
       }
     }
 

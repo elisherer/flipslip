@@ -13,11 +13,11 @@ export function LevelCarousel() {
   const [{ progress }, gameApi] = useGameState();
   const maxUnlockedIndex = Math.min(progress.lastCompletedIndex + 1, Levels.length - 1);
 
-  const [selectedIndex, setSelectedIndex] = useState(progress.lastCompletedIndex + 1);
+  const [selectedIndex, setSelectedIndex] = useState(maxUnlockedIndex);
 
   useEffect(() => {
-    setSelectedIndex(progress.lastCompletedIndex + 1);
-  }, [progress.lastCompletedIndex]);
+    setSelectedIndex(maxUnlockedIndex);
+  }, [maxUnlockedIndex]);
 
   const cards = useMemo(() => {
     const items: { index: number; offset: number }[] = [];

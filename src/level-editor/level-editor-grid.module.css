@@ -11,6 +11,11 @@
   fill: #cfd8dc;
   cursor: pointer;
 }
+.cellOpenModulu {
+  fill: #b1babd;
+  cursor: pointer;
+}
+
 
 .cellOpen:hover {
   fill: #eceff1;

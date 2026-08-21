@@ -5,7 +5,7 @@ import useSound from "use-sound";
 import { Music, Sounds } from "@/assets/sounds";
 import Portal from "@/components/portal";
 import Stars from "@/components/starts";
-import { CellType, ToggleId } from "@/levels/level-definition";
+import { LAYER_NAMES, isWallStateOpen } from "@/levels/level-schema";
 import Player from "@/levels/player";
 import useCameraFollowPlayers from "@/levels/use-camera-follow-players";
 import { useGameState } from "@/providers/game-state-provider";
@@ -17,6 +17,14 @@ import useBackgroundMusic from "../hooks/use-background-music";
 type LevelProps = {
   debug?: boolean;
   onFinishLevel: () => void;
+};
+
+// TODO(phase 2): proper wall rendering (colored walls, hidden-when-no-neighbor). This is
+// a debug-only stand-in so wall passability can be visually verified in the meantime.
+const WALL_DEBUG_COLOR: Record<number, string> = {
+  1: "white",
+  2: "#79c03d",
+  3: "#d40de9",
 };
 
 export default function LevelRenderer({ onFinishLevel }: LevelProps) {
@@ -38,41 +46,32 @@ export default function LevelRenderer({ onFinishLevel }: LevelProps) {
 
   const blocks = useMemo(() => {
     const a: any[] = [];
+    const [finishX, finishZ] = level.finish.position;
+
     for (let z = 0; z < level.height; z++) {
       for (let x = 0; x < level.width; x++) {
         const key = x + "," + z;
-        // if (x < 0 || x >= level.width || z < 0 || z >= level.height) {
-        //   a.push(
-        //     <group key={key} position={[x, -1, z]}>
-        //       <KitModel kit="block-bits" model="water" scale={0.5} receiveShadow castShadow />
-        //     </group>,
-        //   );
-        //   continue;
-        // }
         const objects = [];
 
-        for (let i = 0; i < level.layers.length; i++) {
+        if (level.layers.ground[z]?.[x] || level.layers.air[z]?.[x]) {
+          objects.push(
+            <KitModel
+              key={key + ":floor"}
+              position={[0, level.layers.ground[z]?.[x] ? -1.01 : -0.51, 0]}
+              kit="prototype"
+              model="floor-square"
+              receiveShadow
+              castShadow
+            />,
+          );
+        }
+
+        LAYER_NAMES.forEach((layerName, i) => {
+          const cell = level.layers[layerName][z]?.[x];
+          if (!cell) return;
           const layerKey = i + ":" + key;
 
-          const cell = level.layers[i][z][x];
-          if (cell.type === CellType.WALL && debug) {
-            objects.push(
-              <mesh key={layerKey} position={[0, i * 0.5 - 0.75, 0]}>
-                <boxGeometry args={[1, 0.5, 1]} />
-                <meshStandardMaterial color="white" wireframe={true} />
-              </mesh>,
-            );
-          } else if (cell.type === CellType.TOGGLE_WALL && debug) {
-            objects.push(
-              <mesh key={layerKey} position={[0, i * 0.5 - 0.75, 0]}>
-                <boxGeometry args={[1, 0.5, 1]} />
-                <meshStandardMaterial
-                  color={cell.toggle_id === ToggleId.GREEN ? "#79c03d" : "#d40de9"}
-                  wireframe={true}
-                />
-              </mesh>,
-            );
-          } else if (cell.type === CellType.TOGGLE) {
+          if (cell.trigger) {
             objects.push(
               <KitModel
                 key={layerKey}
@@ -84,52 +83,59 @@ export default function LevelRenderer({ onFinishLevel }: LevelProps) {
                 castShadow
               />,
             );
-          } else if (cell.type === CellType.FINISH && i === 0) {
-            objects.push(<Portal position={[0, -0.99, 0]} />);
           }
-
-          const tilesC = level.tiles[i][z][x];
-          const tiles = Array.isArray(tilesC) ? tilesC : [tilesC];
-          const coloring =
-            cell.type === CellType.TOGGLE_WALL
-              ? {
-                  color: cell.toggle_id === ToggleId.GREEN ? "#79c03d" : "#d40de9",
-                  opacity: toggled !== level.initialState[cell.toggle_id] ? 1 : 0.4,
-                }
-              : undefined;
-
-          tiles.forEach(({ correction, rotation, scale, ...tile }, ti) =>
+          if (layerName === "ground" && x === finishX && z === finishZ) {
+            objects.push(<Portal key={layerKey + ":finish"} position={[0, -0.99, 0]} />);
+          }
+          const neighborRight = level.layers[layerName][z]?.[x + 1];
+          if (cell.right !== 0 || !neighborRight) {
+            const open = isWallStateOpen(neighborRight ? cell.right : 1, toggled, level.initialState);
             objects.push(
-              correction ? (
-                <group key={layerKey + ":" + ti} position={[0, -1, 0]} scale={scale} rotation={rotation}>
-                  <KitModel {...correction} {...coloring} {...tile} receiveShadow castShadow />
-                </group>
-              ) : (
-                <KitModel
-                  key={layerKey + ":" + ti}
-                  position={[0, i * 0.5 - 1, 0]}
-                  scale={scale}
-                  rotation={rotation}
-                  {...tile}
-                  {...coloring}
-                  receiveShadow
-                  castShadow
-                />
-              ),
-            ),
-          );
-        }
+              <mesh key={layerKey + ":right"} position={[0.5, i * 0.5 - 0.75, 0]}>
+                <boxGeometry args={[0.1, 0.5, 1.0]} />
+                <meshStandardMaterial color={WALL_DEBUG_COLOR[cell.right]} transparent opacity={open ? 0.4 : 1} />
+              </mesh>,
+            );
+          }
+          const neighborBelow = level.layers[layerName][z + 1]?.[x];
+          if (cell.down !== 0 || !neighborBelow) {
+            const open = isWallStateOpen(neighborBelow ? cell.down : 1, toggled, level.initialState);
+            objects.push(
+              <mesh key={layerKey + ":down"} position={[0, i * 0.5 - 0.75, 0.5]}>
+                <boxGeometry args={[1.0, 0.5, 0.1]} />
+                <meshStandardMaterial color={WALL_DEBUG_COLOR[cell.down]} transparent opacity={open ? 0.4 : 1} />
+              </mesh>,
+            );
+          }
+          const neighborLeft = level.layers[layerName][z]?.[x - 1];
+          if (!neighborLeft) {
+            objects.push(
+              <mesh key={layerKey + ":left"} position={[-0.5, i * 0.5 - 0.75, 0]}>
+                <boxGeometry args={[0.1, 0.5, 1.0]} />
+                <meshStandardMaterial color={WALL_DEBUG_COLOR[1]} />
+              </mesh>,
+            );
+          }
+          const neighborAbove = level.layers[layerName][z - 1]?.[x];
+          if (!neighborAbove) {
+            objects.push(
+              <mesh key={layerKey + ":up"} position={[0, i * 0.5 - 0.75, -0.5]}>
+                <boxGeometry args={[1.0, 0.5, 0.1]} />
+                <meshStandardMaterial color={WALL_DEBUG_COLOR[1]} />
+              </mesh>,
+            );
+          }
+        });
 
         a.push(
           <group key={key} position={[x, 0, z]}>
             {objects}
-            <KitModel position={[0, -1.01, 0]} kit="prototype" model="floor-square" receiveShadow castShadow />
           </group>,
         );
       }
     }
     return a;
-  }, [level.layers, toggled, debug]);
+  }, [level, toggled, debug]);
 
   return (
     <>

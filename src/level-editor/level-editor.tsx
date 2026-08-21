@@ -1,7 +1,6 @@
 import { ChangeEvent, useMemo, useRef, useState } from "react";
 
-import LevelEditorGrid from "./level-editor-grid";
-import styles from "./level-editor.module.css";
+import { Levels } from "@/levels/levels";
 import {
   Cell,
   createCell,
@@ -12,7 +11,10 @@ import {
   Level,
   nextWallState,
   resizeLevel,
-} from "./schema";
+} from "@/levels/level-schema";
+
+import LevelEditorGrid from "./level-editor-grid";
+import styles from "./level-editor.module.css";
 
 const DEFAULT_WIDTH = 8;
 const DEFAULT_HEIGHT = 8;
@@ -118,6 +120,19 @@ export default function LevelEditor({ onExit }: { onExit: () => void }) {
     URL.revokeObjectURL(url);
   };
 
+  const handleLoadFromLevels = (e: ChangeEvent<HTMLSelectElement>) => {
+    const index = parseInt(e.target.value, 10);
+    e.target.value = "";
+    if (Number.isNaN(index)) return;
+    const source = Levels[index];
+    if (!source) return;
+    const loaded = JSON.parse(JSON.stringify(source)) as Level;
+    setLevel(loaded);
+    setWidthInput(String(loaded.width));
+    setHeightInput(String(loaded.height));
+    setError(null);
+  };
+
   const handleLoadClick = () => fileInputRef.current?.click();
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -193,6 +208,19 @@ export default function LevelEditor({ onExit }: { onExit: () => void }) {
           Purple toggled
         </label>
         <div className={styles.spacer} />
+        <label className={styles.field}>
+          Load from
+          <select className={styles.input} defaultValue="" onChange={handleLoadFromLevels}>
+            <option value="" disabled>
+              Select level…
+            </option>
+            {Levels.map((_, index) => (
+              <option key={index} value={index}>
+                Level {index + 1}
+              </option>
+            ))}
+          </select>
+        </label>
         <button type="button" className={styles.button} onClick={handleLoadClick}>
           Load JSON
         </button>

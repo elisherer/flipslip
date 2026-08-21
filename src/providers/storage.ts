@@ -38,13 +38,14 @@ class Storage {
 }
 
 if (isLocalDev) {
-  (window as any).sofsof = {
+  (window as any).P = {
     JSONGzip,
     Storage,
     cheat: (level: number) => {
       Storage.saveProgress({
         lastCompletedIndex: level,
       });
+      window.location.reload();
     },
   };
 }

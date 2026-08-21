@@ -4,12 +4,14 @@ import { createImmerStateContext, useImmerStateProvider } from "use-immer-state-
 import useSound from "use-sound";
 
 import { Sounds } from "@/assets/sounds";
-import { CellType, LevelDefinition } from "@/levels/level-definition";
+import { Level, LayerName, isWallStateOpen } from "@/levels/level-schema";
 import { Levels } from "@/levels/levels";
 import { useGameState } from "@/providers/game-state-provider";
 import { KEYBOARD_MAP } from "@/providers/keyboard-map";
 import { Direction } from "@/types/direction";
 import { LevelState } from "@/types/level-state";
+
+const LAYER_FOR_PLAYER: LayerName[] = ["ground", "air"];
 
 const EMPTY_STATE: LevelState = {
   level: Levels[0],
@@ -31,29 +33,36 @@ const EMPTY_STATE: LevelState = {
 export const initialState = EMPTY_STATE;
 
 export function canEnterCell(
-  level: LevelDefinition | undefined,
+  level: Level | undefined,
   player: number,
   toggled: boolean,
-  x: number,
-  z: number,
+  fromX: number,
+  fromZ: number,
+  toX: number,
+  toZ: number,
 ) {
   if (!level) return true;
-  const cell = level.layers[player][z]?.[x];
-  if (!cell) return false;
-  if (cell.type === CellType.WALL) return false;
-  if (cell.type === CellType.TOGGLE_WALL && level.initialState[cell.toggle_id] !== toggled) return false;
-  return true;
+  const grid = level.layers[LAYER_FOR_PLAYER[player]];
+  const fromCell = grid[fromZ]?.[fromX];
+  const toCell = grid[toZ]?.[toX];
+  if (!fromCell || !toCell) return false;
+
+  const dx = toX - fromX;
+  const dz = toZ - fromZ;
+  const edgeState = dx === 1 ? fromCell.right : dx === -1 ? toCell.right : dz === 1 ? fromCell.down : toCell.down;
+
+  return isWallStateOpen(edgeState, toggled, level.initialState);
 }
 
 const actions = {
-  initialize: (draft: LevelState, level?: LevelDefinition) => {
+  initialize: (draft: LevelState, level?: Level) => {
     draft.level = level ?? draft.level;
     draft.toggled = false;
     draft.completed = false;
     draft.bag = {};
     if (draft.level) {
       draft.players = draft.level.players.map(p => ({
-        position: p.position.slice() as typeof p.position,
+        position: [p.position[0], 0, p.position[1]],
         direction: Direction.DOWN,
       }));
     }
@@ -62,10 +71,10 @@ const actions = {
     const { level } = draft;
     if (!level) return;
     const [x, , z] = position;
-
-    if (!canEnterCell(level, player, draft.toggled, x, z)) return;
-
     const [px, , pz] = draft.players[player].position;
+
+    if (!canEnterCell(level, player, draft.toggled, px, pz, x, z)) return;
+
     if (x < px) draft.players[player].direction = Direction.LEFT;
     else if (x > px) draft.players[player].direction = Direction.RIGHT;
     else if (z < pz) draft.players[player].direction = Direction.UP;
@@ -77,19 +86,17 @@ const actions = {
   arriveAt: (draft: LevelState, player: number, x: number, z: number) => {
     const { level } = draft;
     if (!level) return;
-    const cell = level.layers[player][z][x];
+    const cell = level.layers[LAYER_FOR_PLAYER[player]][z]?.[x];
     if (!cell) return;
-    if (cell.type === CellType.TOGGLE) {
+    if (cell.trigger) {
       console.debug("player " + player + " toggled to " + !draft.toggled);
       draft.toggled = !draft.toggled;
     }
-    if (cell.type === CellType.FINISH) {
-      // player arrived to finish, check if other in the same place
-      const otherPlayer = draft.players[1 - player];
-      if (
-        otherPlayer.position[0] === draft.players[player].position[0] &&
-        otherPlayer.position[1] === draft.players[player].position[1]
-      ) {
+    const [fx, fz] = level.finish.position;
+    if (x === fx && z === fz) {
+      // player arrived at finish, check if the other player is also there
+      const [ox, , oz] = draft.players[1 - player].position;
+      if (ox === fx && oz === fz) {
         draft.completed = true;
       }
     }

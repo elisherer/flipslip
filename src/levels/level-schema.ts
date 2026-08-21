@@ -54,6 +54,20 @@ export function nextWallState(state: WallState): WallState {
   return WALL_STATES[(WALL_STATES.indexOf(state) + 1) % WALL_STATES.length];
 }
 
+/** Whether an edge with the given wall state currently lets a player pass through it. */
+export function isWallStateOpen(state: WallState, toggled: boolean, initialState: InitialToggleState): boolean {
+  switch (state) {
+    case 0:
+      return true;
+    case 1:
+      return false;
+    case 2:
+      return toggled === initialState.green;
+    case 3:
+      return toggled === initialState.purple;
+  }
+}
+
 export function createGrid(width: number, height: number): (Cell | null)[][] {
   return Array.from({ length: height }, () => Array.from({ length: width }, () => createCell()));
 }

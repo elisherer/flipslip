@@ -1,8 +1,8 @@
-import { LevelDefinition } from "@/levels/level-definition";
+import { Level } from "@/levels/level-schema";
 import { Direction } from "@/types/direction";
 
 export type LevelState = {
-  level: LevelDefinition;
+  level: Level;
   bag: Record<string, boolean>;
   toggled: boolean;
   completed: boolean;

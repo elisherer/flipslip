@@ -1,6 +1,7 @@
 import { MouseEvent, useMemo } from "react";
 
-import { Cell, InitialToggleState, WallState } from "./schema";
+import { Cell, InitialToggleState, WallState } from "@/levels/level-schema";
+
 import styles from "./level-editor-grid.module.css";
 
 const CELL_SIZE = 40;
@@ -95,7 +96,7 @@ export default function LevelEditorGrid({
               y={top}
               width={inner}
               height={inner}
-              className={cell ? styles.cellOpen : styles.cellNone}
+              className={cell ? ((x + y) % 2 ? styles.cellOpen : styles.cellOpenModulu) : styles.cellNone}
               onClick={e => onCellClick(x, y, e.shiftKey)}
               onContextMenu={e => handleCellContextMenu(e, x, y, cell)}
             />
