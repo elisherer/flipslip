@@ -1,6 +1,3 @@
-import { useEffect, useState } from "react";
-
-import { AllSkins, Skins } from "@/assets/kit";
 import { ControlHints, key } from "@/components/hud/control-hints";
 import Icons from "@/components/icons";
 import PushButton from "@/components/push-button";
@@ -15,16 +12,9 @@ import { hasVR } from "../xr/store";
 import styles from "./hud.module.css";
 
 const Hud = () => {
-  const [{ inLevel, settings, character }, gameApi] = useGameState();
-  const [skinIndex, setSkinIndex] = useState(0);
+  const [{ inLevel, settings }, gameApi] = useGameState();
   const infoModalOpen = useToggle();
   const [isFullscreen, toggleFullscreen] = useFullscreen();
-
-  const skinIsSet = character === Skins[AllSkins[skinIndex]];
-  useEffect(() => {
-    if (skinIsSet) return;
-    gameApi.setSkin(AllSkins[skinIndex]);
-  }, [skinIndex, skinIsSet]);
 
   return (
     <>
@@ -71,12 +61,6 @@ const Hud = () => {
             <Icons.info />
           </PushButton>
           <AboutModal open={infoModalOpen.current} onClose={infoModalOpen.handleUnset} />
-          <div
-            className={styles.logo}
-            onClick={() => {
-              setSkinIndex(i => (i + 1) % AllSkins.length);
-            }}
-          />
         </div>
       )}
       {!inLevel ? null : isTouchDevice ? /*(

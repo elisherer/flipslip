@@ -139,3 +139,10 @@
 .dot[data-locked="true"] {
   background: rgba(255, 255, 255, 0.15);
 }
+
+.logo {
+  width: 320px;
+  height: 96px;
+  background: url("../assets/logo.png") no-repeat center;
+  background-size: contain;
+}

@@ -7,6 +7,7 @@
 # Audio
 
 - Button (UI Audio; click/unclick) - [Kenney](https://kenney.nl/assets/ui-audio)
+- Spell1_0 (complete level) - [Spell 1](https://opengameart.org/content/spell-1)
 
 # Music
 

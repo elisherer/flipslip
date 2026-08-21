@@ -9,9 +9,9 @@ const CellAbbr = {
   // Wall
   X: { type: CellType.WALL },
   // Toggle Wall B
-  B: { type: CellType.TOGGLE_WALL, toggle_id: ToggleId.BLUE },
+  B: { type: CellType.TOGGLE_WALL, toggle_id: ToggleId.GREEN },
   // Toggle Wall R
-  R: { type: CellType.TOGGLE_WALL, toggle_id: ToggleId.RED },
+  R: { type: CellType.TOGGLE_WALL, toggle_id: ToggleId.PURPLE },
   // Finish
   F: { type: CellType.FINISH },
   // Toggle

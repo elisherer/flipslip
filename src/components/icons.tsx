@@ -120,19 +120,19 @@ const Icons = {
     </svg>
   ),
   /**
-   * Source: https://mui.com/material-ui/material-icons/?selected=ArrowBackIos
+   * Source: https://mui.com/material-ui/material-icons/?selected=ArrowBack
    */
   arrow_back: () => (
     <svg focusable="false" viewBox="0 0 24 24">
-      <path d="M11.67 3.87 9.9 2.1 0 12l9.9 9.9 1.77-1.77L3.54 12z" />
+      <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z" />
     </svg>
   ),
   /**
-   * Source: https://mui.com/material-ui/material-icons/?selected=ArrowForwardIos
+   * Source: https://mui.com/material-ui/material-icons/?selected=ArrowForward
    */
   arrow_forward: () => (
     <svg focusable="false" viewBox="0 0 24 24">
-      <path d="M5.88 2.12 4.11 3.89 12.22 12l-8.11 8.11 1.77 1.77L15.77 12z" />
+      <path d="m12 4-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
     </svg>
   ),
   vr: () => (

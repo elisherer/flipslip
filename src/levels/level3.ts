@@ -64,8 +64,8 @@ export default levelFrom({
     ],
   ],
   initialState: {
-    BLUE: false,
-    RED: true,
+    GREEN: false,
+    PURPLE: true,
   },
   players: [
     {

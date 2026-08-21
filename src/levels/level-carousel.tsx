@@ -11,10 +11,13 @@ const CARD_RANGE = 2;
 
 export function LevelCarousel() {
   const [{ progress }, gameApi] = useGameState();
-
   const maxUnlockedIndex = Math.min(progress.lastCompletedIndex + 1, Levels.length - 1);
 
-  const [selectedIndex, setSelectedIndex] = useState(() => maxUnlockedIndex);
+  const [selectedIndex, setSelectedIndex] = useState(progress.lastCompletedIndex + 1);
+
+  useEffect(() => {
+    setSelectedIndex(progress.lastCompletedIndex + 1);
+  }, [progress.lastCompletedIndex]);
 
   const cards = useMemo(() => {
     const items: { index: number; offset: number }[] = [];
@@ -50,6 +53,7 @@ export function LevelCarousel() {
 
   return (
     <div className={styles.carousel}>
+      <div className={styles.logo} />
       <div className={styles.track}>
         <PushButton
           className={styles.nav}

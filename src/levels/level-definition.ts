@@ -9,8 +9,8 @@ export enum CellType {
 }
 
 export enum ToggleId {
-  RED = "RED",
-  BLUE = "BLUE",
+  PURPLE = "PURPLE",
+  GREEN = "GREEN",
 }
 
 export type Cell = {

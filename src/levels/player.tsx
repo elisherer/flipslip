@@ -59,7 +59,7 @@ export default function Player({ index, ...props }: { index: number } & Componen
       subscribeKeys(
         state => state[control],
         pressed => {
-          if (!pressed || movingRef.current) return;
+          if (!pressed || movingRef.current || levelRef.current.completed) return;
           const [x, y, z] = levelRef.current.players[index].position;
           const [nx, nz] = [x + dx, z + dz];
           api.moveTo(index, [nx, y, nz]);
@@ -106,7 +106,7 @@ export default function Player({ index, ...props }: { index: number } & Componen
       api.arriveAt(index, tx, tz);
       const keys = getKeys();
       const held = MOVES[index].find(([control]) => keys[control]);
-      if (held) {
+      if (held && !levelRef.current.completed) {
         const [, [dx, dz]] = held;
         const [x, y, z] = player.position;
         const [nx, nz] = [x + dx, z + dz];
@@ -143,10 +143,12 @@ export default function Player({ index, ...props }: { index: number } & Componen
       ) : (
         <KitModel
           kit="characters"
-          model="Mannequin_Medium_Animated"
-          variant="morty"
-          scale={0.25}
-          animate={isMoving ? "Walking_A" : "Idle_A"}
+          //model="Mannequin_Medium_Animated"
+          model="Astronaut.gltf"
+          //variant="morty"
+          //scale={0.25}
+          //animate={isMoving ? "Walking_A" : "Idle_A"}
+          animate={isMoving ? "Walking" : "Idle"}
           loop
           animationTimeScale={isMoving ? 3 : 1}
           position={[0, -1, 0]}

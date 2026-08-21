@@ -17,7 +17,7 @@ export default function useBackgroundMusic(path: string, options?: UseSoundOptio
   });
   useEffect(() => {
     if (!settings.music || !windowHasFocus) return;
-    play();
-    return () => stop();
+    play({ forceSoundEnabled: true });
+    return stop;
   }, [play, stop, settings.music, windowHasFocus]);
 }

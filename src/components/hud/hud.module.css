@@ -58,10 +58,3 @@
   align-items: center;
   gap: 0.5em;
 }
-
-.logo {
-  width: 12em;
-  height: 3em;
-  background: url("../../assets/logo.png") no-repeat center;
-  background-size: contain;
-}

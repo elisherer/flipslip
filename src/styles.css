@@ -30,7 +30,8 @@ body,
 body {
   position: fixed;
   overflow: hidden;
-  background: linear-gradient(to bottom, #304030, #34BABA);
+  background: black;
+  /*background: linear-gradient(to bottom, #304030, #34BABA);*/
 }
 
 body:fullscreen, body::backdrop {

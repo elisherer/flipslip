@@ -1,7 +1,9 @@
 import { KeyboardControls } from "@react-three/drei";
 import { PropsWithChildren, useContext, useEffect } from "react";
 import { createImmerStateContext, useImmerStateProvider } from "use-immer-state-provider";
+import useSound from "use-sound";
 
+import { Sounds } from "@/assets/sounds";
 import { CellType, LevelDefinition } from "@/levels/level-definition";
 import { Levels } from "@/levels/levels";
 import { useGameState } from "@/providers/game-state-provider";
@@ -13,6 +15,7 @@ const EMPTY_STATE: LevelState = {
   level: Levels[0],
   bag: {},
   toggled: false,
+  completed: false,
   players: [
     {
       position: [0, 0, 0],
@@ -46,6 +49,7 @@ const actions = {
   initialize: (draft: LevelState, level?: LevelDefinition) => {
     draft.level = level ?? draft.level;
     draft.toggled = false;
+    draft.completed = false;
     draft.bag = {};
     if (draft.level) {
       draft.players = draft.level.players.map(p => ({
@@ -79,6 +83,16 @@ const actions = {
       console.debug("player " + player + " toggled to " + !draft.toggled);
       draft.toggled = !draft.toggled;
     }
+    if (cell.type === CellType.FINISH) {
+      // player arrived to finish, check if other in the same place
+      const otherPlayer = draft.players[1 - player];
+      if (
+        otherPlayer.position[0] === draft.players[player].position[0] &&
+        otherPlayer.position[1] === draft.players[player].position[1]
+      ) {
+        draft.completed = true;
+      }
+    }
   },
   collectItem: (draft: LevelState, player: number, id: string) => {
     draft.bag[id] = true;
@@ -101,11 +115,20 @@ export const useLevelState = () => {
 const LevelStateProvider = ({ children }: PropsWithChildren<{}>) => {
   const [{ levelIndex, invalidationFlag }, gameApi] = useGameState();
   const [, api, value] = useImmerStateProvider(initialState, actions);
+  const [playFinished] = useSound(Sounds.FINISH);
+
   useEffect(() => {
     const level = Levels[levelIndex];
     api.initialize(level);
     console.log("level " + levelIndex + " initialized");
   }, [levelIndex, api, invalidationFlag]);
+
+  const completed = value[0].completed;
+  useEffect(() => {
+    if (completed) {
+      playFinished();
+    }
+  }, [completed]);
 
   useEffect(() => {
     const keyHandler = (e: KeyboardEvent) => {

@@ -21,7 +21,7 @@ export const initialState: GameState = {
   invalidationFlag: 0,
   character: Skins[DefaultCharacterSkin],
   progress: {
-    lastCompletedIndex: 0,
+    lastCompletedIndex: -1,
   },
 };
 
@@ -39,7 +39,6 @@ const actions = {
   },
   levelComplete: (draft: GameState, levelIndex: number) => {
     draft.progress.lastCompletedIndex = Math.max(draft.progress.lastCompletedIndex, levelIndex);
-    draft.levelIndex = 0;
     console.debug("[game-state] action invoked: levelComplete", levelIndex);
   },
   levelInitialize: (draft: GameState, levelIndex?: number) => {

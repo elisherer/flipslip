@@ -4,6 +4,7 @@ import useSound from "use-sound";
 
 import { Music, Sounds } from "@/assets/sounds";
 import Portal from "@/components/portal";
+import Stars from "@/components/starts";
 import { CellType, ToggleId } from "@/levels/level-definition";
 import Player from "@/levels/player";
 import useCameraFollowPlayers from "@/levels/use-camera-follow-players";
@@ -18,10 +19,10 @@ type LevelProps = {
   onFinishLevel: () => void;
 };
 
-export default function LevelRenderer({ onFinishLevel: _ }: LevelProps) {
+export default function LevelRenderer({ onFinishLevel }: LevelProps) {
   useBackgroundMusic(Music.LEVEL1);
   const [{ debug }] = useGameState();
-  const [{ level, toggled }] = useLevelState();
+  const [{ level, toggled, completed }] = useLevelState();
   const [playClick] = useSound(Sounds.CLICK);
   const [playUnclick] = useSound(Sounds.UNCLICK);
 
@@ -30,6 +31,10 @@ export default function LevelRenderer({ onFinishLevel: _ }: LevelProps) {
   useEffect(() => {
     toggled ? playClick() : playUnclick();
   }, [toggled]);
+
+  useEffect(() => {
+    if (completed) onFinishLevel();
+  }, [completed]);
 
   const blocks = useMemo(() => {
     const a: any[] = [];
@@ -61,7 +66,10 @@ export default function LevelRenderer({ onFinishLevel: _ }: LevelProps) {
             objects.push(
               <mesh key={layerKey} position={[0, i * 0.5 - 0.75, 0]}>
                 <boxGeometry args={[1, 0.5, 1]} />
-                <meshStandardMaterial color={cell.toggle_id === ToggleId.BLUE ? "blue" : "red"} wireframe={true} />
+                <meshStandardMaterial
+                  color={cell.toggle_id === ToggleId.GREEN ? "#79c03d" : "#d40de9"}
+                  wireframe={true}
+                />
               </mesh>,
             );
           } else if (cell.type === CellType.TOGGLE) {
@@ -85,7 +93,7 @@ export default function LevelRenderer({ onFinishLevel: _ }: LevelProps) {
           const coloring =
             cell.type === CellType.TOGGLE_WALL
               ? {
-                  color: cell.toggle_id === ToggleId.BLUE ? "blue" : "red",
+                  color: cell.toggle_id === ToggleId.GREEN ? "#79c03d" : "#d40de9",
                   opacity: toggled !== level.initialState[cell.toggle_id] ? 1 : 0.4,
                 }
               : undefined;
@@ -125,6 +133,9 @@ export default function LevelRenderer({ onFinishLevel: _ }: LevelProps) {
 
   return (
     <>
+      <group position={[0, -level.width * 2, -level.width]}>
+        <Stars />
+      </group>
       <group position={[-level.width / 2, 0, -level.height / 2]}>
         <Player index={0} />
         <Player index={1} />
