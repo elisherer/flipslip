@@ -91,7 +91,7 @@ export default function Player({ index, ...props }: { index: number } & Componen
       return;
     }
 
-    const step = MOVE_SPEED * delta;
+    const step = MOVE_SPEED * delta * 1.4;
     ref.current.position.x = moveTowards(ref.current.position.x, tx, step);
     ref.current.position.y = moveTowards(ref.current.position.y, ty, step);
     ref.current.position.z = moveTowards(ref.current.position.z, tz, step);

@@ -24,11 +24,7 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
             <Icons.debug />
           </PushButton>
           {onOpenEditor && (
-            <PushButton
-              data-small
-              onClick={() => onOpenEditor(inLevel ? levelIndex : undefined)}
-              title="Level Editor"
-            >
+            <PushButton data-small onClick={() => onOpenEditor(inLevel ? levelIndex : undefined)} title="Level Editor">
               <Icons.edit />
             </PushButton>
           )}
@@ -42,31 +38,31 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
             <Icons.vr />
           </PushButton>
         )}
-        <PushButton onClick={() => gameApi.changeSetting("hq", !settings.hq)}>
+        <PushButton onClick={() => gameApi.changeSetting("hq", !settings.hq)} title="Toggle quality">
           {settings.hq ? <Icons.high_quality /> : <Icons.standard_quality />}
         </PushButton>
-        <PushButton onClick={() => gameApi.changeSetting("sfx", !settings.sfx)}>
+        <PushButton onClick={() => gameApi.changeSetting("sfx", !settings.sfx)} title="Toggle sound effects">
           {settings.sfx ? <Icons.volume_up /> : <Icons.volumn_off />}
         </PushButton>
-        <PushButton onClick={() => gameApi.changeSetting("music", !settings.music)}>
+        <PushButton onClick={() => gameApi.changeSetting("music", !settings.music)} title="Toggle music">
           {settings.music ? <Icons.music_note /> : <Icons.music_off />}
         </PushButton>
-        <PushButton onClick={toggleFullscreen}>
+        <PushButton onClick={toggleFullscreen} title="Toggle fullscreen">
           {isFullscreen ? <Icons.fullscreen /> : <Icons.fullscreen_exit />}
         </PushButton>
       </div>
       {inLevel ? (
         <div className={styles.topLeft}>
-          <PushButton onClick={() => gameApi.homeScreen()}>
+          <PushButton onClick={() => gameApi.homeScreen()} title="Back to home [ESC]">
             <Icons.close />
           </PushButton>
-          <PushButton onClick={() => gameApi.levelInitialize()}>
+          <PushButton onClick={() => gameApi.levelInitialize()} title="Restart level [BACKSPACE]">
             <Icons.replay />
           </PushButton>
         </div>
       ) : (
         <div className={styles.topLeft}>
-          <PushButton className={styles.info} onClick={infoModalOpen.handleSet}>
+          <PushButton className={styles.info} onClick={infoModalOpen.handleSet} title="About">
             <Icons.info />
           </PushButton>
           <AboutModal open={infoModalOpen.current} onClose={infoModalOpen.handleUnset} />
@@ -136,7 +132,7 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
                 {
                   label: "Move",
                   layout: "directional",
-                  keys: [key("UP", "ArrowUp"), key("L", "ArrowLeft"), key("D", "ArrowDown"), key("R", "ArrowRight")],
+                  keys: [key("↑", "ArrowUp"), key("←", "ArrowLeft"), key("↓", "ArrowDown"), key("→", "ArrowRight")],
                 },
                 // {
                 //   label: "Run",
