@@ -36,6 +36,7 @@ const ROTATIONS: Record<number, number> = {
 
 type ShortenDefinition = Omit<LevelDefinition, "layers" | "tiles"> & {
   layers: string[][];
+  layers_v2: any;
   tiles: ShortenTile[][][];
 };
 

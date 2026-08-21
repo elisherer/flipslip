@@ -11,7 +11,7 @@ import AboutModal from "../modal/AboutModal";
 import { hasVR } from "../xr/store";
 import styles from "./hud.module.css";
 
-const Hud = () => {
+const Hud = ({ onOpenEditor }: { onOpenEditor?: () => void }) => {
   const [{ inLevel, settings }, gameApi] = useGameState();
   const infoModalOpen = useToggle();
   const [isFullscreen, toggleFullscreen] = useFullscreen();
@@ -23,6 +23,11 @@ const Hud = () => {
           <PushButton data-small onClick={gameApi.toggleDebug}>
             <Icons.debug />
           </PushButton>
+          {onOpenEditor && (
+            <PushButton data-small onClick={onOpenEditor} title="Level Editor">
+              <Icons.edit />
+            </PushButton>
+          )}
         </div>
       ) : (
         <div className={styles.cover} />
