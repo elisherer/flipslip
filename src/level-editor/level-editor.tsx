@@ -1,6 +1,7 @@
-import { ChangeEvent, useMemo, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 
-import { Levels } from "@/levels/levels";
+import { loadDraft } from "@/levels/draft-storage";
+import { isDraftLevel, Levels, syncDraft } from "@/levels/levels";
 import {
   Cell,
   createCell,
@@ -55,15 +56,35 @@ function setFinishPosition(level: Level, x: number, y: number): Level {
   return { ...level, finish: { position: [x, y] } };
 }
 
-export default function LevelEditor({ onExit }: { onExit: () => void }) {
-  const [level, setLevel] = useState<Level>(() => createLevel(DEFAULT_WIDTH, DEFAULT_HEIGHT));
-  const [widthInput, setWidthInput] = useState(String(DEFAULT_WIDTH));
-  const [heightInput, setHeightInput] = useState(String(DEFAULT_HEIGHT));
+function initialLevel(levelIndex?: number): Level {
+  const source = levelIndex !== undefined ? Levels[levelIndex] : (loadDraft() ?? undefined);
+  return source ? (JSON.parse(JSON.stringify(source)) as Level) : createLevel(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+}
+
+export default function LevelEditor({
+  onExit,
+  initialLevelIndex,
+}: {
+  onExit: () => void;
+  initialLevelIndex?: number;
+}) {
+  const [level, setLevel] = useState<Level>(() => initialLevel(initialLevelIndex));
+  const [widthInput, setWidthInput] = useState(String(level.width));
+  const [heightInput, setHeightInput] = useState(String(level.height));
   const [error, setError] = useState<string | null>(null);
   const [placing, setPlacing] = useState<"player" | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const json = useMemo(() => JSON.stringify(level, null, 2), [level]);
+
+  const skippedFirstSync = useRef(false);
+  useEffect(() => {
+    if (!skippedFirstSync.current) {
+      skippedFirstSync.current = true;
+      return;
+    }
+    syncDraft(level);
+  }, [level]);
 
   const toggleExists = (layer: LayerName, x: number, y: number) =>
     setLevel(lvl => updateCell(lvl, layer, x, y, cell => (cell ? null : createCell())));
@@ -123,10 +144,8 @@ export default function LevelEditor({ onExit }: { onExit: () => void }) {
   const handleLoadFromLevels = (e: ChangeEvent<HTMLSelectElement>) => {
     const index = parseInt(e.target.value, 10);
     e.target.value = "";
-    if (Number.isNaN(index)) return;
-    const source = Levels[index];
-    if (!source) return;
-    const loaded = JSON.parse(JSON.stringify(source)) as Level;
+    if (Number.isNaN(index) || !Levels[index]) return;
+    const loaded = initialLevel(index);
     setLevel(loaded);
     setWidthInput(String(loaded.width));
     setHeightInput(String(loaded.height));
@@ -216,7 +235,7 @@ export default function LevelEditor({ onExit }: { onExit: () => void }) {
             </option>
             {Levels.map((_, index) => (
               <option key={index} value={index}>
-                Level {index + 1}
+                {isDraftLevel(index) ? "Draft" : `Level ${index + 1}`}
               </option>
             ))}
           </select>

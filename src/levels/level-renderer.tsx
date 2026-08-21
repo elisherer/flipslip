@@ -93,7 +93,11 @@ export default function LevelRenderer({ onFinishLevel }: LevelProps) {
             objects.push(
               <mesh key={layerKey + ":right"} position={[0.5, i * 0.5 - 0.75, 0]}>
                 <boxGeometry args={[0.1, 0.5, 1.0]} />
-                <meshStandardMaterial color={WALL_DEBUG_COLOR[cell.right]} transparent opacity={open ? 0.4 : 1} />
+                <meshStandardMaterial
+                  color={WALL_DEBUG_COLOR[neighborRight ? cell.right : 1]}
+                  transparent
+                  opacity={open ? 0.4 : 1}
+                />
               </mesh>,
             );
           }
@@ -103,7 +107,11 @@ export default function LevelRenderer({ onFinishLevel }: LevelProps) {
             objects.push(
               <mesh key={layerKey + ":down"} position={[0, i * 0.5 - 0.75, 0.5]}>
                 <boxGeometry args={[1.0, 0.5, 0.1]} />
-                <meshStandardMaterial color={WALL_DEBUG_COLOR[cell.down]} transparent opacity={open ? 0.4 : 1} />
+                <meshStandardMaterial
+                  color={WALL_DEBUG_COLOR[neighborBelow ? cell.down : 1]}
+                  transparent
+                  opacity={open ? 0.4 : neighborBelow || cell.down > 1 ? 1 : 0.6}
+                />
               </mesh>,
             );
           }

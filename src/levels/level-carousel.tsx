@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import Icons from "@/components/icons";
 import PushButton from "@/components/push-button";
-import { Levels } from "@/levels/levels";
+import { Levels, isDraftLevel } from "@/levels/levels";
 import { useGameState } from "@/providers/game-state-provider";
 
 import styles from "./level-carousel.module.css";
@@ -48,7 +48,7 @@ export function LevelCarousel() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [selectedIndex, maxUnlockedIndex, gameApi]);
 
-  const isLocked = (index: number) => index > maxUnlockedIndex;
+  const isLocked = (index: number) => !isDraftLevel(index) && index > maxUnlockedIndex;
   const selectedLocked = isLocked(selectedIndex);
 
   return (
@@ -65,7 +65,7 @@ export function LevelCarousel() {
         </PushButton>
         {cards.map(({ index, offset }) => {
           const locked = isLocked(index);
-          const completed = index <= progress.lastCompletedIndex;
+          const completed = !isDraftLevel(index) && index <= progress.lastCompletedIndex;
           const current = offset === 0;
           return (
             <button
@@ -81,8 +81,8 @@ export function LevelCarousel() {
               }}
               onClick={() => (current ? locked || gameApi.levelInitialize(index) : goTo(index))}
             >
-              <div className={styles.cardLabel}>Level</div>
-              <div className={styles.cardNumber}>{index + 1}</div>
+              <div className={styles.cardLabel}>{isDraftLevel(index) ? "" : "Level"}</div>
+              <div className={styles.cardNumber}>{isDraftLevel(index) ? "Draft" : index + 1}</div>
               {locked ? (
                 <div className={styles.cardLock}>
                   <Icons.lock />
