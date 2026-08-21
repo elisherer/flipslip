@@ -77,7 +77,7 @@ export default function LevelRenderer({ onFinishLevel }: LevelProps) {
                 key={layerKey}
                 position={[0, i * 0.5 - 1, 0]}
                 kit="prototype"
-                model="button-floor-square"
+                model="button-floor-square-small"
                 animate={toggled ? "toggle-on" : "toggle-off"}
                 receiveShadow
                 castShadow
@@ -92,7 +92,7 @@ export default function LevelRenderer({ onFinishLevel }: LevelProps) {
             const open = isWallStateOpen(neighborRight ? cell.right : 1, toggled, level.initialState);
             objects.push(
               <mesh key={layerKey + ":right"} position={[0.5, i * 0.5 - 0.75, 0]}>
-                <boxGeometry args={[0.1, 0.5, 1.0]} />
+                <boxGeometry args={[0.1, 0.5, cell.right > 1 ? 0.75 : 1.0]} />
                 <meshStandardMaterial
                   color={WALL_DEBUG_COLOR[neighborRight ? cell.right : 1]}
                   transparent
@@ -106,7 +106,7 @@ export default function LevelRenderer({ onFinishLevel }: LevelProps) {
             const open = isWallStateOpen(neighborBelow ? cell.down : 1, toggled, level.initialState);
             objects.push(
               <mesh key={layerKey + ":down"} position={[0, i * 0.5 - 0.75, 0.5]}>
-                <boxGeometry args={[1.0, 0.5, 0.1]} />
+                <boxGeometry args={[cell.down > 1 ? 0.75 : 1.0, 0.5, 0.1]} />
                 <meshStandardMaterial
                   color={WALL_DEBUG_COLOR[neighborBelow ? cell.down : 1]}
                   transparent

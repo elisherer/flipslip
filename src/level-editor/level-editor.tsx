@@ -63,9 +63,11 @@ function initialLevel(levelIndex?: number): Level {
 
 export default function LevelEditor({
   onExit,
+  onTryItOut,
   initialLevelIndex,
 }: {
   onExit: () => void;
+  onTryItOut: (levelIndex: number) => void;
   initialLevelIndex?: number;
 }) {
   const [level, setLevel] = useState<Level>(() => initialLevel(initialLevelIndex));
@@ -141,6 +143,11 @@ export default function LevelEditor({
     URL.revokeObjectURL(url);
   };
 
+  const handleTryItOut = () => {
+    const draftIndex = syncDraft(level);
+    onTryItOut(draftIndex);
+  };
+
   const handleLoadFromLevels = (e: ChangeEvent<HTMLSelectElement>) => {
     const index = parseInt(e.target.value, 10);
     e.target.value = "";
@@ -176,114 +183,129 @@ export default function LevelEditor({
 
   return (
     <div className={styles.root}>
-      <div className={styles.toolbar}>
-        <button type="button" className={styles.button} onClick={onExit}>
-          ← Back to Game
-        </button>
-        <div className={styles.spacer} />
-        <label className={styles.field}>
-          W
-          <input
-            type="number"
-            min={1}
-            max={64}
-            value={widthInput}
-            onChange={e => setWidthInput(e.target.value)}
-            className={styles.input}
-          />
-        </label>
-        <label className={styles.field}>
-          H
-          <input
-            type="number"
-            min={1}
-            max={64}
-            value={heightInput}
-            onChange={e => setHeightInput(e.target.value)}
-            className={styles.input}
-          />
-        </label>
-        <button type="button" className={styles.button} onClick={applyResize}>
-          Resize
-        </button>
-        <button type="button" className={styles.button} onClick={handleNew}>
-          New
-        </button>
-        <div className={styles.spacer} />
-        <button
-          type="button"
-          className={styles.button + " " + (placing === "player" ? styles.active : "")}
-          onClick={() => setPlacing(p => (p === "player" ? null : "player"))}
-        >
-          Place Player
-        </button>
-        <div className={styles.spacer} />
-        <label className={styles.field}>
-          <input type="checkbox" checked={level.initialState.green} onChange={() => toggleInitialState("green")} />
-          Green toggled
-        </label>
-        <label className={styles.field}>
-          <input type="checkbox" checked={level.initialState.purple} onChange={() => toggleInitialState("purple")} />
-          Purple toggled
-        </label>
-        <div className={styles.spacer} />
-        <label className={styles.field}>
-          Load from
-          <select className={styles.input} defaultValue="" onChange={handleLoadFromLevels}>
-            <option value="" disabled>
-              Select level…
-            </option>
-            {Levels.map((_, index) => (
-              <option key={index} value={index}>
-                {isDraftLevel(index) ? "Draft" : `Level ${index + 1}`}
+      <div className={styles.sidebar}>
+        <div className={styles.sidebarGroup}>
+          <button type="button" className={styles.button} onClick={onExit}>
+            ← Back to Game
+          </button>
+          <button type="button" className={styles.button + " " + styles.active} onClick={handleTryItOut}>
+            ▶ Try it out
+          </button>
+        </div>
+
+        <div className={styles.sidebarGroup}>
+          <div className={styles.sidebarRow}>
+            <label className={styles.field}>
+              W
+              <input
+                type="number"
+                min={1}
+                max={64}
+                value={widthInput}
+                onChange={e => setWidthInput(e.target.value)}
+                className={styles.input}
+              />
+            </label>
+            <label className={styles.field}>
+              H
+              <input
+                type="number"
+                min={1}
+                max={64}
+                value={heightInput}
+                onChange={e => setHeightInput(e.target.value)}
+                className={styles.input}
+              />
+            </label>
+          </div>
+          <button type="button" className={styles.button} onClick={applyResize}>
+            Resize
+          </button>
+          <button type="button" className={styles.button} onClick={handleNew}>
+            New
+          </button>
+        </div>
+
+        <div className={styles.sidebarGroup}>
+          <button
+            type="button"
+            className={styles.button + " " + (placing === "player" ? styles.active : "")}
+            onClick={() => setPlacing(p => (p === "player" ? null : "player"))}
+          >
+            Place Player
+          </button>
+        </div>
+
+        <div className={styles.sidebarGroup}>
+          <label className={styles.field}>
+            <input type="checkbox" checked={level.initialState.green} onChange={() => toggleInitialState("green")} />
+            Green toggled
+          </label>
+          <label className={styles.field}>
+            <input
+              type="checkbox"
+              checked={level.initialState.purple}
+              onChange={() => toggleInitialState("purple")}
+            />
+            Purple toggled
+          </label>
+        </div>
+
+        <div className={styles.sidebarGroup}>
+          <label className={styles.field}>
+            Load from
+            <select className={styles.select} defaultValue="" onChange={handleLoadFromLevels}>
+              <option value="" disabled>
+                Select level…
               </option>
-            ))}
-          </select>
-        </label>
-        <button type="button" className={styles.button} onClick={handleLoadClick}>
-          Load JSON
-        </button>
-        <input ref={fileInputRef} type="file" accept="application/json" hidden onChange={handleFileChange} />
-        <button type="button" className={styles.button} onClick={handleCopy}>
-          Copy JSON
-        </button>
-        <button type="button" className={styles.button} onClick={handleDownload}>
-          Download
-        </button>
-      </div>
-      {error && <div className={styles.error}>{error}</div>}
-      <div className={styles.legend}>
-        {placing
-          ? "Click a cell (in either layer) to place its player…"
-          : "Click: place/remove cell · Shift+Click: set finish · Right-click: toggle trigger · Click edge: cycle wall (open → wall → green → purple)"}
-      </div>
-      <div className={styles.body}>
-        <div className={styles.gridPane}>
-          {LAYER_NAMES.map(layerName => {
-            const layerIndex = LAYER_NAMES.indexOf(layerName) as 0 | 1;
-            return (
-              <div key={layerName} className={styles.layerBlock}>
-                <div className={styles.layerLabel}>{layerName}</div>
-                <LevelEditorGrid
-                  grid={level.layers[layerName]}
-                  width={level.width}
-                  height={level.height}
-                  playerPosition={level.players[layerIndex].position}
-                  finishPosition={level.finish.position}
-                  initialState={level.initialState}
-                  placing={placing !== null}
-                  onCellClick={(x, y, shiftKey) => handleCellClick(layerName, x, y, shiftKey)}
-                  onToggleTrigger={(x, y) => toggleTrigger(layerName, x, y)}
-                  onCycleRight={(x, y) => cycleRight(layerName, x, y)}
-                  onCycleDown={(x, y) => cycleDown(layerName, x, y)}
-                />
-              </div>
-            );
-          })}
+              {Levels.map((_, index) => (
+                <option key={index} value={index}>
+                  {isDraftLevel(index) ? "Draft" : `Level ${index + 1}`}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button type="button" className={styles.button} onClick={handleLoadClick}>
+            Load JSON
+          </button>
+          <input ref={fileInputRef} type="file" accept="application/json" hidden onChange={handleFileChange} />
+          <button type="button" className={styles.button} onClick={handleCopy}>
+            Copy JSON
+          </button>
+          <button type="button" className={styles.button} onClick={handleDownload}>
+            Download
+          </button>
         </div>
-        <div className={styles.jsonPane}>
-          <pre className={styles.json}>{json}</pre>
+
+        {error && <div className={styles.error}>{error}</div>}
+        <div className={styles.legend}>
+          {placing
+            ? "Click a cell (in either layer) to place its player…"
+            : "Click: place/remove cell · Shift+Click: set finish · Right-click: toggle trigger · Click edge: cycle wall (open → wall → green → purple)"}
         </div>
+      </div>
+      <div className={styles.gridPane}>
+        {LAYER_NAMES.map(layerName => {
+          const layerIndex = LAYER_NAMES.indexOf(layerName) as 0 | 1;
+          return (
+            <div key={layerName} className={styles.layerBlock}>
+              <div className={styles.layerLabel}>{layerName}</div>
+              <LevelEditorGrid
+                grid={level.layers[layerName]}
+                width={level.width}
+                height={level.height}
+                playerPosition={level.players[layerIndex].position}
+                finishPosition={level.finish.position}
+                initialState={level.initialState}
+                placing={placing !== null}
+                onCellClick={(x, y, shiftKey) => handleCellClick(layerName, x, y, shiftKey)}
+                onToggleTrigger={(x, y) => toggleTrigger(layerName, x, y)}
+                onCycleRight={(x, y) => cycleRight(layerName, x, y)}
+                onCycleDown={(x, y) => cycleDown(layerName, x, y)}
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

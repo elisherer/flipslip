@@ -30,8 +30,8 @@ export function isDraftLevel(index: number): boolean {
   return draftIndex !== null && index === draftIndex;
 }
 
-/** Persists the given level as the draft, both to storage and into the live Levels array. */
-export function syncDraft(level: Level): void {
+/** Persists the given level as the draft, both to storage and into the live Levels array. Returns its index. */
+export function syncDraft(level: Level): number {
   saveDraft(level);
   if (draftIndex === null) {
     draftIndex = Levels.length;
@@ -39,4 +39,5 @@ export function syncDraft(level: Level): void {
   } else {
     Levels[draftIndex] = level;
   }
+  return draftIndex;
 }

@@ -31,11 +31,6 @@ body {
   position: fixed;
   overflow: hidden;
   background: black;
-  /*background: linear-gradient(to bottom, #304030, #34BABA);*/
-}
-
-body:fullscreen, body::backdrop {
-  background: linear-gradient(to bottom, #304030, #34BABA);
 }
 
 @media (max-width: 768px) {

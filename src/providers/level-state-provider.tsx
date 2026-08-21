@@ -4,7 +4,7 @@ import { createImmerStateContext, useImmerStateProvider } from "use-immer-state-
 import useSound from "use-sound";
 
 import { Sounds } from "@/assets/sounds";
-import { Level, LayerName, isWallStateOpen } from "@/levels/level-schema";
+import { LayerName, Level, isWallStateOpen } from "@/levels/level-schema";
 import { Levels } from "@/levels/levels";
 import { useGameState } from "@/providers/game-state-provider";
 import { KEYBOARD_MAP } from "@/providers/keyboard-map";
@@ -73,12 +73,16 @@ const actions = {
     const [x, , z] = position;
     const [px, , pz] = draft.players[player].position;
 
-    if (!canEnterCell(level, player, draft.toggled, px, pz, x, z)) return;
-
+    const dir = draft.players[player].direction;
     if (x < px) draft.players[player].direction = Direction.LEFT;
     else if (x > px) draft.players[player].direction = Direction.RIGHT;
     else if (z < pz) draft.players[player].direction = Direction.UP;
     else if (z > pz) draft.players[player].direction = Direction.DOWN;
+    if (draft.players[player].direction !== dir) {
+      console.debug("direction changed from " + dir + " to " + draft.players[player].direction);
+    }
+
+    if (!canEnterCell(level, player, draft.toggled, px, pz, x, z)) return;
 
     draft.players[player].prevPosition = draft.players[player].position;
     draft.players[player].position = position;

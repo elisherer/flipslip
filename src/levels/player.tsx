@@ -117,15 +117,17 @@ export default function Player({ index, ...props }: { index: number } & Componen
 
     setIsMoving(prev => (prev !== movingRef.current ? movingRef.current : prev));
 
-    if (index === 0 && movingRef.current) {
+    if (index === 0) {
       const targetAngle = DIRECTION_ANGLE[player.direction];
       const diff = MathUtils.euclideanModulo(targetAngle - ref.current.rotation.y + Math.PI, Math.PI * 2) - Math.PI;
-      ref.current.rotation.y = MathUtils.damp(
-        ref.current.rotation.y,
-        ref.current.rotation.y + diff,
-        ROTATE_DAMP,
-        delta,
-      );
+      if (diff) {
+        ref.current.rotation.y = MathUtils.damp(
+          ref.current.rotation.y,
+          ref.current.rotation.y + diff,
+          ROTATE_DAMP,
+          delta,
+        );
+      }
     }
   });
 
@@ -138,6 +140,7 @@ export default function Player({ index, ...props }: { index: number } & Componen
           kit="td"
           model="enemy-ufo-a"
           variant="a"
+          scale={[0.67, 0.4, 0.67]}
           //animationTimeScale={isMoving ? 3 : 1}
         />
       ) : (
@@ -146,7 +149,7 @@ export default function Player({ index, ...props }: { index: number } & Componen
           //model="Mannequin_Medium_Animated"
           model="Astronaut.gltf"
           //variant="morty"
-          //scale={0.25}
+          scale={0.72}
           //animate={isMoving ? "Walking_A" : "Idle_A"}
           animate={isMoving ? "Walking" : "Idle"}
           loop

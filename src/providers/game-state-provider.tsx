@@ -72,8 +72,14 @@ export const useGameState = () => {
   return useContext(context);
 };
 
-const GameStateProvider = ({ children }: PropsWithChildren<{}>) => {
-  const [, api, value] = useImmerStateProvider(initialState, actions);
+const GameStateProvider = ({
+  children,
+  initialLevelIndex,
+}: PropsWithChildren<{ initialLevelIndex?: number }>) => {
+  const [, api, value] = useImmerStateProvider(
+    initialLevelIndex !== undefined ? { ...initialState, inLevel: true, levelIndex: initialLevelIndex } : initialState,
+    actions,
+  );
   const audioLocked = useAudioLockStatus();
   const progress = value[0].progress;
   const settings = value[0].settings;
