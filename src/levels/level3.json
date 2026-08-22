@@ -91,7 +91,7 @@
         {
           "right": 0,
           "down": 0,
-          "trigger": true
+          "trigger": 1
         }
       ],
       [
@@ -309,7 +309,7 @@
         {
           "right": 1,
           "down": 0,
-          "trigger": true
+          "trigger": 2
         },
         {
           "right": 0,

@@ -10,6 +10,7 @@ import {
   LAYER_NAMES,
   LayerName,
   Level,
+  nextTriggerState,
   nextWallState,
   resizeLevel,
 } from "@/levels/level-schema";
@@ -90,8 +91,8 @@ export default function LevelEditor({
 
   const toggleExists = (layer: LayerName, x: number, y: number) =>
     setLevel(lvl => updateCell(lvl, layer, x, y, cell => (cell ? null : createCell())));
-  const toggleTrigger = (layer: LayerName, x: number, y: number) =>
-    setLevel(lvl => updateExistingCell(lvl, layer, x, y, cell => ({ ...cell, trigger: !cell.trigger })));
+  const cycleTrigger = (layer: LayerName, x: number, y: number) =>
+    setLevel(lvl => updateExistingCell(lvl, layer, x, y, cell => ({ ...cell, trigger: nextTriggerState(cell.trigger) })));
   const cycleRight = (layer: LayerName, x: number, y: number) =>
     setLevel(lvl => updateExistingCell(lvl, layer, x, y, cell => ({ ...cell, right: nextWallState(cell.right) })));
   const cycleDown = (layer: LayerName, x: number, y: number) =>
@@ -281,7 +282,7 @@ export default function LevelEditor({
         <div className={styles.legend}>
           {placing
             ? "Click a cell (in either layer) to place its player…"
-            : "Click: place/remove cell · Shift+Click: set finish · Right-click: toggle trigger · Click edge: cycle wall (open → wall → green → purple)"}
+            : "Click: place/remove cell · Shift+Click: set finish · Right-click: cycle trigger (none → unpushed → pushed) · Click edge: cycle wall (open → wall → green → purple)"}
         </div>
       </div>
       <div className={styles.gridPane}>
@@ -299,7 +300,7 @@ export default function LevelEditor({
                 initialState={level.initialState}
                 placing={placing !== null}
                 onCellClick={(x, y, shiftKey) => handleCellClick(layerName, x, y, shiftKey)}
-                onToggleTrigger={(x, y) => toggleTrigger(layerName, x, y)}
+                onToggleTrigger={(x, y) => cycleTrigger(layerName, x, y)}
                 onCycleRight={(x, y) => cycleRight(layerName, x, y)}
                 onCycleDown={(x, y) => cycleDown(layerName, x, y)}
               />

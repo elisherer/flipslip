@@ -4,7 +4,7 @@ import useSound from "use-sound";
 
 import { Music, Sounds } from "@/assets/sounds";
 import Stars from "@/components/starts";
-import { LAYER_NAMES, isWallStateOpen } from "@/levels/level-schema";
+import { LAYER_NAMES, isTriggerPushed, isWallStateOpen } from "@/levels/level-schema";
 import Player from "@/levels/player";
 import useCameraFollowPlayers from "@/levels/use-camera-follow-players";
 import { useGameState } from "@/providers/game-state-provider";
@@ -68,13 +68,14 @@ export default function LevelRenderer({ onFinishLevel }: LevelProps) {
           if (!cell) return;
           const layerKey = i + ":" + key;
           if (cell.trigger) {
+            const pushed = isTriggerPushed(cell.trigger, toggled);
             objects.push(
               <KitModel
                 key={layerKey}
                 position={[0, i * 0.5 - 1, 0]}
                 kit="prototype"
                 model="button-floor-square-small"
-                animate={toggled ? "toggle-on" : "toggle-off"}
+                animate={pushed ? "toggle-on" : "toggle-off"}
                 receiveShadow
                 castShadow
               />,

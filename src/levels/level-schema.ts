@@ -3,13 +3,16 @@ export type WallState = 0 | 1 | 2 | 3;
 
 export const WALL_STATES: WallState[] = [0, 1, 2, 3];
 
+/** 1 = trigger starts unpushed, 2 = trigger starts pushed. Absent/0/null = no trigger here. */
+export type TriggerState = 1 | 2;
+
 export interface Cell {
   /** Passability to the cell directly to the right (x + 1) */
   right: WallState;
   /** Passability to the cell directly below (y + 1) */
   down: WallState;
-  /** Optional interactive trigger inside the cell */
-  trigger?: boolean;
+  /** Optional interactive trigger (toggle button) inside the cell */
+  trigger?: TriggerState;
 }
 
 export interface LayerGrid {
@@ -66,6 +69,22 @@ export function isWallStateOpen(state: WallState, toggled: boolean, initialState
     case 3:
       return toggled === initialState.purple;
   }
+}
+
+/**
+ * All triggers share the single level-wide `toggled` bit. A trigger's current pushed
+ * state is that bit XORed against its own starting state -- so flipping `toggled`
+ * (which only happens by pushing a currently-unpushed trigger) inverts every trigger
+ * in the level at once: whichever one you pushed becomes pushed, all others flip too.
+ */
+export function isTriggerPushed(trigger: TriggerState, toggled: boolean): boolean {
+  return (trigger === 2) !== toggled;
+}
+
+export function nextTriggerState(trigger: TriggerState | undefined): TriggerState | undefined {
+  if (trigger === undefined) return 1;
+  if (trigger === 1) return 2;
+  return undefined;
 }
 
 export function createGrid(width: number, height: number): (Cell | null)[][] {

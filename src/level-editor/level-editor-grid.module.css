@@ -36,6 +36,12 @@
   stroke-width: 1;
 }
 
+.triggerPushed {
+  fill: #e53935;
+  stroke: #7f0000;
+  stroke-width: 1;
+}
+
 .edgeOpen {
   fill: transparent;
   cursor: pointer;

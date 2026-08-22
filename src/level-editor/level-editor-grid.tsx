@@ -105,7 +105,7 @@ export default function LevelEditorGrid({
                 cx={left + inner / 2}
                 cy={top + inner / 2}
                 r={inner * 0.18}
-                className={styles.trigger}
+                className={cell.trigger === 2 ? styles.triggerPushed : styles.trigger}
                 pointerEvents="none"
               />
             )}

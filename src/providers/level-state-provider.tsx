@@ -4,7 +4,7 @@ import { createImmerStateContext, useImmerStateProvider } from "use-immer-state-
 import useSound from "use-sound";
 
 import { Sounds } from "@/assets/sounds";
-import { LayerName, Level, isWallStateOpen } from "@/levels/level-schema";
+import { LayerName, Level, isTriggerPushed, isWallStateOpen } from "@/levels/level-schema";
 import { Levels } from "@/levels/levels";
 import { useGameState } from "@/providers/game-state-provider";
 import { KEYBOARD_MAP } from "@/providers/keyboard-map";
@@ -92,9 +92,11 @@ const actions = {
     if (!level) return;
     const cell = level.layers[LAYER_FOR_PLAYER[player]][z]?.[x];
     if (!cell) return;
-    if (cell.trigger) {
-      console.debug("player " + player + " toggled to " + !draft.toggled);
+    if (cell.trigger && !isTriggerPushed(cell.trigger, draft.toggled)) {
+      // pushing an unpushed trigger flips the shared bit, which inverts every
+      // trigger's pushed state at once -- a pushed trigger can't be re-pushed
       draft.toggled = !draft.toggled;
+      console.debug("player " + player + " pushed trigger at " + x + "," + z + ", toggled = " + draft.toggled);
     }
     const [fx, fz] = level.finish.position;
     if (x === fx && z === fz) {
