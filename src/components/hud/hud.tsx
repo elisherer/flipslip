@@ -1,8 +1,11 @@
+import { Joystick } from "react-joystick-component";
+
 import { ControlHints, key } from "@/components/hud/control-hints";
 import Icons from "@/components/icons";
 import PushButton from "@/components/push-button";
 import useFullscreen from "@/hooks/use-fullscreen";
 import { useGameState } from "@/providers/game-state-provider";
+import { useJoystickState } from "@/providers/joystick-state-provider";
 import { isLocalDev } from "@/utils/constants";
 import isTouchDevice from "@/utils/is-touch-device";
 
@@ -13,6 +16,7 @@ import styles from "./hud.module.css";
 
 const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void }) => {
   const [{ inLevel, levelIndex, settings }, gameApi] = useGameState();
+  const [, joystickApi] = useJoystickState();
   const infoModalOpen = useToggle();
   const [isFullscreen, toggleFullscreen] = useFullscreen();
 
@@ -68,38 +72,28 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
           <AboutModal open={infoModalOpen.current} onClose={infoModalOpen.handleUnset} />
         </div>
       )}
-      {!inLevel ? null : isTouchDevice ? /*(
+      {!inLevel ? null : isTouchDevice ? (
         <>
-          <Joystick
-            id="left"
-            joystickWrapperStyle={{ left: 0, bottom: 0 }}
-            // joystickBaseProps={joystickMeshProps}
-            // joystickHandleProps={joystickMeshProps}
-            // joystickStickProps={joystickMeshProps}
-            // buttonSmallBaseProps={joystickMeshProps}
-            // buttonLargeBaseProps={joystickMeshProps}
-            // buttonTop1Props={joystickMeshProps}
-            // buttonGroup1Position={[-2, -1, 0]}
-            // buttonTop2Props={joystickMeshProps}
-            // buttonGroup2Position={[1, 2, 0]}
-            // buttonTop3Props={joystickMeshProps}
-            // buttonGroup3Position={[2, -2, 0]}
-            // buttonNumber={3}
-          />
-          <VirtualButton
-            id="jump"
-            label="Jump"
-            buttonWrapperStyle={{ right: "40px", bottom: "120px" }}
-            buttonCapStyle={{ color: "black" }}
-          />
-          <VirtualButton
-            id="interact"
-            label="Action"
-            buttonWrapperStyle={{ right: "120px", bottom: "30px" }}
-            buttonCapStyle={{ color: "black" }}
-          />
+          <div className={styles.bottomLeft}>
+            <Joystick
+              size={100}
+              baseColor="rgba(128,128,128,0.3)"
+              stickColor="rgba(128,128,128,0.5)"
+              move={joystickApi.move1}
+              stop={joystickApi.stop1}
+            />
+          </div>
+          <div className={styles.bottomRight}>
+            <Joystick
+              size={100}
+              baseColor="rgba(128,128,128,0.3)"
+              stickColor="rgba(128,128,128,0.5)"
+              move={joystickApi.move2}
+              stop={joystickApi.stop2}
+            />
+          </div>
         </>
-      )*/ null : (
+      ) : (
         <>
           <ControlHints
             preset={{

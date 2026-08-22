@@ -71,6 +71,30 @@
   cursor: pointer;
 }
 
+.cardDelete {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  width: 1.8em;
+  height: 1.8em;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.cardDelete:hover {
+  background: rgba(220, 53, 69, 0.85);
+}
+
+.cardDelete svg {
+  height: 1.1em;
+  width: 1.1em;
+  fill: white;
+}
+
 .card[data-current="true"] {
   cursor: default;
   background: rgba(255, 255, 255, 0.28);

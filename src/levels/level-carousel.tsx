@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { MouseEvent, useEffect, useMemo, useState } from "react";
 
 import Icons from "@/components/icons";
 import PushButton from "@/components/push-button";
-import { Levels, isDraftLevel } from "@/levels/levels";
+import { deleteDraft, getDraftNumber, isDraftLevel, Levels } from "@/levels/levels";
 import { useGameState } from "@/providers/game-state-provider";
 
 import styles from "./level-carousel.module.css";
@@ -14,6 +14,7 @@ export function LevelCarousel() {
   const maxUnlockedIndex = Math.min(progress.lastCompletedIndex + 1, Levels.length - 1);
 
   const [selectedIndex, setSelectedIndex] = useState(maxUnlockedIndex);
+  const [levelsVersion, setLevelsVersion] = useState(0);
 
   useEffect(() => {
     setSelectedIndex(maxUnlockedIndex);
@@ -27,7 +28,7 @@ export function LevelCarousel() {
       items.push({ index, offset });
     }
     return items;
-  }, [selectedIndex]);
+  }, [selectedIndex, levelsVersion]);
 
   const goTo = (index: number) => {
     if (index < 0 || index >= Levels.length) return;
@@ -50,6 +51,16 @@ export function LevelCarousel() {
 
   const isLocked = (index: number) => !isDraftLevel(index) && index > maxUnlockedIndex;
   const selectedLocked = isLocked(selectedIndex);
+
+  const handleDeleteDraft = (index: number, e: MouseEvent) => {
+    e.stopPropagation();
+    const draftNumber = getDraftNumber(index);
+    if (draftNumber === null) return;
+    if (!window.confirm(`Delete Draft ${draftNumber}? This can't be undone.`)) return;
+    deleteDraft(draftNumber);
+    setSelectedIndex(i => Math.min(i > index ? i - 1 : i, Levels.length - 1));
+    setLevelsVersion(v => v + 1);
+  };
 
   return (
     <div className={styles.carousel}>
@@ -81,8 +92,18 @@ export function LevelCarousel() {
               }}
               onClick={() => (current ? locked || gameApi.levelInitialize(index) : goTo(index))}
             >
-              <div className={styles.cardLabel}>{isDraftLevel(index) ? "" : "Level"}</div>
-              <div className={styles.cardNumber}>{isDraftLevel(index) ? "Draft" : index + 1}</div>
+              {isDraftLevel(index) && (
+                <div
+                  className={styles.cardDelete}
+                  role="button"
+                  title="Delete draft"
+                  onClick={e => handleDeleteDraft(index, e)}
+                >
+                  <Icons.delete />
+                </div>
+              )}
+              <div className={styles.cardLabel}>{isDraftLevel(index) ? "Draft" : "Level"}</div>
+              <div className={styles.cardNumber}>{isDraftLevel(index) ? getDraftNumber(index) : index + 1}</div>
               {locked ? (
                 <div className={styles.cardLock}>
                   <Icons.lock />

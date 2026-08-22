@@ -4,6 +4,7 @@ import { ComponentProps, useEffect, useRef, useState } from "react";
 import { Group, MathUtils, Vector3 } from "three";
 
 import KitModel from "@/components/kit-model";
+import { useJoystickState } from "@/providers/joystick-state-provider";
 import { KeyControl } from "@/providers/keyboard-map";
 import { canEnterCell, useLevelState } from "@/providers/level-state-provider";
 import { Direction } from "@/types/direction";
@@ -32,6 +33,13 @@ const MOVES: Record<number, [KeyControl, [dx: number, dz: number]][]> = {
   ],
 };
 
+const JOYSTICK_MOVES = {
+  FORWARD: [0, -1], // up
+  BACKWARD: [0, 1], // down
+  LEFT: [-1, 0],
+  RIGHT: [1, 0],
+};
+
 const DIRECTION_ANGLE: Record<Direction, number> = {
   [Direction.DOWN]: 0,
   [Direction.UP]: Math.PI,
@@ -52,8 +60,21 @@ export default function Player({ index, ...props }: { index: number } & Componen
   levelRef.current = levelState;
   const startTime = useRef<number>(null);
 
-  const [subscribeKeys, getKeys] = useKeyboardControls<KeyControl>();
+  const [joystickState] = useJoystickState();
 
+  useEffect(() => {
+    const dir = index === 1 ? joystickState.direction2 : joystickState.direction1;
+    if (!dir) return;
+    const move = JOYSTICK_MOVES[dir];
+    if (!move || movingRef.current || levelRef.current.completed) return;
+    const [x, y, z] = levelRef.current.players[index].position;
+    const [dx, dz] = move;
+    const [nx, nz] = [x + dx, z + dz];
+    api.moveTo(index, [nx, y, nz]);
+    movingRef.current = canEnterCell(levelRef.current.level, index, levelRef.current.toggled, x, z, nx, nz);
+  }, [joystickState, index]);
+
+  const [subscribeKeys, getKeys] = useKeyboardControls<KeyControl>();
   useEffect(() => {
     const unsubscribers = MOVES[index].map(([control, [dx, dz]]) =>
       subscribeKeys(
@@ -108,6 +129,14 @@ export default function Player({ index, ...props }: { index: number } & Componen
       const held = MOVES[index].find(([control]) => keys[control]);
       if (held && !levelRef.current.completed) {
         const [, [dx, dz]] = held;
+        const [x, y, z] = player.position;
+        const [nx, nz] = [x + dx, z + dz];
+        api.moveTo(index, [nx, y, nz]);
+        movingRef.current = canEnterCell(levelState.level, index, levelState.toggled, x, z, nx, nz);
+      }
+      const jsDir = index === 1 ? joystickState.direction2 : joystickState.direction1;
+      if (jsDir && !levelRef.current.completed) {
+        const [dx, dz] = JOYSTICK_MOVES[jsDir];
         const [x, y, z] = player.position;
         const [nx, nz] = [x + dx, z + dz];
         api.moveTo(index, [nx, y, nz]);

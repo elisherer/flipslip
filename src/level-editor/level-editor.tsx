@@ -1,7 +1,6 @@
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, useMemo, useRef, useState } from "react";
 
-import { loadDraft } from "@/levels/draft-storage";
-import { isDraftLevel, Levels, syncDraft } from "@/levels/levels";
+import { getDraftNumber, isDraftLevel, Levels, nextDraftNumber, syncDraft } from "@/levels/levels";
 import {
   Cell,
   createCell,
@@ -58,7 +57,7 @@ function setFinishPosition(level: Level, x: number, y: number): Level {
 }
 
 function initialLevel(levelIndex?: number): Level {
-  const source = levelIndex !== undefined ? Levels[levelIndex] : (loadDraft() ?? undefined);
+  const source = levelIndex !== undefined ? Levels[levelIndex] : undefined;
   return source ? (JSON.parse(JSON.stringify(source)) as Level) : createLevel(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 }
 
@@ -74,20 +73,15 @@ export default function LevelEditor({
   const [level, setLevel] = useState<Level>(() => initialLevel(initialLevelIndex));
   const [widthInput, setWidthInput] = useState(String(level.width));
   const [heightInput, setHeightInput] = useState(String(level.height));
+  const [draftNumberInput, setDraftNumberInput] = useState(() => {
+    const draftNumber = initialLevelIndex !== undefined ? getDraftNumber(initialLevelIndex) : null;
+    return String(draftNumber ?? nextDraftNumber());
+  });
   const [error, setError] = useState<string | null>(null);
   const [placing, setPlacing] = useState<"player" | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const json = useMemo(() => JSON.stringify(level, null, 2), [level]);
-
-  const skippedFirstSync = useRef(false);
-  useEffect(() => {
-    if (!skippedFirstSync.current) {
-      skippedFirstSync.current = true;
-      return;
-    }
-    syncDraft(level);
-  }, [level]);
 
   const toggleExists = (layer: LayerName, x: number, y: number) =>
     setLevel(lvl => updateCell(lvl, layer, x, y, cell => (cell ? null : createCell())));
@@ -144,8 +138,14 @@ export default function LevelEditor({
     URL.revokeObjectURL(url);
   };
 
+  const currentDraftNumber = () => Math.max(1, parseInt(draftNumberInput, 10) || nextDraftNumber());
+
+  const handleSaveAsDraft = () => {
+    syncDraft(currentDraftNumber(), level);
+  };
+
   const handleTryItOut = () => {
-    const draftIndex = syncDraft(level);
+    const draftIndex = syncDraft(currentDraftNumber(), level);
     onTryItOut(draftIndex);
   };
 
@@ -157,6 +157,8 @@ export default function LevelEditor({
     setLevel(loaded);
     setWidthInput(String(loaded.width));
     setHeightInput(String(loaded.height));
+    const draftNumber = getDraftNumber(index);
+    if (draftNumber !== null) setDraftNumberInput(String(draftNumber));
     setError(null);
   };
 
@@ -192,6 +194,22 @@ export default function LevelEditor({
           <button type="button" className={styles.button + " " + styles.active} onClick={handleTryItOut}>
             ▶ Try it out
           </button>
+        </div>
+
+        <div className={styles.sidebarGroup}>
+          <div className={styles.sidebarRow}>
+            <button type="button" className={styles.button} onClick={handleSaveAsDraft}>
+              Save as Draft
+            </button>
+            <input
+              type="number"
+              min={1}
+              value={draftNumberInput}
+              onChange={e => setDraftNumberInput(e.target.value)}
+              className={styles.input}
+              title="Draft number"
+            />
+          </div>
         </div>
 
         <div className={styles.sidebarGroup}>
@@ -261,7 +279,7 @@ export default function LevelEditor({
               </option>
               {Levels.map((_, index) => (
                 <option key={index} value={index}>
-                  {isDraftLevel(index) ? "Draft" : `Level ${index + 1}`}
+                  {isDraftLevel(index) ? `Draft ${getDraftNumber(index)}` : `Level ${index + 1}`}
                 </option>
               ))}
             </select>
@@ -279,34 +297,36 @@ export default function LevelEditor({
         </div>
 
         {error && <div className={styles.error}>{error}</div>}
+      </div>
+      <div className={styles.mainArea}>
         <div className={styles.legend}>
           {placing
             ? "Click a cell (in either layer) to place its player…"
             : "Click: place/remove cell · Shift+Click: set finish · Right-click: cycle trigger (none → unpushed → pushed) · Click edge: cycle wall (open → wall → green → purple)"}
         </div>
-      </div>
-      <div className={styles.gridPane}>
-        {LAYER_NAMES.map(layerName => {
-          const layerIndex = LAYER_NAMES.indexOf(layerName) as 0 | 1;
-          return (
-            <div key={layerName} className={styles.layerBlock}>
-              <div className={styles.layerLabel}>{layerName}</div>
-              <LevelEditorGrid
-                grid={level.layers[layerName]}
-                width={level.width}
-                height={level.height}
-                playerPosition={level.players[layerIndex].position}
-                finishPosition={level.finish.position}
-                initialState={level.initialState}
-                placing={placing !== null}
-                onCellClick={(x, y, shiftKey) => handleCellClick(layerName, x, y, shiftKey)}
-                onToggleTrigger={(x, y) => cycleTrigger(layerName, x, y)}
-                onCycleRight={(x, y) => cycleRight(layerName, x, y)}
-                onCycleDown={(x, y) => cycleDown(layerName, x, y)}
-              />
-            </div>
-          );
-        })}
+        <div className={styles.gridPane}>
+          {LAYER_NAMES.map(layerName => {
+            const layerIndex = LAYER_NAMES.indexOf(layerName) as 0 | 1;
+            return (
+              <div key={layerName} className={styles.layerBlock}>
+                <div className={styles.layerLabel}>{layerName}</div>
+                <LevelEditorGrid
+                  grid={level.layers[layerName]}
+                  width={level.width}
+                  height={level.height}
+                  playerPosition={level.players[layerIndex].position}
+                  finishPosition={level.finish.position}
+                  initialState={level.initialState}
+                  placing={placing !== null}
+                  onCellClick={(x, y, shiftKey) => handleCellClick(layerName, x, y, shiftKey)}
+                  onToggleTrigger={(x, y) => cycleTrigger(layerName, x, y)}
+                  onCycleRight={(x, y) => cycleRight(layerName, x, y)}
+                  onCycleDown={(x, y) => cycleDown(layerName, x, y)}
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

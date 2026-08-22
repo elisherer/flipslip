@@ -58,3 +58,35 @@
   align-items: center;
   gap: 0.5em;
 }
+
+.bottomLeft {
+  position: absolute;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  z-index: 2;
+
+  bottom: 1em;
+  left: 1em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.bottomRight {
+  position: absolute;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  z-index: 2;
+
+  bottom: 1em;
+  right: 1em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}

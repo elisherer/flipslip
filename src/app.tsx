@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { LevelCanvas } from "@/levels/level-canvas";
 import { LevelSelection } from "@/levels/level-selection";
+import JoystickStateProvider from "@/providers/joystick-state-provider";
 
 import Hud from "./components/hud/hud";
 import LevelEditor from "./level-editor/level-editor";
@@ -34,9 +35,11 @@ export default function App() {
 
   return (
     <GameStateProvider key={startLevelIndex} initialLevelIndex={startLevelIndex}>
-      <Hud onOpenEditor={isLocalDev ? openEditor : undefined} />
-      <LevelCanvas />
-      <LevelSelection />
+      <JoystickStateProvider>
+        <Hud onOpenEditor={isLocalDev ? openEditor : undefined} />
+        <LevelCanvas />
+        <LevelSelection />
+      </JoystickStateProvider>
     </GameStateProvider>
   );
 }

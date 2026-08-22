@@ -1,0 +1,355 @@
+{
+  "width": 10,
+  "height": 5,
+  "layers": {
+    "ground": [
+      [
+        null,
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "right": 0,
+          "down": 1
+        },
+        {
+          "right": 0,
+          "down": 1
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        null,
+        null
+      ],
+      [
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        null,
+        {
+          "right": 2,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 1,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        }
+      ],
+      [
+        null,
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        null,
+        {
+          "right": 0,
+          "down": 0,
+          "trigger": 2
+        },
+        {
+          "right": 2,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        }
+      ]
+    ],
+    "air": [
+      [
+        null,
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 2,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        }
+      ],
+      [
+        null,
+        {
+          "right": 0,
+          "down": 3
+        },
+        {
+          "right": 0,
+          "down": 1
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 1,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        }
+      ],
+      [
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "right": 0,
+          "down": 0,
+          "trigger": 1
+        }
+      ],
+      [
+        null,
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0,
+          "trigger": 1
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0
+        },
+        null,
+        null
+      ]
+    ]
+  },
+  "players": [
+    {
+      "position": [9, 4]
+    },
+    {
+      "position": [9, 0]
+    }
+  ],
+  "finish": {
+    "position": [0, 2]
+  },
+  "initialState": {
+    "green": true,
+    "purple": false
+  }
+}
