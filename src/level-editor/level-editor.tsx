@@ -41,6 +41,11 @@ function updateExistingCell(level: Level, layer: LayerName, x: number, z: number
   return updateCell(level, layer, x, z, cell => (cell ? update(cell) : cell));
 }
 
+function copyLayer(level: Level, from: LayerName, to: LayerName): Level {
+  const grid = level.layers[from].map(row => row.map(cell => (cell ? { ...cell } : null)));
+  return { ...level, layers: { ...level.layers, [to]: grid } };
+}
+
 function setPlayerPosition(level: Level, layerIndex: 0 | 1, x: number, z: number): Level {
   const players: Level["players"] = [...level.players];
   players[layerIndex] = { position: [x, z] };
@@ -117,6 +122,8 @@ export default function LevelEditor({
     setHeightInput(String(h));
     setError(null);
   };
+
+  const handleCopyLayer = (from: LayerName, to: LayerName) => setLevel(lvl => copyLayer(lvl, from, to));
 
   const handleCopy = () => {
     navigator.clipboard?.writeText(json).catch(() => {});
@@ -242,6 +249,15 @@ export default function LevelEditor({
               New
             </button>
           </div>
+        </div>
+
+        <div className={styles.sidebarGroup}>
+          <button type="button" className={styles.button} onClick={() => handleCopyLayer("air", "ground")}>
+            Copy air → ground
+          </button>
+          <button type="button" className={styles.button} onClick={() => handleCopyLayer("ground", "air")}>
+            Copy ground → air
+          </button>
         </div>
 
         <div className={styles.sidebarGroup}>

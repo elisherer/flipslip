@@ -105,11 +105,13 @@ function clampPosition([x, y]: [number, number], width: number, height: number):
 }
 
 function resizeGrid(grid: (Cell | null)[][], width: number, height: number): (Cell | null)[][] {
+  const oldHeight = grid.length;
+  const oldWidth = grid[0]?.length ?? 0;
   const next: (Cell | null)[][] = [];
   for (let y = 0; y < height; y++) {
     const row: (Cell | null)[] = [];
     for (let x = 0; x < width; x++) {
-      row.push(grid[y]?.[x] ?? createCell());
+      row.push(y < oldHeight && x < oldWidth ? grid[y][x] : createCell());
     }
     next.push(row);
   }
