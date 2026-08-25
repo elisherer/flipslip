@@ -68,7 +68,7 @@ export default function LevelRenderer({ onFinishLevel }: LevelProps) {
       <group
         position={isVRMode ? [0, -3, -4] : undefined}
         scale={isVRMode ? 0.5 : undefined}
-        rotation={isVRMode ? [0.2, 0, 0] : 0}
+        rotation={isVRMode ? [0.2, 0, 0] : undefined}
       >
         <group position={[0, -level.width * 2, -level.width]}>
           <Stars />

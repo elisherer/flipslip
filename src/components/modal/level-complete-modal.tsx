@@ -7,13 +7,28 @@ import { useGameState } from "@/providers/game-state-provider";
 import styles from "./level-complete-modal.module.css";
 import Modal from "./modal";
 
-export default function LevelCompleteModal({ open }: { open: boolean }) {
+export default function LevelCompleteModal({
+  open,
+  setCompleteDialogOpen,
+}: {
+  open: boolean;
+  setCompleteDialogOpen: (state: boolean) => any;
+}) {
   const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const [{ levelIndex }, gameApi] = useGameState();
   const hasNextLevel = levelIndex < Levels.length - 1;
-  const onHome = () => gameApi.homeScreen();
-  const onRestart = () => gameApi.levelInitialize();
-  const onNext = () => gameApi.levelInitialize(levelIndex + 1);
+  const onHome = () => {
+    gameApi.homeScreen();
+    setCompleteDialogOpen(false);
+  };
+  const onRestart = () => {
+    gameApi.levelInitialize();
+    setCompleteDialogOpen(false);
+  };
+  const onNext = () => {
+    gameApi.levelInitialize(levelIndex + 1);
+    setCompleteDialogOpen(false);
+  };
   useEffect(() => {
     if (!open) return;
     // focus the primary action: Next Level when available, otherwise Restart

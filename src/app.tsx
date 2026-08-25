@@ -85,7 +85,7 @@ export default function App() {
           <LevelSelectionScene />
         </AppCanvas>
         <LevelCarousel />
-        <LevelCompleteModal open={completeDialogOpen} />
+        <LevelCompleteModal open={completeDialogOpen} setCompleteDialogOpen={setCompleteDialogOpen} />
       </JoystickStateProvider>
     </GameStateProvider>
   );
