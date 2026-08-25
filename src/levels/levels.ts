@@ -1,22 +1,9 @@
 import { loadDrafts, removeDraft, saveDraft } from "@/levels/draft-storage";
 import { Level } from "@/levels/level-schema";
 
-import Level1 from "./level1.json";
-import Level2 from "./level2.json";
-import Level3 from "./level3.json";
-import Level4 from "./level4.json";
-import Level5 from "./level5.json";
-import Level6 from "./level6.json";
+const levelModules = import.meta.glob("./files/*.json", { eager: true });
 
-const StaticLevels: Level[] = [
-  //
-  Level1,
-  Level2,
-  Level3,
-  Level4,
-  Level5,
-  Level6,
-] as Level[];
+const StaticLevels: Level[] = Object.values(levelModules).map((m: any) => m.default) as Level[];
 
 export const Levels: Level[] = [...StaticLevels];
 

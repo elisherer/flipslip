@@ -5,6 +5,8 @@ import path from "node:path";
 //import eslint from "vite-plugin-eslint";
 import { VitePWA } from "vite-plugin-pwa";
 
+const isSSL = (process.env.npm_lifecycle_script?.indexOf("--open https://") ?? -1) > -1;
+
 /** @type {import('vite').UserConfig} */
 export default {
   plugins: [
@@ -14,7 +16,7 @@ export default {
     //   failOnWarning: false,
     // }),
     //circleDependency(),
-    basicSsl(),
+    isSSL ? basicSsl() : null,
     VitePWA({
       injectRegister: "auto",
       registerType: "autoUpdate",
@@ -37,6 +39,9 @@ export default {
   },
   build: {
     chunkSizeWarningLimit: 1700,
+    rolldownOptions: {
+      external: ["iwer", "@iwer/devui", "@iwer/sem"],
+    },
     // rolldownOptions: {
     //   output: {
     //     codeSplitting: {

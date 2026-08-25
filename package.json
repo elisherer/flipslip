@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "vite --open",
+    "start:ssl": "vite --open https://localhost:3080",
     "build": "tsc -b && vite build",
     "build:fast": "vite build -- --ci",
     "preview": "vite preview",

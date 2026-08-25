@@ -16,7 +16,7 @@ import { xrStore } from "../xr/store";
 import styles from "./hud.module.css";
 
 const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void }) => {
-  const [{ inLevel, levelIndex, settings }, gameApi] = useGameState();
+  const [{ inLevel, levelIndex, settings, audioLocked }, gameApi] = useGameState();
   const [, joystickApi] = useJoystickState();
   const infoModalOpen = useToggle();
   const [isFullscreen, toggleFullscreen] = useFullscreen();
@@ -47,11 +47,17 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
         <PushButton onClick={() => gameApi.changeSetting("hq", !settings.hq)} title="Toggle quality">
           {settings.hq ? <Icons.high_quality /> : <Icons.standard_quality />}
         </PushButton>
-        <PushButton onClick={() => gameApi.changeSetting("sfx", !settings.sfx)} title="Toggle sound effects">
-          {settings.sfx ? <Icons.volume_up /> : <Icons.volumn_off />}
+        <PushButton
+          onClick={() => gameApi.changeSetting("sfx", audioLocked ? true : !settings.sfx)}
+          title="Toggle sound effects"
+        >
+          {settings.sfx && !audioLocked ? <Icons.volume_up /> : <Icons.volumn_off />}
         </PushButton>
-        <PushButton onClick={() => gameApi.changeSetting("music", !settings.music)} title="Toggle music">
-          {settings.music ? <Icons.music_note /> : <Icons.music_off />}
+        <PushButton
+          onClick={() => gameApi.changeSetting("music", audioLocked ? true : !settings.music)}
+          title="Toggle music"
+        >
+          {settings.music && !audioLocked ? <Icons.music_note /> : <Icons.music_off />}
         </PushButton>
         <PushButton onClick={toggleFullscreen} title="Toggle fullscreen">
           {isFullscreen ? <Icons.fullscreen /> : <Icons.fullscreen_exit />}

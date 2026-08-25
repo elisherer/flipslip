@@ -32,6 +32,7 @@ const actions = {
   },
   changeSetting: (draft: GameState, key: keyof GameState["settings"], value: any) => {
     draft.settings[key] = value;
+    draft.audioLocked = false;
     console.debug("[game-state] action invoked: changeSetting", key, value);
   },
   homeScreen: (draft: GameState) => {
@@ -72,10 +73,7 @@ export const useGameState = () => {
   return useContext(context);
 };
 
-const GameStateProvider = ({
-  children,
-  initialLevelIndex,
-}: PropsWithChildren<{ initialLevelIndex?: number }>) => {
+const GameStateProvider = ({ children, initialLevelIndex }: PropsWithChildren<{ initialLevelIndex?: number }>) => {
   const [, api, value] = useImmerStateProvider(
     initialLevelIndex !== undefined ? { ...initialState, inLevel: true, levelIndex: initialLevelIndex } : initialState,
     actions,
