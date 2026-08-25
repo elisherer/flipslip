@@ -1,3 +1,4 @@
+import basicSsl from "@vitejs/plugin-basic-ssl";
 import react from "@vitejs/plugin-react-swc";
 import path from "node:path";
 //import circleDependency from "vite-plugin-circular-dependency";
@@ -13,6 +14,7 @@ export default {
     //   failOnWarning: false,
     // }),
     //circleDependency(),
+    basicSsl(),
     VitePWA({
       injectRegister: "auto",
       registerType: "autoUpdate",
@@ -52,5 +54,6 @@ export default {
   },
   server: {
     port: 3080,
+    host: "0.0.0.0", // exposes host to local network to be able to access site from VR headset
   },
 };

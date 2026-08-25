@@ -1,0 +1,8 @@
+.modal {
+  color: white;
+  background: radial-gradient(ellipse at top, #232a42 0%, #191d2b 60%);
+}
+
+.modal a {
+  color: #809e80;
+}

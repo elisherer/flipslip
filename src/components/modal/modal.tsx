@@ -2,17 +2,18 @@ import { ReactNode, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 
 import Icons from "../icons";
-import styles from "./Modal.module.css";
+import styles from "./modal.module.css";
 
 const modalRoot = document.getElementById("modal-root");
 
-const Modal = ({
+export default function Modal({
   className,
   contentClassName,
   onRequestClose,
   title,
   children,
   hideTitle,
+  dark,
 }: {
   className?: string;
   contentClassName?: string;
@@ -20,7 +21,8 @@ const Modal = ({
   title: ReactNode;
   children: any;
   hideTitle?: boolean;
-}) => {
+  dark?: boolean;
+}) {
   const el = useMemo(() => {
     const div = document.createElement("div");
     div.className = styles.overlay;
@@ -38,7 +40,7 @@ const Modal = ({
 
   return createPortal(
     <div
-      className={(className || "") + " " + styles.modal}
+      className={(className || "") + " " + styles.modal + (dark ? " " + styles.dark : "")}
       role="dialog"
       aria-labelledby="modal__title"
       aria-describedby="modal__content"
@@ -56,6 +58,4 @@ const Modal = ({
     </div>,
     el,
   );
-};
-
-export default Modal;
+}

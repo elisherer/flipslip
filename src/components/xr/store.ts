@@ -1,19 +1,12 @@
 /**
  * This file is not used currently!
  */
+import { createXRStore } from "@react-three/xr";
 
-//import { createXRStore } from "@react-three/xr";
+export const xrStore = createXRStore();
 
-let hasVRSupport = false;
+let hasVRSupport = "xr" in window.navigator;
 
-if ("xr" in window.navigator) {
-  window.navigator.xr?.isSessionSupported("immersive-vr").then(supported => {
-    hasVRSupport = supported;
-  });
-}
-
-export function hasVR() {
+export function hasXR() {
   return hasVRSupport;
 }
-
-//export const store = createXRStore();

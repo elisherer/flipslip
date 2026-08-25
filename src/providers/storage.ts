@@ -3,8 +3,8 @@ import { ProgressState } from "@/types/progress-state";
 import { isLocalDev } from "@/utils/constants";
 import JSONGzip from "@/utils/json-gzip";
 
-const PROGRESS_STORAGE_KEY = isLocalDev ? "portango_progress" : "progress";
-const SETTINGS_STORAGE_KEY = isLocalDev ? "portango_settings" : "settings";
+const PROGRESS_STORAGE_KEY = isLocalDev ? "flipslip_progress" : "progress";
+const SETTINGS_STORAGE_KEY = isLocalDev ? "flipslip_settings" : "settings";
 const GZIP_MARKER = "gzip,";
 
 class Storage {

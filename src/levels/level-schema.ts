@@ -1,7 +1,11 @@
-/** 0 = open (passable), 1 = regular wall, 2 = green toggle wall, 3 = purple toggle wall */
-export type WallState = 0 | 1 | 2 | 3;
+/**
+ * 0 = open (passable), 1 = regular wall,
+ * 2 = green toggle wall starting open, 3 = green toggle wall starting closed,
+ * 4 = purple toggle wall starting open, 5 = purple toggle wall starting closed.
+ */
+export type WallState = 0 | 1 | 2 | 3 | 4 | 5;
 
-export const WALL_STATES: WallState[] = [0, 1, 2, 3];
+export const WALL_STATES: WallState[] = [0, 1, 2, 3, 4, 5];
 
 /** 1 = trigger starts unpushed, 2 = trigger starts pushed. Absent/0/null = no trigger here. */
 export type TriggerState = 1 | 2;
@@ -21,16 +25,11 @@ export interface LayerGrid {
 }
 
 export interface PlayerStart {
-  position: [x: number, y: number];
+  position: [x: number, z: number];
 }
 
 export interface Finish {
-  position: [x: number, y: number];
-}
-
-export interface InitialToggleState {
-  green: boolean;
-  purple: boolean;
+  position: [x: number, z: number];
 }
 
 export interface Level {
@@ -41,8 +40,6 @@ export interface Level {
   players: [PlayerStart, PlayerStart];
   /** shared by both players/layers */
   finish: Finish;
-  /** starting state of the green/purple toggle walls */
-  initialState: InitialToggleState;
 }
 
 export type LayerName = keyof LayerGrid;
@@ -58,16 +55,15 @@ export function nextWallState(state: WallState): WallState {
 }
 
 /** Whether an edge with the given wall state currently lets a player pass through it. */
-export function isWallStateOpen(state: WallState, toggled: boolean, initialState: InitialToggleState): boolean {
+export function isWallStateOpen(state: WallState, toggled: boolean): boolean {
   switch (state) {
     case 0:
       return true;
     case 1:
       return false;
-    case 2:
-      return toggled === initialState.green;
-    case 3:
-      return toggled === initialState.purple;
+    default:
+      // 2/4 start open, 3/5 start closed -- each wall carries its own starting state
+      return (state === 2 || state === 4) !== toggled;
   }
 }
 
@@ -101,7 +97,6 @@ export function createLevel(width: number, height: number): Level {
     },
     players: [{ position: [0, 0] }, { position: [0, 0] }],
     finish: { position: [0, 0] },
-    initialState: { green: false, purple: false },
   };
 }
 
@@ -134,7 +129,6 @@ export function resizeLevel(level: Level, width: number, height: number): Level 
       { position: clampPosition(level.players[1].position, width, height) },
     ],
     finish: { position: clampPosition(level.finish.position, width, height) },
-    initialState: level.initialState,
   };
 }
 
@@ -145,8 +139,5 @@ export function isValidLevel(value: any): value is Level {
   if (!LAYER_NAMES.every(name => Array.isArray(value.layers[name]))) return false;
   const isPosition = (p: any) => Array.isArray(p?.position) && p.position.length === 2;
   const isPositionPair = (arr: any) => Array.isArray(arr) && arr.length === 2 && arr.every(isPosition);
-  if (!isPositionPair(value.players) || !isPosition(value.finish)) return false;
-  return (
-    typeof value.initialState?.green === "boolean" && typeof value.initialState?.purple === "boolean"
-  );
+  return isPositionPair(value.players) && isPosition(value.finish);
 }

@@ -3,7 +3,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=Close
    */
   close: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
     </svg>
   ),
@@ -11,7 +11,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=Edit
    */
   edit: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75z" />
     </svg>
   ),
@@ -19,7 +19,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=Delete
    */
   delete: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" />
     </svg>
   ),
@@ -27,7 +27,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=Adb
    */
   debug: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M5 16c0 3.87 3.13 7 7 7s7-3.13 7-7v-4H5zM16.12 4.37l2.1-2.1-.82-.83-2.3 2.31C14.16 3.28 13.12 3 12 3s-2.16.28-3.09.75L6.6 1.44l-.82.83 2.1 2.1C6.14 5.64 5 7.68 5 10v1h14v-1c0-2.32-1.14-4.36-2.88-5.63M9 9c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1m6 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1" />
     </svg>
   ),
@@ -35,7 +35,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?theme=Outlined&selected=InfoOutlined
    */
   info: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8" />
     </svg>
   ),
@@ -43,7 +43,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=Fullscreen
    */
   fullscreen: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M5 16h3v3h2v-5H5zm3-8H5v2h5V5H8zm6 11h2v-3h3v-2h-5zm2-11V5h-2v5h5V8z" />
     </svg>
   ),
@@ -51,7 +51,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=FullscreenExit
    */
   fullscreen_exit: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M7 14H5v5h5v-2H7zm-2-4h2V7h3V5H5zm12 7h-3v2h5v-5h-2zM14 5v2h3v3h2V5z" />
     </svg>
   ),
@@ -59,7 +59,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=HighQualityIcon
    */
   high_quality: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m-8 11H9.5v-2h-2v2H6V9h1.5v2.5h2V9H11zm7-1c0 .55-.45 1-1 1h-.75v1.5h-1.5V15H14c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1zm-3.5-.5h2v-3h-2z" />
     </svg>
   ),
@@ -67,7 +67,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=SdIcon
    */
   standard_quality: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m-6 6h4c.55 0 1 .45 1 1v4c0 .55-.45 1-1 1h-4zm-3.5 4.5v-1H7c-.55 0-1-.45-1-1V10c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1H9.5v-.5h-2v1H10c.55 0 1 .45 1 1V14c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-1h1.5v.5zm5 0h2v-3h-2z" />
     </svg>
   ),
@@ -75,7 +75,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=MusicNoteIcon
    */
   music_note: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3z" />
     </svg>
   ),
@@ -83,7 +83,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=MusicOffIcon
    */
   music_off: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M4.27 3 3 4.27l9 9v.28c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4v-1.73L19.73 21 21 19.73zM14 7h4V3h-6v5.18l2 2z" />
     </svg>
   ),
@@ -91,7 +91,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=ReplayIcon
    */
   replay: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8" />
     </svg>
   ),
@@ -99,7 +99,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=VolumeOffIcon
    */
   volumn_off: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63m2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71M4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9zM12 4 9.91 6.09 12 8.18z" />
     </svg>
   ),
@@ -107,7 +107,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=VolumeUpIcon
    */
   volume_up: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M3 9v6h4l5 5V4L7 9zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77" />
     </svg>
   ),
@@ -115,7 +115,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=Lock
    */
   lock: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2M9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9zm3 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2" />
     </svg>
   ),
@@ -123,7 +123,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=CheckCircle
    */
   check_circle: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8z" />
     </svg>
   ),
@@ -131,7 +131,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=PlayArrow
    */
   play_arrow: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M8 5v14l11-7z" />
     </svg>
   ),
@@ -139,7 +139,7 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=ArrowBack
    */
   arrow_back: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z" />
     </svg>
   ),
@@ -147,8 +147,24 @@ const Icons = {
    * Source: https://mui.com/material-ui/material-icons/?selected=ArrowForward
    */
   arrow_forward: () => (
-    <svg focusable="false" viewBox="0 0 24 24">
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
       <path d="m12 4-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+    </svg>
+  ),
+  /**
+   * Source: https://mui.com/material-ui/material-icons/?selected=ArrowDownward
+   */
+  arrow_downward: () => (
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
+      <path d="m20 12-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8z" />
+    </svg>
+  ),
+  /**
+   * Source: https://mui.com/material-ui/material-icons/?selected=ArrowUpward
+   */
+  arrow_upward: () => (
+    <svg focusable="false" viewBox="0 0 24 24" fill="currentcolor">
+      <path d="m4 12 1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8z" />
     </svg>
   ),
   vr: () => (

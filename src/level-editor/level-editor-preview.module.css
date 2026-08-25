@@ -1,0 +1,26 @@
+.previewPane {
+  width: 50vw;
+  flex: 0 0 50vw;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: #0a0a12;
+  border-left: 1px solid #333;
+}
+
+.toolbar {
+  flex: 0 0 auto;
+  padding: 0.6em 1.5em;
+  font-size: 0.8em;
+  opacity: 0.85;
+  background: #1a1a1a;
+  border-bottom: 1px solid #2a2a2a;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.canvas {
+  flex: 1;
+  min-height: 0;
+}

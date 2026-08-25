@@ -1,25 +1,19 @@
 import { KeyboardEvent, useEffect, useRef } from "react";
 
 import Icons from "@/components/icons";
+import { Levels } from "@/levels/levels";
+import { useGameState } from "@/providers/game-state-provider";
 
-import Modal from "./Modal";
-import styles from "./LevelCompleteModal.module.css";
+import styles from "./level-complete-modal.module.css";
+import Modal from "./modal";
 
-export default function LevelCompleteModal({
-  open,
-  hasNextLevel,
-  onHome,
-  onRestart,
-  onNext,
-}: {
-  open: boolean;
-  hasNextLevel: boolean;
-  onHome: () => any;
-  onRestart: () => any;
-  onNext: () => any;
-}) {
+export default function LevelCompleteModal({ open }: { open: boolean }) {
   const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
-
+  const [{ levelIndex }, gameApi] = useGameState();
+  const hasNextLevel = levelIndex < Levels.length - 1;
+  const onHome = () => gameApi.homeScreen();
+  const onRestart = () => gameApi.levelInitialize();
+  const onNext = () => gameApi.levelInitialize(levelIndex + 1);
   useEffect(() => {
     if (!open) return;
     // focus the primary action: Next Level when available, otherwise Restart
@@ -47,12 +41,19 @@ export default function LevelCompleteModal({
   };
 
   return (
-    <Modal onRequestClose={onHome} title="Level Complete!" className={styles.modal}>
+    <Modal onRequestClose={onHome} title="Level Complete!" hideTitle dark className={styles.modal}>
+      <div className={styles.heading}>
+        <span className={styles.star}>⭐</span>
+        Level Complete!
+        <span className={styles.star}>⭐</span>
+      </div>
       <div className={styles.buttons}>
         <button
           type="button"
           className={styles.button}
-          ref={el => { buttonsRef.current[0] = el; }}
+          ref={el => {
+            buttonsRef.current[0] = el;
+          }}
           onKeyDown={handleKeyDown(0)}
           onClick={onHome}
         >
@@ -62,7 +63,9 @@ export default function LevelCompleteModal({
         <button
           type="button"
           className={styles.button}
-          ref={el => { buttonsRef.current[1] = el; }}
+          ref={el => {
+            buttonsRef.current[1] = el;
+          }}
           onKeyDown={handleKeyDown(1)}
           onClick={onRestart}
         >
@@ -73,7 +76,9 @@ export default function LevelCompleteModal({
           <button
             type="button"
             className={styles.button + " " + styles.primary}
-            ref={el => { buttonsRef.current[2] = el; }}
+            ref={el => {
+              buttonsRef.current[2] = el;
+            }}
             onKeyDown={handleKeyDown(2)}
             onClick={onNext}
           >

@@ -1,5 +1,5 @@
 {
-  "name": "portango",
+  "name": "flipslip",
   "description": "Co-op Puzzle game",
   "version": "1.0.0",
   "main": "src/main.tsx",
@@ -20,6 +20,7 @@
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "@react-three/postprocessing": "^3.0.4",
+    "@react-three/xr": "^6.6.30",
     "@use-gesture/core": "^10.3.1",
     "immer": "11.1.18",
     "leva": "^0.10.1",
@@ -41,6 +42,7 @@
     "@types/react-dom": "19.2.4",
     "@typescript-eslint/eslint-plugin": "8.67.0",
     "@typescript-eslint/parser": "8.67.0",
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
     "@vitejs/plugin-react-swc": "4.3.3",
     "eslint": "9.39.4",
     "eslint-config-prettier": "10.1.8",

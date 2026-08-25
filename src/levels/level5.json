@@ -58,7 +58,7 @@
       [
         {
           "right": 0,
-          "down": 3
+          "down": 5
         },
         {
           "right": 0,
@@ -172,7 +172,7 @@
         },
         {
           "right": 0,
-          "down": 3
+          "down": 5
         },
         {
           "right": 0,
@@ -211,17 +211,22 @@
   },
   "players": [
     {
-      "position": [0, 0]
+      "position": [
+        0,
+        0
+      ]
     },
     {
-      "position": [4, 0]
+      "position": [
+        4,
+        0
+      ]
     }
   ],
   "finish": {
-    "position": [2, 6]
-  },
-  "initialState": {
-    "green": false,
-    "purple": true
+    "position": [
+      2,
+      6
+    ]
   }
 }

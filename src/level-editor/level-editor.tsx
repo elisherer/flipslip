@@ -1,20 +1,21 @@
 import { ChangeEvent, useMemo, useRef, useState } from "react";
 
-import { getDraftNumber, isDraftLevel, Levels, nextDraftNumber, syncDraft } from "@/levels/levels";
 import {
   Cell,
-  createCell,
-  createLevel,
-  isValidLevel,
   LAYER_NAMES,
   LayerName,
   Level,
+  createCell,
+  createLevel,
+  isValidLevel,
   nextTriggerState,
   nextWallState,
   resizeLevel,
 } from "@/levels/level-schema";
+import { Levels, getDraftNumber, isDraftLevel, nextDraftNumber, syncDraft } from "@/levels/levels";
 
 import LevelEditorGrid from "./level-editor-grid";
+import LevelEditorPreview from "./level-editor-preview";
 import styles from "./level-editor.module.css";
 
 const DEFAULT_WIDTH = 8;
@@ -36,19 +37,13 @@ function updateCell(
   return { ...level, layers: { ...level.layers, [layer]: nextGrid } };
 }
 
-function updateExistingCell(
-  level: Level,
-  layer: LayerName,
-  x: number,
-  y: number,
-  update: (cell: Cell) => Cell,
-): Level {
-  return updateCell(level, layer, x, y, cell => (cell ? update(cell) : cell));
+function updateExistingCell(level: Level, layer: LayerName, x: number, z: number, update: (cell: Cell) => Cell): Level {
+  return updateCell(level, layer, x, z, cell => (cell ? update(cell) : cell));
 }
 
-function setPlayerPosition(level: Level, layerIndex: 0 | 1, x: number, y: number): Level {
+function setPlayerPosition(level: Level, layerIndex: 0 | 1, x: number, z: number): Level {
   const players: Level["players"] = [...level.players];
-  players[layerIndex] = { position: [x, y] };
+  players[layerIndex] = { position: [x, z] };
   return { ...level, players };
 }
 
@@ -83,27 +78,26 @@ export default function LevelEditor({
 
   const json = useMemo(() => JSON.stringify(level, null, 2), [level]);
 
-  const toggleExists = (layer: LayerName, x: number, y: number) =>
-    setLevel(lvl => updateCell(lvl, layer, x, y, cell => (cell ? null : createCell())));
-  const cycleTrigger = (layer: LayerName, x: number, y: number) =>
-    setLevel(lvl => updateExistingCell(lvl, layer, x, y, cell => ({ ...cell, trigger: nextTriggerState(cell.trigger) })));
-  const cycleRight = (layer: LayerName, x: number, y: number) =>
-    setLevel(lvl => updateExistingCell(lvl, layer, x, y, cell => ({ ...cell, right: nextWallState(cell.right) })));
-  const cycleDown = (layer: LayerName, x: number, y: number) =>
-    setLevel(lvl => updateExistingCell(lvl, layer, x, y, cell => ({ ...cell, down: nextWallState(cell.down) })));
+  const toggleExists = (layer: LayerName, x: number, z: number) =>
+    setLevel(lvl => updateCell(lvl, layer, x, z, cell => (cell ? null : createCell())));
+  const cycleTrigger = (layer: LayerName, x: number, z: number) =>
+    setLevel(lvl =>
+      updateExistingCell(lvl, layer, x, z, cell => ({ ...cell, trigger: nextTriggerState(cell.trigger) })),
+    );
+  const cycleRight = (layer: LayerName, x: number, z: number) =>
+    setLevel(lvl => updateExistingCell(lvl, layer, x, z, cell => ({ ...cell, right: nextWallState(cell.right) })));
+  const cycleDown = (layer: LayerName, x: number, z: number) =>
+    setLevel(lvl => updateExistingCell(lvl, layer, x, z, cell => ({ ...cell, down: nextWallState(cell.down) })));
 
-  const toggleInitialState = (color: "green" | "purple") =>
-    setLevel(lvl => ({ ...lvl, initialState: { ...lvl.initialState, [color]: !lvl.initialState[color] } }));
-
-  const handleCellClick = (layer: LayerName, x: number, y: number, shiftKey: boolean) => {
+  const handleCellClick = (layer: LayerName, x: number, z: number, shiftKey: boolean) => {
     if (shiftKey) {
-      setLevel(lvl => setFinishPosition(lvl, x, y));
+      setLevel(lvl => setFinishPosition(lvl, x, z));
     } else if (placing === "player") {
       const layerIndex = LAYER_NAMES.indexOf(layer) as 0 | 1;
-      setLevel(lvl => setPlayerPosition(lvl, layerIndex, x, y));
+      setLevel(lvl => setPlayerPosition(lvl, layerIndex, x, z));
       setPlacing(null);
     } else {
-      toggleExists(layer, x, y);
+      toggleExists(layer, x, z);
     }
   };
 
@@ -194,13 +188,13 @@ export default function LevelEditor({
           <button type="button" className={styles.button + " " + styles.active} onClick={handleTryItOut}>
             ▶ Try it out
           </button>
+          <button type="button" className={styles.button} onClick={handleCopy}>
+            Copy JSON
+          </button>
         </div>
 
         <div className={styles.sidebarGroup}>
           <div className={styles.sidebarRow}>
-            <button type="button" className={styles.button} onClick={handleSaveAsDraft}>
-              Save as Draft
-            </button>
             <input
               type="number"
               min={1}
@@ -209,6 +203,9 @@ export default function LevelEditor({
               className={styles.input}
               title="Draft number"
             />
+            <button type="button" className={styles.button} onClick={handleSaveAsDraft}>
+              Save as Draft
+            </button>
           </div>
         </div>
 
@@ -237,12 +234,14 @@ export default function LevelEditor({
               />
             </label>
           </div>
-          <button type="button" className={styles.button} onClick={applyResize}>
-            Resize
-          </button>
-          <button type="button" className={styles.button} onClick={handleNew}>
-            New
-          </button>
+          <div className={styles.sidebarRow}>
+            <button type="button" className={styles.button} onClick={applyResize}>
+              Resize
+            </button>
+            <button type="button" className={styles.button} onClick={handleNew}>
+              New
+            </button>
+          </div>
         </div>
 
         <div className={styles.sidebarGroup}>
@@ -253,21 +252,6 @@ export default function LevelEditor({
           >
             Place Player
           </button>
-        </div>
-
-        <div className={styles.sidebarGroup}>
-          <label className={styles.field}>
-            <input type="checkbox" checked={level.initialState.green} onChange={() => toggleInitialState("green")} />
-            Green toggled
-          </label>
-          <label className={styles.field}>
-            <input
-              type="checkbox"
-              checked={level.initialState.purple}
-              onChange={() => toggleInitialState("purple")}
-            />
-            Purple toggled
-          </label>
         </div>
 
         <div className={styles.sidebarGroup}>
@@ -288,9 +272,6 @@ export default function LevelEditor({
             Load JSON
           </button>
           <input ref={fileInputRef} type="file" accept="application/json" hidden onChange={handleFileChange} />
-          <button type="button" className={styles.button} onClick={handleCopy}>
-            Copy JSON
-          </button>
           <button type="button" className={styles.button} onClick={handleDownload}>
             Download
           </button>
@@ -302,7 +283,7 @@ export default function LevelEditor({
         <div className={styles.legend}>
           {placing
             ? "Click a cell (in either layer) to place its player…"
-            : "Click: place/remove cell · Shift+Click: set finish · Right-click: cycle trigger (none → unpushed → pushed) · Click edge: cycle wall (open → wall → green → purple)"}
+            : "Click: place/remove cell\nShift+Click: set finish\nRight-click: cycle trigger (none → unpushed → pushed)\nClick edge: cycle wall (open → wall → green open → green closed → purple open → purple closed)"}
         </div>
         <div className={styles.gridPane}>
           {LAYER_NAMES.map(layerName => {
@@ -316,7 +297,6 @@ export default function LevelEditor({
                   height={level.height}
                   playerPosition={level.players[layerIndex].position}
                   finishPosition={level.finish.position}
-                  initialState={level.initialState}
                   placing={placing !== null}
                   onCellClick={(x, y, shiftKey) => handleCellClick(layerName, x, y, shiftKey)}
                   onToggleTrigger={(x, y) => cycleTrigger(layerName, x, y)}
@@ -328,6 +308,7 @@ export default function LevelEditor({
           })}
         </div>
       </div>
+      <LevelEditorPreview level={level} />
     </div>
   );
 }

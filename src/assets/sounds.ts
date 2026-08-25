@@ -6,6 +6,6 @@ export enum Sounds {
 
 export enum Music {
   NONE = "/assets/music/no-sound.ogg",
-  SELECTION = "/assets/music/happy_adveture.ogg",
+  SELECTION = "/assets/music/ObservingTheStar.ogg",
   LEVEL1 = "/assets/music/space_background_music.mp3",
 }

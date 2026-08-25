@@ -55,7 +55,7 @@
           "down": 0
         },
         {
-          "right": 2,
+          "right": 3,
           "down": 1
         },
         {
@@ -248,9 +248,5 @@
       2,
       3
     ]
-  },
-  "initialState": {
-    "green": true,
-    "purple": false
   }
 }

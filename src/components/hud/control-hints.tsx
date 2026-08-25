@@ -1,5 +1,7 @@
 import { type CSSProperties, useEffect, useMemo, useState } from "react";
 
+import Icons from "@/components/icons";
+
 import styles from "./control-hints.module.css";
 
 export type HintKey = {
@@ -90,7 +92,17 @@ export function ControlHints({ preset, style }: { preset: HintPreset; style?: CS
         )}
         key={hintKey.label}
       >
-        {hintKey.label}
+        {hintKey.label === "←" ? (
+          <Icons.arrow_back />
+        ) : hintKey.label === "↓" ? (
+          <Icons.arrow_downward />
+        ) : hintKey.label === "↑" ? (
+          <Icons.arrow_upward />
+        ) : hintKey.label === "→" ? (
+          <Icons.arrow_forward />
+        ) : (
+          hintKey.label
+        )}
       </span>
     );
   };

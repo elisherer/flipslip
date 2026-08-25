@@ -31,6 +31,22 @@
   width: 24px;
   height: 24px;
   cursor: pointer;
+  border-radius: 50%;
+  transition: opacity 0.15s ease;
+}
+.close:hover {
+  opacity: 0.65;
+}
+.modal.dark {
+  background: #191d2b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #eef0fa;
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+.modal.dark .close svg {
+  fill: #eef0fa;
 }
 .overlay {
   position: fixed;

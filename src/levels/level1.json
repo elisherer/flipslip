@@ -76,16 +76,17 @@
         },
         {
           "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
           "down": 0,
           "trigger": 1
         },
         {
           "right": 0,
           "down": 0
+        },
+        {
+          "right": 0,
+          "down": 0,
+          "trigger": 2
         },
         {
           "right": 0,
@@ -103,7 +104,7 @@
         },
         {
           "right": 0,
-          "down": 2
+          "down": 3
         },
         {
           "right": 0,
@@ -362,26 +363,13 @@
   },
   "players": [
     {
-      "position": [
-        1,
-        1
-      ]
+      "position": [1, 1]
     },
     {
-      "position": [
-        3,
-        1
-      ]
+      "position": [3, 1]
     }
   ],
   "finish": {
-    "position": [
-      2,
-      6
-    ]
-  },
-  "initialState": {
-    "green": true,
-    "purple": false
+    "position": [2, 6]
   }
 }

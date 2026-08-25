@@ -60,7 +60,7 @@
         },
         {
           "right": 0,
-          "down": 2
+          "down": 3
         },
         {
           "right": 0,
@@ -184,7 +184,7 @@
           "down": 0
         },
         {
-          "right": 3,
+          "right": 4,
           "down": 0
         },
         {
@@ -425,7 +425,7 @@
           "down": 0
         },
         {
-          "right": 2,
+          "right": 3,
           "down": 0
         },
         {
@@ -487,17 +487,22 @@
   },
   "players": [
     {
-      "position": [0, 0]
+      "position": [
+        0,
+        0
+      ]
     },
     {
-      "position": [0, 0]
+      "position": [
+        0,
+        0
+      ]
     }
   ],
   "finish": {
-    "position": [1, 5]
-  },
-  "initialState": {
-    "green": true,
-    "purple": false
+    "position": [
+      1,
+      5
+    ]
   }
 }

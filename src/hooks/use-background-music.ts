@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import useSound from "use-sound";
 
-import { useGameState } from "../providers/game-state-provider";
+import { useGameState } from "@/providers/game-state-provider";
 
 type SecondArg<F> = F extends (a: any, b: infer T, ...args: any[]) => any ? T : never;
-type UseSoundOptions = SecondArg<typeof useSound>;
+export type UseSoundOptions = SecondArg<typeof useSound>;
 
 export default function useBackgroundMusic(path: string, options?: UseSoundOptions) {
   const [{ audioLocked, windowHasFocus, settings }] = useGameState();

@@ -99,10 +99,11 @@
 }
 
 .mainArea {
-  flex: 1;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   min-width: 0;
+  overflow: hidden;
 }
 
 .legend {
@@ -113,6 +114,7 @@
   line-height: 1.4;
   background: #1a1a1a;
   border-bottom: 1px solid #2a2a2a;
+  white-space: pre;
 }
 
 .gridPane {

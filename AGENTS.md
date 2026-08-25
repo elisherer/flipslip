@@ -4,7 +4,7 @@ Guidance for AI coding agents (and humans) working in this repository.
 
 ## What this is
 
-**Portango** is a 3D co-op puzzle game built with React + Three.js (via
+**FlipSlip** is a 3D co-op puzzle game built with React + Three.js (via
 `@react-three/fiber`/`drei`). Two players share one keyboard: an astronaut
 walking on a "ground" layer (WASD) and a UFO flying on an "air" layer (arrow
 keys). Levels are grids where each layer has independent walls; the two
@@ -60,7 +60,9 @@ the schema to know cold before touching anything level-related:
 
 ```ts
 interface Cell {
-  right: WallState;   // passability to the cell at x+1 — 0 open, 1 wall, 2 green, 3 purple
+  right: WallState;   // passability to the cell at x+1 — 0 open, 1 wall,
+                       // 2 green (starts open), 3 green (starts closed),
+                       // 4 purple (starts open), 5 purple (starts closed)
   down: WallState;    // passability to the cell at y+1
   trigger?: TriggerState; // 1 = starts unpushed, 2 = starts pushed; absent = no trigger
 }
@@ -69,7 +71,6 @@ interface Level {
   layers: { ground: (Cell | null)[][]; air: (Cell | null)[][] };
   players: [PlayerStart, PlayerStart]; // player 0 -> ground, player 1 -> air
   finish: { position: [x, y] };        // single shared finish, same coords in both layers
-  initialState: { green: boolean; purple: boolean };
 }
 ```
 
@@ -82,9 +83,13 @@ Key ideas, all deliberate — don't relitigate them without a reason:
 - **Two independent layers, one player each.** `ground` and `air` are
   separate grids; a wall in one doesn't imply anything about the other.
   `LAYER_NAMES = ["ground", "air"]` and player index maps 1:1 to layer index.
-- **A single shared `toggled` bit drives everything conditional.** Colored
-  walls (`WallState` 2/3) are open when `toggled === initialState.green`
-  (or `.purple`). Triggers work the same way, generalized:
+- **A single shared `toggled` bit drives everything conditional.** Each
+  toggle wall carries its own starting state directly in its `WallState`
+  value (2/4 start open, 3/5 start closed — color is purely cosmetic, the
+  even/odd split is what matters), so two walls of the same color can start
+  in opposite states. `isWallStateOpen(state, toggled)` derives current
+  openness from that plus the shared bit — there's no level-wide initial
+  state to keep in sync. Triggers work the same way, generalized:
   `isTriggerPushed(trigger, toggled) = (trigger === 2) !== toggled`. Pushing
   a trigger only flips `toggled` if that trigger is *currently unpushed*
   (`level-state-provider.tsx`'s `arriveAt`) — flipping the one shared bit

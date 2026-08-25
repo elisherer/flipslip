@@ -1,4 +1,5 @@
 import { CameraControls, CameraControlsImpl } from "@react-three/drei";
+import { IfInSessionMode } from "@react-three/xr";
 import { PropsWithChildren, useContext, useEffect, useRef } from "react";
 import { createImmerStateContext, useImmerStateProvider } from "use-immer-state-provider";
 
@@ -44,16 +45,17 @@ export const SceneProvider = ({
   }, [debug, initialPosition]);
   return (
     <context.Provider value={value}>
-      <CameraControls
-        ref={cameraControlsRef}
-        makeDefault
-        distance={6}
-        minDistance={debug ? 0.1 : 6}
-        maxDistance={debug ? 10 : 6}
-        enabled={debug}
-        smoothTime={0.3}
-        //colliderMeshes={cameraCollisionMeshes.current}
-      />
+      <IfInSessionMode deny={["immersive-ar", "immersive-vr"]}>
+        <CameraControls
+          ref={cameraControlsRef}
+          makeDefault
+          distance={6}
+          minDistance={debug ? 0.1 : 6}
+          maxDistance={debug ? 10 : 6}
+          enabled={debug}
+          smoothTime={0.3}
+        />
+      </IfInSessionMode>
       {children}
     </context.Provider>
   );

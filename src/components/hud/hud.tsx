@@ -1,3 +1,4 @@
+import { useXRSessionModeSupported } from "@react-three/xr";
 import { Joystick } from "react-joystick-component";
 
 import { ControlHints, key } from "@/components/hud/control-hints";
@@ -10,8 +11,8 @@ import { isLocalDev } from "@/utils/constants";
 import isTouchDevice from "@/utils/is-touch-device";
 
 import useToggle from "../../hooks/use-toggle";
-import AboutModal from "../modal/AboutModal";
-import { hasVR } from "../xr/store";
+import AboutModal from "../modal/about-modal";
+import { xrStore } from "../xr/store";
 import styles from "./hud.module.css";
 
 const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void }) => {
@@ -19,6 +20,7 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
   const [, joystickApi] = useJoystickState();
   const infoModalOpen = useToggle();
   const [isFullscreen, toggleFullscreen] = useFullscreen();
+  const vrSupport = useXRSessionModeSupported("immersive-ar");
 
   return (
     <>
@@ -37,8 +39,8 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
         <div className={styles.cover} />
       )}
       <div className={styles.topRight}>
-        {hasVR() && (
-          <PushButton onClick={/*() => store?.enterVR()*/ undefined}>
+        {vrSupport && (
+          <PushButton onClick={() => xrStore.enterAR().catch(e => alert(e.message))}>
             <Icons.vr />
           </PushButton>
         )}
@@ -81,6 +83,7 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
               stickColor="rgba(128,128,128,0.5)"
               move={joystickApi.move1}
               stop={joystickApi.stop1}
+              minDistance={48}
             />
           </div>
           <div className={styles.bottomRight}>
@@ -90,6 +93,7 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
               stickColor="rgba(128,128,128,0.5)"
               move={joystickApi.move2}
               stop={joystickApi.stop2}
+              minDistance={48}
             />
           </div>
         </>
@@ -104,14 +108,6 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
                   layout: "directional",
                   keys: [key("W", "KeyW"), key("A", "KeyA"), key("S", "KeyS"), key("D", "KeyD")],
                 },
-                // {
-                //   label: "Run",
-                //   layout: "stack",
-                //   labelPosition: "inline",
-                //   bottomLabel: "Jump",
-                //   keys: [key("Shift", "ShiftLeft", "ShiftRight", "Shift"), wideKey("Space", "Space")],
-                // },
-                // { label: "Enter", keyRow: "bottom", labelPosition: "inline", keys: [key("F", "KeyF")] },
               ],
             }}
             style={{
@@ -128,14 +124,6 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
                   layout: "directional",
                   keys: [key("↑", "ArrowUp"), key("←", "ArrowLeft"), key("↓", "ArrowDown"), key("→", "ArrowRight")],
                 },
-                // {
-                //   label: "Run",
-                //   layout: "stack",
-                //   labelPosition: "inline",
-                //   bottomLabel: "Jump",
-                //   keys: [key("Shift", "ShiftLeft", "ShiftRight", "Shift"), wideKey("Space", "Space")],
-                // },
-                // { label: "Enter", keyRow: "bottom", labelPosition: "inline", keys: [key("F", "KeyF")] },
               ],
             }}
             style={{

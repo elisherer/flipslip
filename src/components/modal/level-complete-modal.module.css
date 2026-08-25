@@ -1,0 +1,99 @@
+.modal {
+  text-align: center;
+  background: radial-gradient(ellipse at top, #232a42 0%, #191d2b 60%);
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  font-size: 1.6em;
+  font-weight: 700;
+  margin: 0.2em 0 0.6em;
+  background: linear-gradient(90deg, #ffd76a, #ff9dcb, #7fd8ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.star {
+  animation: starPulse 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px rgba(255, 214, 100, 0.6));
+}
+
+.star:last-child {
+  animation-delay: 0.4s;
+}
+
+@keyframes starPulse {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.25) rotate(12deg);
+  }
+}
+
+.buttons {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+  margin-top: 1em;
+}
+
+.button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.8em 1.2em;
+  min-width: 6em;
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.8em;
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline-offset: 2px;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+.button:active {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(0);
+}
+
+.button svg {
+  height: 1.6em;
+  width: 1.6em;
+  fill: currentColor;
+}
+
+.button.primary {
+  background: linear-gradient(135deg, #4caf50, #2e9e68);
+  border-color: #57cf7c;
+  color: white;
+  box-shadow: 0 4px 18px rgba(76, 175, 80, 0.4);
+}
+
+.button.primary:hover {
+  background: linear-gradient(135deg, #57cf7c, #34b378);
+}
+
+.button.primary:active {
+  background: #388e3c;
+}
+
+.button:focus,
+.button:focus-visible {
+  outline: 3px solid #7fd8ff;
+}

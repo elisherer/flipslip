@@ -1,16 +1,33 @@
+import { useTexture } from "@react-three/drei";
 import { MouseEvent, useEffect, useMemo, useState } from "react";
+import { DoubleSide } from "three";
 
 import Icons from "@/components/icons";
 import PushButton from "@/components/push-button";
-import { deleteDraft, getDraftNumber, isDraftLevel, Levels } from "@/levels/levels";
+import { xrStore } from "@/components/xr/store";
+import useThumbstickDirection from "@/components/xr/useThumbstickDirection";
+import XrButton from "@/components/xr/xr-button";
+import { Levels, deleteDraft, getDraftNumber, isDraftLevel } from "@/levels/levels";
 import { useGameState } from "@/providers/game-state-provider";
+import { Direction } from "@/types/direction";
 
 import styles from "./level-carousel.module.css";
 
 const CARD_RANGE = 2;
 
-export function LevelCarousel() {
-  const [{ progress }, gameApi] = useGameState();
+function Logo() {
+  const texture = useTexture("/assets/textures/logo.png");
+
+  return (
+    <mesh position={[0, 2, -15]} receiveShadow>
+      <planeGeometry args={[14, 5]} />
+      <meshStandardMaterial map={texture} transparent side={DoubleSide} />
+    </mesh>
+  );
+}
+
+export function LevelCarousel({ vr }: { vr?: boolean }) {
+  const [{ progress, inLevel }, gameApi] = useGameState();
   const maxUnlockedIndex = Math.min(progress.lastCompletedIndex + 1, Levels.length - 1);
 
   const [selectedIndex, setSelectedIndex] = useState(maxUnlockedIndex);
@@ -49,6 +66,16 @@ export function LevelCarousel() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [selectedIndex, maxUnlockedIndex, gameApi]);
 
+  const vrDirection = useThumbstickDirection("right", !!vr);
+  useEffect(() => {
+    if (!vr) return;
+    if (vrDirection === Direction.LEFT) {
+      setSelectedIndex(i => Math.max(0, i - 1));
+    } else if (vrDirection === Direction.RIGHT) {
+      setSelectedIndex(i => Math.min(Levels.length - 1, i + 1));
+    }
+  }, [vr, vrDirection]);
+
   const isLocked = (index: number) => !isDraftLevel(index) && index > maxUnlockedIndex;
   const selectedLocked = isLocked(selectedIndex);
 
@@ -61,6 +88,63 @@ export function LevelCarousel() {
     setSelectedIndex(i => Math.min(i > index ? i - 1 : i, Levels.length - 1));
     setLevelsVersion(v => v + 1);
   };
+
+  if (inLevel) return;
+
+  if (vr) {
+    return (
+      <group position={[0, -2, -18]}>
+        <mesh position={[0, -3, -22]} receiveShadow>
+          <planeGeometry args={[35, 35]} />
+          <meshStandardMaterial color="black" transparent side={DoubleSide} opacity={0.9} />
+        </mesh>
+        <Logo />
+        <XrButton
+          position={[-6, 6, 0]}
+          color="#606060"
+          hoverColor="#e0e0e0"
+          fontSize={0.5}
+          label="❌"
+          onClick={() => xrStore.getState().session?.end()}
+        />
+        <XrButton
+          position={[-4, -1, 0]}
+          color="#606060"
+          hoverColor="#e0e0e0"
+          label="←"
+          disabled={selectedIndex <= 0}
+          fontSize={0.8}
+          onClick={() => selectedIndex > 0 && goTo(selectedIndex - 1)}
+        />
+        {cards.map(({ index, offset }) => {
+          const locked = isLocked(index);
+          const completed = !isDraftLevel(index) && index <= progress.lastCompletedIndex;
+          const current = offset === 0;
+          return (
+            <XrButton
+              key={index}
+              position={[offset, -1, 0]}
+              color={completed ? "#008000" : undefined}
+              hoverColor={completed ? "#00e000" : undefined}
+              opacity={current ? 1 : locked ? 0.35 : 0.6}
+              onClick={() => locked || gameApi.levelInitialize(index)}
+              fontSize={0.5}
+              label={(isDraftLevel(index) ? getDraftNumber(index) : index + 1)?.toString()}
+            />
+          );
+        })}
+        <XrButton
+          position={[5, -1, 0]}
+          color="#606060"
+          hoverColor="#e0e0e0"
+          fontSize={0.8}
+          label="️→"
+          disabled={selectedIndex >= Levels.length - 1}
+          onClick={() => selectedIndex < Levels.length - 1 && goTo(selectedIndex + 1)}
+        />
+      </group>
+    );
+  }
 
   return (
     <div className={styles.carousel}>

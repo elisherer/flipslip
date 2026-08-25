@@ -51,7 +51,7 @@ export function canEnterCell(
   const dz = toZ - fromZ;
   const edgeState = dx === 1 ? fromCell.right : dx === -1 ? toCell.right : dz === 1 ? fromCell.down : toCell.down;
 
-  return isWallStateOpen(edgeState, toggled, level.initialState);
+  return isWallStateOpen(edgeState, toggled);
 }
 
 const actions = {
