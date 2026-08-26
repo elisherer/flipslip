@@ -72,21 +72,21 @@ export default function App() {
     setEditorOpen(false);
   };
 
-  if (editorOpen) {
-    return <LevelEditor onExit={closeEditor} onTryItOut={tryItOut} initialLevelIndex={editorLevelIndex} />;
-  }
-
   return (
     <GameStateProvider key={startLevelIndex} initialLevelIndex={startLevelIndex}>
-      <JoystickStateProvider>
-        <Hud onOpenEditor={isLocalDev ? openEditor : undefined} />
-        <AppCanvas>
-          <LevelScene setCompleteDialogOpen={setCompleteDialogOpen} />
-          <LevelSelectionScene />
-        </AppCanvas>
-        <LevelCarousel />
-        <LevelCompleteModal open={completeDialogOpen} setCompleteDialogOpen={setCompleteDialogOpen} />
-      </JoystickStateProvider>
+      {editorOpen ? (
+        <LevelEditor onExit={closeEditor} onTryItOut={tryItOut} initialLevelIndex={editorLevelIndex} />
+      ) : (
+        <JoystickStateProvider>
+          <Hud onOpenEditor={isLocalDev ? openEditor : undefined} />
+          <AppCanvas>
+            <LevelScene setCompleteDialogOpen={setCompleteDialogOpen} />
+            <LevelSelectionScene />
+          </AppCanvas>
+          <LevelCarousel />
+          <LevelCompleteModal open={completeDialogOpen} setCompleteDialogOpen={setCompleteDialogOpen} />
+        </JoystickStateProvider>
+      )}
     </GameStateProvider>
   );
 }
