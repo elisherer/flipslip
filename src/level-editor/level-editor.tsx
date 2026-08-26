@@ -1,3 +1,15 @@
+import { Menu } from "@base-ui/react/menu";
+import { Menubar } from "@base-ui/react/menubar";
+import { Toggle } from "@base-ui/react/toggle";
+import { ToggleGroup } from "@base-ui/react/toggle-group";
+import { Toolbar } from "@base-ui/react/toolbar";
+import {
+  ChevronRight as ChevronRightIcon,
+  Flag as FlagIcon,
+  Square as SquareIcon,
+  User as UserIcon,
+  Zap as ZapIcon,
+} from "lucide-react";
 import { ChangeEvent, useMemo, useRef, useState } from "react";
 
 import {
@@ -10,9 +22,10 @@ import {
   isValidLevel,
   nextTriggerState,
   nextWallState,
+  prevWallState,
   resizeLevel,
 } from "@/levels/level-schema";
-import { Levels, getDraftNumber, isDraftLevel, nextDraftNumber, syncDraft } from "@/levels/levels";
+import { Levels, getDraftNumber, isDraftLevel, listDraftNumbers, nextDraftNumber, syncDraft } from "@/levels/levels";
 
 import LevelEditorGrid from "./level-editor-grid";
 import LevelEditorPreview from "./level-editor-preview";
@@ -20,6 +33,18 @@ import styles from "./level-editor.module.css";
 
 const DEFAULT_WIDTH = 8;
 const DEFAULT_HEIGHT = 8;
+
+type EditorMode = "cell" | "trigger" | "player" | "finish";
+
+const MODE_LEGEND: Record<EditorMode, string> = {
+  cell: "Click a cell: place/remove it",
+  trigger: "Click a cell: cycle its trigger (none → unpushed → pushed)",
+  player: "Click a cell (either layer): set that layer's player start",
+  finish: "Click a cell: set the finish position",
+};
+
+const EDGE_LEGEND =
+  "Click edge: cycle wall (open → wall → green open → green closed → purple open → purple closed)\nRight-click edge: cycle backward";
 
 function updateCell(
   level: Level,
@@ -78,10 +103,13 @@ export default function LevelEditor({
     return String(draftNumber ?? nextDraftNumber());
   });
   const [error, setError] = useState<string | null>(null);
-  const [placing, setPlacing] = useState<"player" | null>(null);
+  const [mode, setMode] = useState<EditorMode>("cell");
+  const [draftsVersion, setDraftsVersion] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const json = useMemo(() => JSON.stringify(level, null, 2), [level]);
+  const draftNumbers = useMemo(() => listDraftNumbers(), [draftsVersion]);
+  const nextDraft = useMemo(() => nextDraftNumber(), [draftsVersion]);
 
   const toggleExists = (layer: LayerName, x: number, z: number) =>
     setLevel(lvl => updateCell(lvl, layer, x, z, cell => (cell ? null : createCell())));
@@ -89,26 +117,43 @@ export default function LevelEditor({
     setLevel(lvl =>
       updateExistingCell(lvl, layer, x, z, cell => ({ ...cell, trigger: nextTriggerState(cell.trigger) })),
     );
-  const cycleRight = (layer: LayerName, x: number, z: number) =>
-    setLevel(lvl => updateExistingCell(lvl, layer, x, z, cell => ({ ...cell, right: nextWallState(cell.right) })));
-  const cycleDown = (layer: LayerName, x: number, z: number) =>
-    setLevel(lvl => updateExistingCell(lvl, layer, x, z, cell => ({ ...cell, down: nextWallState(cell.down) })));
+  const cycleRight = (layer: LayerName, x: number, z: number, backward: boolean) =>
+    setLevel(lvl =>
+      updateExistingCell(lvl, layer, x, z, cell => ({
+        ...cell,
+        right: (backward ? prevWallState : nextWallState)(cell.right),
+      })),
+    );
+  const cycleDown = (layer: LayerName, x: number, z: number, backward: boolean) =>
+    setLevel(lvl =>
+      updateExistingCell(lvl, layer, x, z, cell => ({
+        ...cell,
+        down: (backward ? prevWallState : nextWallState)(cell.down),
+      })),
+    );
 
-  const handleCellClick = (layer: LayerName, x: number, z: number, shiftKey: boolean) => {
-    if (shiftKey) {
-      setLevel(lvl => setFinishPosition(lvl, x, z));
-    } else if (placing === "player") {
-      const layerIndex = LAYER_NAMES.indexOf(layer) as 0 | 1;
-      setLevel(lvl => setPlayerPosition(lvl, layerIndex, x, z));
-      setPlacing(null);
-    } else {
-      toggleExists(layer, x, z);
+  const handleCellClick = (layer: LayerName, x: number, z: number) => {
+    switch (mode) {
+      case "finish":
+        setLevel(lvl => setFinishPosition(lvl, x, z));
+        break;
+      case "player": {
+        const layerIndex = LAYER_NAMES.indexOf(layer) as 0 | 1;
+        setLevel(lvl => setPlayerPosition(lvl, layerIndex, x, z));
+        break;
+      }
+      case "trigger":
+        cycleTrigger(layer, x, z);
+        break;
+      case "cell":
+        toggleExists(layer, x, z);
+        break;
     }
   };
 
-  const applyResize = () => {
-    const w = Math.max(1, Math.min(64, parseInt(widthInput, 10) || level.width));
-    const h = Math.max(1, Math.min(64, parseInt(heightInput, 10) || level.height));
+  const applyResize = (width = widthInput, height = heightInput) => {
+    const w = Math.max(1, Math.min(64, parseInt(width, 10) || level.width));
+    const h = Math.max(1, Math.min(64, parseInt(height, 10) || level.height));
     setLevel(lvl => resizeLevel(lvl, w, h));
     setWidthInput(String(w));
     setHeightInput(String(h));
@@ -141,18 +186,19 @@ export default function LevelEditor({
 
   const currentDraftNumber = () => Math.max(1, parseInt(draftNumberInput, 10) || nextDraftNumber());
 
-  const handleSaveAsDraft = () => {
-    syncDraft(currentDraftNumber(), level);
+  const handleSaveAsDraft = (draftNumber: number) => {
+    syncDraft(draftNumber, level);
+    setDraftNumberInput(String(draftNumber));
+    setDraftsVersion(v => v + 1);
   };
 
   const handleTryItOut = () => {
     const draftIndex = syncDraft(currentDraftNumber(), level);
+    setDraftsVersion(v => v + 1);
     onTryItOut(draftIndex);
   };
 
-  const handleLoadFromLevels = (e: ChangeEvent<HTMLSelectElement>) => {
-    const index = parseInt(e.target.value, 10);
-    e.target.value = "";
+  const handleLoadFrom = (index: number) => {
     if (Number.isNaN(index) || !Levels[index]) return;
     const loaded = initialLevel(index);
     setLevel(loaded);
@@ -164,6 +210,23 @@ export default function LevelEditor({
   };
 
   const handleLoadClick = () => fileInputRef.current?.click();
+  const handleLoadClipboardClick = () => {
+    try {
+      const text = prompt("Paste the level JSON here");
+      if (!text) return;
+      const parsed = JSON.parse(text);
+      if (!isValidLevel(parsed)) {
+        setError("JSON does not match the Level schema.");
+        return;
+      }
+      setLevel(parsed);
+      setWidthInput(String(parsed.width));
+      setHeightInput(String(parsed.height));
+      setError(null);
+    } catch (e) {
+      setError("Could not parse JSON");
+    }
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -187,37 +250,108 @@ export default function LevelEditor({
 
   return (
     <div className={styles.root}>
-      <div className={styles.sidebar}>
-        <div className={styles.sidebarGroup}>
+      <div className={styles.menubar}>
+        <div className={styles.menubarGroup}>
           <button type="button" className={styles.button} onClick={onExit}>
             ← Back to Game
           </button>
           <button type="button" className={styles.button + " " + styles.active} onClick={handleTryItOut}>
             ▶ Try it out
           </button>
-          <button type="button" className={styles.button} onClick={handleCopy}>
-            Copy JSON
-          </button>
         </div>
 
-        <div className={styles.sidebarGroup}>
-          <div className={styles.sidebarRow}>
-            <input
-              type="number"
-              min={1}
-              value={draftNumberInput}
-              onChange={e => setDraftNumberInput(e.target.value)}
-              className={styles.input}
-              title="Draft number"
-            />
-            <button type="button" className={styles.button} onClick={handleSaveAsDraft}>
-              Save as Draft
-            </button>
-          </div>
-        </div>
+        <Menubar className={styles.menubarRoot}>
+          <Menu.Root>
+            <Menu.Trigger className={styles.menuTrigger}>Level</Menu.Trigger>
+            <Menu.Portal>
+              <Menu.Positioner className={styles.menuPositioner} sideOffset={4}>
+                <Menu.Popup className={styles.menuPopup}>
+                  <Menu.Item className={styles.menuItem} onClick={handleNew}>
+                    New
+                  </Menu.Item>
+                  <Menu.Separator className={styles.menuSeparator} />
+                  <Menu.SubmenuRoot>
+                    <Menu.SubmenuTrigger className={styles.menuItem + " " + styles.submenuTrigger}>
+                      Load from level
+                      <ChevronRightIcon size={14} />
+                    </Menu.SubmenuTrigger>
+                    <Menu.Portal>
+                      <Menu.Positioner className={styles.menuPositioner} sideOffset={-4} alignOffset={-4}>
+                        <Menu.Popup className={styles.menuPopup}>
+                          {Levels.map((_, index) => (
+                            <Menu.Item key={index} className={styles.menuItem} onClick={() => handleLoadFrom(index)}>
+                              {isDraftLevel(index) ? `Draft ${getDraftNumber(index)}` : `Level ${index + 1}`}
+                            </Menu.Item>
+                          ))}
+                          <Menu.Item className={styles.menuItem} onClick={() => handleSaveAsDraft(nextDraft)}>
+                            Draft {nextDraft} (new)
+                          </Menu.Item>
+                        </Menu.Popup>
+                      </Menu.Positioner>
+                    </Menu.Portal>
+                  </Menu.SubmenuRoot>
+                  <Menu.Item className={styles.menuItem} onClick={handleLoadClick}>
+                    Load from file
+                  </Menu.Item>
+                  <Menu.Item className={styles.menuItem} onClick={handleLoadClipboardClick}>
+                    Load from clipboard
+                  </Menu.Item>
+                  <Menu.Separator className={styles.menuSeparator} />
+                  <Menu.SubmenuRoot>
+                    <Menu.SubmenuTrigger className={styles.menuItem + " " + styles.submenuTrigger}>
+                      Save as Draft
+                      <ChevronRightIcon size={14} />
+                    </Menu.SubmenuTrigger>
+                    <Menu.Portal>
+                      <Menu.Positioner className={styles.menuPositioner} sideOffset={-4} alignOffset={-4}>
+                        <Menu.Popup className={styles.menuPopup}>
+                          {draftNumbers.map(draftNumber => (
+                            <Menu.Item
+                              key={draftNumber}
+                              className={styles.menuItem}
+                              onClick={() => handleSaveAsDraft(draftNumber)}
+                            >
+                              Draft {draftNumber}
+                            </Menu.Item>
+                          ))}
+                          <Menu.Item className={styles.menuItem} onClick={() => handleSaveAsDraft(nextDraft)}>
+                            Draft {nextDraft} (new)
+                          </Menu.Item>
+                        </Menu.Popup>
+                      </Menu.Positioner>
+                    </Menu.Portal>
+                  </Menu.SubmenuRoot>
+                  <Menu.Item className={styles.menuItem} onClick={handleCopy}>
+                    Copy JSON
+                  </Menu.Item>
+                  <input ref={fileInputRef} type="file" accept="application/json" hidden onChange={handleFileChange} />
+                  <Menu.Item className={styles.menuItem} onClick={handleDownload}>
+                    Download file
+                  </Menu.Item>
+                </Menu.Popup>
+              </Menu.Positioner>
+            </Menu.Portal>
+          </Menu.Root>
 
-        <div className={styles.sidebarGroup}>
-          <div className={styles.sidebarRow}>
+          <Menu.Root>
+            <Menu.Trigger className={styles.menuTrigger}>Tools</Menu.Trigger>
+            <Menu.Portal>
+              <Menu.Positioner className={styles.menuPositioner} sideOffset={4}>
+                <Menu.Popup className={styles.menuPopup}>
+                  <Menu.Item className={styles.menuItem} onClick={() => handleCopyLayer("air", "ground")}>
+                    Copy air → ground
+                  </Menu.Item>
+                  <Menu.Item className={styles.menuItem} onClick={() => handleCopyLayer("ground", "air")}>
+                    Copy ground → air
+                  </Menu.Item>
+                </Menu.Popup>
+              </Menu.Positioner>
+            </Menu.Portal>
+          </Menu.Root>
+
+          <Menu.Separator className={styles.menuVSeparator} />
+
+          <div className={styles.row}>
             <label className={styles.field}>
               W
               <input
@@ -225,7 +359,10 @@ export default function LevelEditor({
                 min={1}
                 max={64}
                 value={widthInput}
-                onChange={e => setWidthInput(e.target.value)}
+                onChange={e => {
+                  setWidthInput(e.target.value);
+                  applyResize(e.target.value);
+                }}
                 className={styles.input}
               />
             </label>
@@ -236,95 +373,96 @@ export default function LevelEditor({
                 min={1}
                 max={64}
                 value={heightInput}
-                onChange={e => setHeightInput(e.target.value)}
+                onChange={e => {
+                  setHeightInput(e.target.value);
+                  applyResize(undefined, e.target.value);
+                }}
                 className={styles.input}
               />
             </label>
           </div>
-          <div className={styles.sidebarRow}>
-            <button type="button" className={styles.button} onClick={applyResize}>
-              Resize
-            </button>
-            <button type="button" className={styles.button} onClick={handleNew}>
-              New
-            </button>
+        </Menubar>
+      </div>
+
+      {error && <div className={styles.error}>{error}</div>}
+
+      <div className={styles.body}>
+        <Toolbar.Root className={styles.toolbar} orientation="vertical" aria-label="Edit mode">
+          <ToggleGroup
+            className={styles.toolbarGroup}
+            value={[mode]}
+            onValueChange={value => setMode((value[0] as EditorMode | undefined) ?? "cell")}
+            aria-label="Edit mode"
+          >
+            <Toolbar.Button
+              render={<Toggle />}
+              value="cell"
+              aria-label="Toggle cell"
+              title="Toggle cell"
+              className={styles.toolbarButton}
+            >
+              <SquareIcon size={18} />
+            </Toolbar.Button>
+            <Toolbar.Button
+              render={<Toggle />}
+              value="trigger"
+              aria-label="Toggle trigger"
+              title="Toggle trigger"
+              className={styles.toolbarButton}
+            >
+              <ZapIcon size={18} />
+            </Toolbar.Button>
+            <Toolbar.Button
+              render={<Toggle />}
+              value="player"
+              aria-label="Set player"
+              title="Set player"
+              className={styles.toolbarButton}
+            >
+              <UserIcon size={18} />
+            </Toolbar.Button>
+            <Toolbar.Button
+              render={<Toggle />}
+              value="finish"
+              aria-label="Set finish"
+              title="Set finish"
+              className={styles.toolbarButton}
+            >
+              <FlagIcon size={18} />
+            </Toolbar.Button>
+          </ToggleGroup>
+        </Toolbar.Root>
+
+        <div className={styles.mainArea}>
+          <div className={styles.legend}>
+            {MODE_LEGEND[mode]}
+            {"\n"}
+            {EDGE_LEGEND}
+          </div>
+          <div className={styles.gridPane}>
+            {LAYER_NAMES.map(layerName => {
+              const layerIndex = LAYER_NAMES.indexOf(layerName) as 0 | 1;
+              return (
+                <div key={layerName} className={styles.layerBlock}>
+                  <div className={styles.layerLabel}>{layerName}</div>
+                  <LevelEditorGrid
+                    grid={level.layers[layerName]}
+                    width={level.width}
+                    height={level.height}
+                    playerPosition={level.players[layerIndex].position}
+                    finishPosition={level.finish.position}
+                    crosshair={mode !== "cell"}
+                    onCellClick={(x, y) => handleCellClick(layerName, x, y)}
+                    onCycleRight={(x, y, backward) => cycleRight(layerName, x, y, backward)}
+                    onCycleDown={(x, y, backward) => cycleDown(layerName, x, y, backward)}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
-
-        <div className={styles.sidebarGroup}>
-          <button type="button" className={styles.button} onClick={() => handleCopyLayer("air", "ground")}>
-            Copy air → ground
-          </button>
-          <button type="button" className={styles.button} onClick={() => handleCopyLayer("ground", "air")}>
-            Copy ground → air
-          </button>
-        </div>
-
-        <div className={styles.sidebarGroup}>
-          <button
-            type="button"
-            className={styles.button + " " + (placing === "player" ? styles.active : "")}
-            onClick={() => setPlacing(p => (p === "player" ? null : "player"))}
-          >
-            Place Player
-          </button>
-        </div>
-
-        <div className={styles.sidebarGroup}>
-          <label className={styles.field}>
-            Load from
-            <select className={styles.select} defaultValue="" onChange={handleLoadFromLevels}>
-              <option value="" disabled>
-                Select level…
-              </option>
-              {Levels.map((_, index) => (
-                <option key={index} value={index}>
-                  {isDraftLevel(index) ? `Draft ${getDraftNumber(index)}` : `Level ${index + 1}`}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button type="button" className={styles.button} onClick={handleLoadClick}>
-            Load JSON
-          </button>
-          <input ref={fileInputRef} type="file" accept="application/json" hidden onChange={handleFileChange} />
-          <button type="button" className={styles.button} onClick={handleDownload}>
-            Download
-          </button>
-        </div>
-
-        {error && <div className={styles.error}>{error}</div>}
+        <LevelEditorPreview level={level} />
       </div>
-      <div className={styles.mainArea}>
-        <div className={styles.legend}>
-          {placing
-            ? "Click a cell (in either layer) to place its player…"
-            : "Click: place/remove cell\nShift+Click: set finish\nRight-click: cycle trigger (none → unpushed → pushed)\nClick edge: cycle wall (open → wall → green open → green closed → purple open → purple closed)"}
-        </div>
-        <div className={styles.gridPane}>
-          {LAYER_NAMES.map(layerName => {
-            const layerIndex = LAYER_NAMES.indexOf(layerName) as 0 | 1;
-            return (
-              <div key={layerName} className={styles.layerBlock}>
-                <div className={styles.layerLabel}>{layerName}</div>
-                <LevelEditorGrid
-                  grid={level.layers[layerName]}
-                  width={level.width}
-                  height={level.height}
-                  playerPosition={level.players[layerIndex].position}
-                  finishPosition={level.finish.position}
-                  placing={placing !== null}
-                  onCellClick={(x, y, shiftKey) => handleCellClick(layerName, x, y, shiftKey)}
-                  onToggleTrigger={(x, y) => cycleTrigger(layerName, x, y)}
-                  onCycleRight={(x, y) => cycleRight(layerName, x, y)}
-                  onCycleDown={(x, y) => cycleDown(layerName, x, y)}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <LevelEditorPreview level={level} />
     </div>
   );
 }

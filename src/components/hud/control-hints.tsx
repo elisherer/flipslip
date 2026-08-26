@@ -1,6 +1,5 @@
+import { ArrowBigDownIcon, ArrowBigLeftIcon, ArrowBigRightIcon, ArrowBigUpIcon } from "lucide-react";
 import { type CSSProperties, useEffect, useMemo, useState } from "react";
-
-import Icons from "@/components/icons";
 
 import styles from "./control-hints.module.css";
 
@@ -93,13 +92,13 @@ export function ControlHints({ preset, style }: { preset: HintPreset; style?: CS
         key={hintKey.label}
       >
         {hintKey.label === "←" ? (
-          <Icons.arrow_back />
+          <ArrowBigLeftIcon />
         ) : hintKey.label === "↓" ? (
-          <Icons.arrow_downward />
+          <ArrowBigDownIcon />
         ) : hintKey.label === "↑" ? (
-          <Icons.arrow_upward />
+          <ArrowBigUpIcon />
         ) : hintKey.label === "→" ? (
-          <Icons.arrow_forward />
+          <ArrowBigRightIcon />
         ) : (
           hintKey.label
         )}

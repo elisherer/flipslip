@@ -7,6 +7,8 @@
   align-items: center;
   justify-content: center;
   gap: 1.5em;
+  margin-top: 16px;
+  margin-bottom: 16px;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-drag: none;
@@ -17,7 +19,7 @@
 .track {
   position: relative;
   width: 100%;
-  height: 16em;
+  height: 16rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,16 +46,10 @@
   pointer-events: none;
 }
 
-.playButton[aria-disabled="true"] {
-  opacity: 0.3;
-  cursor: default;
-  pointer-events: none;
-}
-
 .card {
   position: absolute;
-  width: 10em;
-  height: 13em;
+  width: 10rem;
+  height: 12rem;
   border-radius: 1em;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(8px);
@@ -75,8 +71,8 @@
   position: absolute;
   top: 0.5em;
   right: 0.5em;
-  width: 1.8em;
-  height: 1.8em;
+  width: 2em;
+  height: 2em;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -90,9 +86,8 @@
 }
 
 .cardDelete svg {
-  height: 1.1em;
-  width: 1.1em;
-  fill: white;
+  height: 1em;
+  width: 1em;
 }
 
 .card[data-current="true"] {
@@ -121,14 +116,13 @@
 .cardLock svg {
   height: 2em;
   width: 2em;
-  fill: white;
   opacity: 0.85;
 }
 
 .cardComplete svg {
   height: 1.5em;
   width: 1.5em;
-  fill: #4caf50;
+  stroke: #4caf50;
 }
 
 .playButton {
@@ -139,8 +133,8 @@
 }
 
 .playButton svg {
-  height: 1.5em;
-  width: 1.5em;
+  height: 1em;
+  width: 1em;
 }
 
 .dots {

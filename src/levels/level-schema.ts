@@ -54,6 +54,10 @@ export function nextWallState(state: WallState): WallState {
   return WALL_STATES[(WALL_STATES.indexOf(state) + 1) % WALL_STATES.length];
 }
 
+export function prevWallState(state: WallState): WallState {
+  return WALL_STATES[(WALL_STATES.indexOf(state) - 1 + WALL_STATES.length) % WALL_STATES.length];
+}
+
 /** Whether an edge with the given wall state currently lets a player pass through it. */
 export function isWallStateOpen(state: WallState, toggled: boolean): boolean {
   switch (state) {

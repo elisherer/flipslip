@@ -1,6 +1,6 @@
+import { ArrowRightIcon, RotateCcwIcon, XIcon } from "lucide-react";
 import { KeyboardEvent, useEffect, useRef } from "react";
 
-import Icons from "@/components/icons";
 import { Levels } from "@/levels/levels";
 import { useGameState } from "@/providers/game-state-provider";
 
@@ -72,7 +72,7 @@ export default function LevelCompleteModal({
           onKeyDown={handleKeyDown(0)}
           onClick={onHome}
         >
-          <Icons.close />
+          <XIcon />
           Home
         </button>
         <button
@@ -84,7 +84,7 @@ export default function LevelCompleteModal({
           onKeyDown={handleKeyDown(1)}
           onClick={onRestart}
         >
-          <Icons.replay />
+          <RotateCcwIcon />
           Restart
         </button>
         {hasNextLevel && (
@@ -97,7 +97,7 @@ export default function LevelCompleteModal({
             onKeyDown={handleKeyDown(2)}
             onClick={onNext}
           >
-            <Icons.arrow_forward />
+            <ArrowRightIcon />
             Next Level
           </button>
         )}

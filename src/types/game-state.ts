@@ -2,8 +2,7 @@ import { KitModelSpec } from "@/assets/kit";
 import { ProgressState } from "@/types/progress-state";
 
 export type Settings = {
-  sfx: boolean;
-  music: boolean;
+  audio: boolean;
   hq: boolean;
 };
 export type GameState = {

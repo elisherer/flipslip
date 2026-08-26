@@ -1,7 +1,7 @@
+import { XIcon } from "lucide-react";
 import { ReactNode, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 
-import Icons from "../icons";
 import styles from "./modal.module.css";
 
 const modalRoot = document.getElementById("modal-root");
@@ -48,7 +48,7 @@ export default function Modal({
       <div id="modal__title" className={styles.title}>
         <div>{!hideTitle && title}</div>
         <div className={styles.close} onClick={onRequestClose} title="Close">
-          <Icons.close />
+          <XIcon />
         </div>
       </div>
 

@@ -75,7 +75,7 @@ function getHeldMove(
   const keys = getKeys();
   const held = MOVES[index].find(([control]) => keys[control]);
   if (held) return held[1];
-  const jsDir = index === 1 ? joystickState.direction2 : joystickState.direction1;
+  const jsDir = index === 1 ? joystickState.right : joystickState.left;
   if (jsDir) return JOYSTICK_MOVES[jsDir] ?? null;
   return vrDirection != null ? DIRECTION_MOVE[vrDirection] : null;
 }
@@ -107,7 +107,7 @@ export default function Player({ index, ...props }: { index: number } & Componen
   const vrDirection = useThumbstickDirection(index === 0 ? "left" : "right");
 
   useEffect(() => {
-    const dir = index === 1 ? joystickState.direction2 : joystickState.direction1;
+    const dir = index === 1 ? joystickState.right : joystickState.left;
     const move = dir ? JOYSTICK_MOVES[dir] : vrDirection != null ? DIRECTION_MOVE[vrDirection] : null;
     if (!move || movingRef.current || levelRef.current.completed) return;
     const [x, y, z] = levelRef.current.players[index].position;

@@ -9,15 +9,15 @@ export type UseSoundOptions = SecondArg<typeof useSound>;
 export default function useBackgroundMusic(path: string, options?: UseSoundOptions) {
   const [{ audioLocked, windowHasFocus, settings }] = useGameState();
   const [play, { stop }] = useSound(path, {
-    soundEnabled: !audioLocked && settings.music,
+    soundEnabled: !audioLocked && settings.audio,
     interrupt: true,
     loop: true,
     volume: 0.2,
     ...options,
   });
   useEffect(() => {
-    if (!settings.music || !windowHasFocus) return;
+    if (!settings.audio || !windowHasFocus) return;
     play({ forceSoundEnabled: true });
     return stop;
-  }, [play, stop, settings.music, windowHasFocus]);
+  }, [play, stop, settings.audio, windowHasFocus]);
 }

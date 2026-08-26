@@ -5,24 +5,24 @@ import { createImmerStateContext, useImmerStateProvider } from "use-immer-state-
 type IJoystickUpdateEvent = Parameters<NonNullable<ConstructorParameters<typeof Joystick>[0]["move"]>>[0];
 
 export type JoystickState = {
-  direction1?: IJoystickUpdateEvent["direction"];
-  direction2?: IJoystickUpdateEvent["direction"];
+  left?: IJoystickUpdateEvent["direction"];
+  right?: IJoystickUpdateEvent["direction"];
 };
 
 export const initialState: JoystickState = {};
 
 const actions = {
-  move1: (draft: JoystickState, event: IJoystickUpdateEvent) => {
-    draft.direction1 = event.direction;
+  moveL: (draft: JoystickState, event: IJoystickUpdateEvent) => {
+    draft.left = event.direction;
   },
-  stop1: (draft: JoystickState) => {
-    delete draft.direction1;
+  stopL: (draft: JoystickState) => {
+    delete draft.left;
   },
-  move2: (draft: JoystickState, event: IJoystickUpdateEvent) => {
-    draft.direction2 = event.direction;
+  moveR: (draft: JoystickState, event: IJoystickUpdateEvent) => {
+    draft.right = event.direction;
   },
-  stop2: (draft: JoystickState) => {
-    delete draft.direction2;
+  stopR: (draft: JoystickState) => {
+    delete draft.right;
   },
 };
 

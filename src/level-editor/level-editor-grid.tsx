@@ -1,4 +1,4 @@
-import { MouseEvent, useMemo } from "react";
+import { useMemo } from "react";
 
 import { Cell, WallState } from "@/levels/level-schema";
 
@@ -67,9 +67,8 @@ export default function LevelEditorGrid({
   height,
   playerPosition,
   finishPosition,
-  placing,
+  crosshair,
   onCellClick,
-  onToggleTrigger,
   onCycleRight,
   onCycleDown,
 }: {
@@ -78,11 +77,10 @@ export default function LevelEditorGrid({
   height: number;
   playerPosition: [number, number];
   finishPosition: [number, number];
-  placing?: boolean;
-  onCellClick: (x: number, z: number, shiftKey: boolean) => void;
-  onToggleTrigger: (x: number, z: number) => void;
-  onCycleRight: (x: number, z: number) => void;
-  onCycleDown: (x: number, z: number) => void;
+  crosshair?: boolean;
+  onCellClick: (x: number, z: number) => void;
+  onCycleRight: (x: number, z: number, backward: boolean) => void;
+  onCycleDown: (x: number, z: number, backward: boolean) => void;
 }) {
   const svgWidth = width * CELL_SIZE + WALL_THICKNESS;
   const svgHeight = height * CELL_SIZE + WALL_THICKNESS;
@@ -97,17 +95,13 @@ export default function LevelEditorGrid({
     return items;
   }, [grid, width, height]);
 
-  const handleCellContextMenu = (e: MouseEvent, x: number, z: number, cell: Cell | null) => {
-    e.preventDefault();
-    if (cell) onToggleTrigger(x, z);
-  };
-
   return (
     <svg
-      className={styles.grid + (placing ? " " + styles.placing : "")}
+      className={styles.grid + (crosshair ? " " + styles.placing : "")}
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
       width={svgWidth}
       height={svgHeight}
+      onContextMenu={e => e.preventDefault()}
     >
       <defs>
         <pattern id="wallHatch" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
@@ -128,8 +122,7 @@ export default function LevelEditorGrid({
               width={inner}
               height={inner}
               className={cell ? ((x + z) % 2 ? styles.cellOpen : styles.cellOpenModulu) : styles.cellNone}
-              onClick={e => onCellClick(x, z, e.shiftKey)}
-              onContextMenu={e => handleCellContextMenu(e, x, z, cell)}
+              onClick={() => onCellClick(x, z)}
             />
             {cell?.trigger && (
               <circle
@@ -159,7 +152,11 @@ export default function LevelEditorGrid({
                   width={EDGE_HIT}
                   height={inner}
                   className={EDGE_STYLE[cell.right]}
-                  onClick={() => onCycleRight(x, z)}
+                  onClick={() => onCycleRight(x, z, false)}
+                  onContextMenu={e => {
+                    e.preventDefault();
+                    onCycleRight(x, z, true);
+                  }}
                 />
                 {startsClosed(cell.right) && (
                   <rect
@@ -181,7 +178,11 @@ export default function LevelEditorGrid({
                   width={inner}
                   height={EDGE_HIT}
                   className={EDGE_STYLE[cell.down]}
-                  onClick={() => onCycleDown(x, z)}
+                  onClick={() => onCycleDown(x, z, false)}
+                  onContextMenu={e => {
+                    e.preventDefault();
+                    onCycleDown(x, z, true);
+                  }}
                 />
                 {startsClosed(cell.down) && (
                   <rect

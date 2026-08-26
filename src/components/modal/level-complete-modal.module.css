@@ -72,12 +72,6 @@
   transform: translateY(0);
 }
 
-.button svg {
-  height: 1.6em;
-  width: 1.6em;
-  fill: currentColor;
-}
-
 .button.primary {
   background: linear-gradient(135deg, #4caf50, #2e9e68);
   border-color: #57cf7c;

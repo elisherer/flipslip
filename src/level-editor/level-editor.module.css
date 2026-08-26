@@ -2,39 +2,124 @@
   position: fixed;
   inset: 0;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   background: #121212;
   color: #eee;
   font-family: system-ui, sans-serif;
 }
 
-.sidebar {
-  width: 15em;
+.menubar {
   flex: 0 0 auto;
   display: flex;
-  flex-direction: column;
-  gap: 1em;
-  padding: 1em;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em 1em;
+  padding: 0.6em 1em;
   background: #1e1e1e;
-  border-right: 1px solid #333;
-  overflow-y: auto;
+  border-bottom: 1px solid #333;
+  overflow-x: auto;
 }
 
-.sidebarGroup {
+.menubarGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding-right: 1em;
+  border-right: 1px solid #2a2a2a;
+}
+
+.menubarGroup:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.row {
+  display: flex;
+  gap: 0.5em;
+}
+
+.menubarRoot {
+  display: flex;
+  gap: 0.25em;
+}
+
+.menuTrigger {
+  padding: 0.5em 0.9em;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.4em;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+.menuTrigger:hover,
+.menuTrigger[data-popup-open] {
+  background: #2a2a2a;
+  border-color: #444;
+}
+
+.menuTrigger:focus-visible {
+  outline: 2px solid #2196f3;
+}
+
+.menuPositioner {
+  z-index: 10;
+}
+
+.menuPopup {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  padding-bottom: 1em;
-  border-bottom: 1px solid #2a2a2a;
+  min-width: 14em;
+  padding: 0.6em;
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 0.5em;
+  box-shadow: 0 0.4em 1.2em rgba(0, 0, 0, 0.5);
+  color: white;
 }
 
-.sidebarGroup:last-of-type {
-  border-bottom: none;
+.menuSeparator {
+  border: none;
+  border-top: 1px solid #333;
+  margin: 0.1em 0;
 }
 
-.sidebarRow {
+.menuVSeparator {
+  border: 1px solid #333;
+  margin-left: 0.2em;
+  margin-right: 0.8em;
+}
+
+.menuItem {
+  padding: 0.5em 0.7em;
+  border-radius: 0.4em;
+  cursor: pointer;
+  font: inherit;
+  text-transform: capitalize;
+
+}
+
+.menuItem[data-highlighted] {
+  background: #2a2a2a;
+}
+
+.menuItem.active {
+  background: #2196f3;
+
+}
+
+.submenuTrigger {
   display: flex;
-  gap: 0.5em;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+}
+
+.submenuTrigger[data-popup-open] {
+  background: #2a2a2a;
 }
 
 .field {
@@ -55,7 +140,6 @@
 }
 
 .select {
-  flex: 1;
   min-width: 0;
   padding: 0.3em;
   background: #2a2a2a;
@@ -65,16 +149,17 @@
 }
 
 .button {
+  background: transparent;
+  border: none;
   padding: 0.5em 0.9em;
-  background: #2a2a2a;
-  border: 1px solid #444;
   border-radius: 0.4em;
   color: inherit;
   cursor: pointer;
   font: inherit;
   text-transform: capitalize;
-  width: 100%;
+  white-space: nowrap;
 }
+
 
 .button:hover {
   background: #383838;
@@ -90,15 +175,70 @@
   color: white;
 }
 
+.button.active:hover {
+  background: #399fef;
+}
+
 .error {
-  padding: 0.5em;
+  flex: 0 0 auto;
+  padding: 0.5em 1em;
   background: #4a1414;
   color: #ffb4b4;
   font-size: 0.85em;
-  border-radius: 0.3em;
+}
+
+.body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+}
+
+.toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0.6em;
+  background: #1e1e1e;
+  border-right: 1px solid #333;
+}
+
+.toolbarGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+
+.toolbarButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4em;
+  height: 2.4em;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.4em;
+  color: inherit;
+  cursor: pointer;
+}
+
+.toolbarButton:hover {
+  background: #2a2a2a;
+  border-color: #444;
+}
+
+.toolbarButton:focus-visible {
+  outline: 2px solid #2196f3;
+}
+
+.toolbarButton[data-pressed] {
+  background: #2196f3;
+  border-color: #2196f3;
+  color: white;
 }
 
 .mainArea {
+  position: relative;
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
@@ -107,14 +247,20 @@
 }
 
 .legend {
-  flex: 0 0 auto;
-  padding: 0.6em 1.5em;
+  position: absolute;
+  bottom: 0.8em;
+  left: 1.5em;
+  z-index: 1;
+  max-width: 28em;
+  padding: 0.6em 0.9em;
   font-size: 0.8em;
-  opacity: 0.65;
+  opacity: 0.75;
   line-height: 1.4;
-  background: #1a1a1a;
-  border-bottom: 1px solid #2a2a2a;
-  white-space: pre;
+  background: rgba(26, 26, 26, 0.85);
+  border: 1px solid #2a2a2a;
+  border-radius: 0.4em;
+  white-space: pre-line;
+  pointer-events: none;
 }
 
 .gridPane {

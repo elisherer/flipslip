@@ -36,6 +36,11 @@ export function nextDraftNumber(): number {
   return used.length ? Math.max(...used) + 1 : 1;
 }
 
+/** All draft numbers currently in use, ascending. */
+export function listDraftNumbers(): number[] {
+  return [...draftIndexByNumber.keys()].sort((a, b) => a - b);
+}
+
 /** Persists the given level as draft `draftNumber`, both to storage and into the live Levels array. Returns its index. */
 export function syncDraft(draftNumber: number, level: Level): number {
   saveDraft(draftNumber, level);

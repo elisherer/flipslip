@@ -1,7 +1,7 @@
 
 .pushButton {
-  height: 3em;
-  width: 3em;
+  height: 4rem;
+  width: 4rem;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(8px);
@@ -10,22 +10,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: bold;
+  font-size: 1.5rem;
 }
 .pushButton[data-small] {
-  height: 2em;
-  width: 2em;
+  height: 1.5em;
+  width: 1.5em;
+}
+.pushButton[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
 }
 .pushButton:hover {
-  background: rgba(128, 128, 128, 0.2);
+  background: rgba(255, 255, 255, 0.4);
 }
 .pushButton:active {
-  background: rgba(64, 64, 64, 0.2);
+  background: rgba(255, 255, 255, 0.3);
 }
 .pushButton svg {
-  height: 2em;
-  width: 2em;
+  height: 1.5em;
+  width: 1.5em;
 }
 .pushButton[data-small] svg {
-  height: 1.3em;
-  width: 1.3em;
+  height: 1em;
+  width: 1em;
 }

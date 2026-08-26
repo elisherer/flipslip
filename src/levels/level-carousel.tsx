@@ -1,8 +1,8 @@
 import { useTexture } from "@react-three/drei";
+import { ArrowLeftIcon, ArrowRightIcon, CircleCheckBigIcon, LockKeyholeIcon, PlayIcon, TrashIcon } from "lucide-react";
 import { MouseEvent, useEffect, useMemo, useState } from "react";
 import { DoubleSide } from "three";
 
-import Icons from "@/components/icons";
 import PushButton from "@/components/push-button";
 import { xrStore } from "@/components/xr/store";
 import useThumbstickDirection from "@/components/xr/useThumbstickDirection";
@@ -152,11 +152,12 @@ export function LevelCarousel({ vr }: { vr?: boolean }) {
       <div className={styles.track}>
         <PushButton
           className={styles.nav}
+          style={{ zIndex: 10 }}
           data-side="left"
           aria-disabled={selectedIndex <= 0}
           onClick={() => selectedIndex > 0 && goTo(selectedIndex - 1)}
         >
-          <Icons.arrow_back />
+          <ArrowLeftIcon />
         </PushButton>
         {cards.map(({ index, offset }) => {
           const locked = isLocked(index);
@@ -170,7 +171,7 @@ export function LevelCarousel({ vr }: { vr?: boolean }) {
               data-current={current}
               data-locked={locked}
               style={{
-                transform: `translateX(${offset * 8}em) scale(${current ? 1 : 0.75})`,
+                transform: `translateX(${offset * 8}rem) scale(${current ? 1 : 0.75})`,
                 opacity: current ? 1 : locked ? 0.35 : 0.6,
                 zIndex: 10 - Math.abs(offset),
               }}
@@ -183,19 +184,19 @@ export function LevelCarousel({ vr }: { vr?: boolean }) {
                   title="Delete draft"
                   onClick={e => handleDeleteDraft(index, e)}
                 >
-                  <Icons.delete />
+                  <TrashIcon />
                 </div>
               )}
               <div className={styles.cardLabel}>{isDraftLevel(index) ? "Draft" : "Level"}</div>
               <div className={styles.cardNumber}>{isDraftLevel(index) ? getDraftNumber(index) : index + 1}</div>
               {locked ? (
                 <div className={styles.cardLock}>
-                  <Icons.lock />
+                  <LockKeyholeIcon />
                 </div>
               ) : (
                 completed && (
                   <div className={styles.cardComplete}>
-                    <Icons.check_circle />
+                    <CircleCheckBigIcon />
                   </div>
                 )
               )}
@@ -205,10 +206,11 @@ export function LevelCarousel({ vr }: { vr?: boolean }) {
         <PushButton
           className={styles.nav}
           data-side="right"
+          style={{ zIndex: 10 }}
           aria-disabled={selectedIndex >= Levels.length - 1}
           onClick={() => selectedIndex < Levels.length - 1 && goTo(selectedIndex + 1)}
         >
-          <Icons.arrow_forward />
+          <ArrowRightIcon />
         </PushButton>
       </div>
       <PushButton
@@ -216,7 +218,7 @@ export function LevelCarousel({ vr }: { vr?: boolean }) {
         aria-disabled={selectedLocked}
         onClick={() => !selectedLocked && gameApi.levelInitialize(selectedIndex)}
       >
-        <Icons.play_arrow />
+        <PlayIcon fill="currentcolor" />
         Play
       </PushButton>
       <div className={styles.dots}>

@@ -1,8 +1,20 @@
 import { useXRSessionModeSupported } from "@react-three/xr";
+import {
+  BugIcon,
+  BugOffIcon,
+  InfoIcon,
+  MaximizeIcon,
+  MinimizeIcon,
+  PencilIcon,
+  RectangleGogglesIcon,
+  RotateCcwIcon,
+  Volume2Icon,
+  VolumeOffIcon,
+  XIcon,
+} from "lucide-react";
 import { Joystick } from "react-joystick-component";
 
 import { ControlHints, key } from "@/components/hud/control-hints";
-import Icons from "@/components/icons";
 import PushButton from "@/components/push-button";
 import useFullscreen from "@/hooks/use-fullscreen";
 import { useGameState } from "@/providers/game-state-provider";
@@ -16,7 +28,7 @@ import { xrStore } from "../xr/store";
 import styles from "./hud.module.css";
 
 const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void }) => {
-  const [{ inLevel, levelIndex, settings, audioLocked }, gameApi] = useGameState();
+  const [{ inLevel, levelIndex, settings, debug, audioLocked }, gameApi] = useGameState();
   const [, joystickApi] = useJoystickState();
   const infoModalOpen = useToggle();
   const [isFullscreen, toggleFullscreen] = useFullscreen();
@@ -27,11 +39,11 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
       {isLocalDev ? (
         <div className={styles.topCenter}>
           <PushButton data-small onClick={gameApi.toggleDebug}>
-            <Icons.debug />
+            {debug ? <BugOffIcon /> : <BugIcon />}
           </PushButton>
           {onOpenEditor && (
             <PushButton data-small onClick={() => onOpenEditor(inLevel ? levelIndex : undefined)} title="Level Editor">
-              <Icons.edit />
+              <PencilIcon />
             </PushButton>
           )}
         </div>
@@ -41,41 +53,35 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
       <div className={styles.topRight}>
         {vrSupport && (
           <PushButton onClick={() => xrStore.enterAR().catch(e => alert(e.message))}>
-            <Icons.vr />
+            <RectangleGogglesIcon />
           </PushButton>
         )}
         <PushButton onClick={() => gameApi.changeSetting("hq", !settings.hq)} title="Toggle quality">
-          {settings.hq ? <Icons.high_quality /> : <Icons.standard_quality />}
+          {settings.hq ? "HQ" : "LQ"}
         </PushButton>
         <PushButton
-          onClick={() => gameApi.changeSetting("sfx", audioLocked ? true : !settings.sfx)}
-          title="Toggle sound effects"
+          onClick={() => gameApi.changeSetting("audio", audioLocked ? true : !settings.audio)}
+          title="Toggle sound"
         >
-          {settings.sfx && !audioLocked ? <Icons.volume_up /> : <Icons.volumn_off />}
-        </PushButton>
-        <PushButton
-          onClick={() => gameApi.changeSetting("music", audioLocked ? true : !settings.music)}
-          title="Toggle music"
-        >
-          {settings.music && !audioLocked ? <Icons.music_note /> : <Icons.music_off />}
+          {settings.audio && !audioLocked ? <Volume2Icon /> : <VolumeOffIcon />}
         </PushButton>
         <PushButton onClick={toggleFullscreen} title="Toggle fullscreen">
-          {isFullscreen ? <Icons.fullscreen /> : <Icons.fullscreen_exit />}
+          {isFullscreen ? <MinimizeIcon /> : <MaximizeIcon />}
         </PushButton>
       </div>
       {inLevel ? (
         <div className={styles.topLeft}>
           <PushButton onClick={() => gameApi.homeScreen()} title="Back to home [ESC]">
-            <Icons.close />
+            <XIcon />
           </PushButton>
           <PushButton onClick={() => gameApi.levelInitialize()} title="Restart level [BACKSPACE]">
-            <Icons.replay />
+            <RotateCcwIcon />
           </PushButton>
         </div>
       ) : (
         <div className={styles.topLeft}>
           <PushButton className={styles.info} onClick={infoModalOpen.handleSet} title="About">
-            <Icons.info />
+            <InfoIcon />
           </PushButton>
           <AboutModal open={infoModalOpen.current} onClose={infoModalOpen.handleUnset} />
         </div>
@@ -87,8 +93,8 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
               size={100}
               baseColor="rgba(128,128,128,0.3)"
               stickColor="rgba(128,128,128,0.5)"
-              move={joystickApi.move1}
-              stop={joystickApi.stop1}
+              move={joystickApi.moveL}
+              stop={joystickApi.stopL}
               minDistance={48}
             />
           </div>
@@ -97,8 +103,8 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
               size={100}
               baseColor="rgba(128,128,128,0.3)"
               stickColor="rgba(128,128,128,0.5)"
-              move={joystickApi.move2}
-              stop={joystickApi.stop2}
+              move={joystickApi.moveR}
+              stop={joystickApi.stopR}
               minDistance={48}
             />
           </div>
@@ -110,7 +116,7 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
               accent: "#e5e7eb",
               groups: [
                 {
-                  label: "Move",
+                  label: "Move 🧑‍🚀",
                   layout: "directional",
                   keys: [key("W", "KeyW"), key("A", "KeyA"), key("S", "KeyS"), key("D", "KeyD")],
                 },
@@ -126,7 +132,7 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
               accent: "#e5e7eb",
               groups: [
                 {
-                  label: "Move",
+                  label: "Move 🛸",
                   layout: "directional",
                   keys: [key("↑", "ArrowUp"), key("←", "ArrowLeft"), key("↓", "ArrowDown"), key("→", "ArrowRight")],
                 },

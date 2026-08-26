@@ -12,8 +12,7 @@ export const initialState: GameState = {
   audioLocked: true, // assume audio is locked on page load
   debug: false,
   settings: Storage.loadSettings({
-    sfx: true,
-    music: true,
+    audio: true,
     hq: true,
   }),
   inLevel: false,

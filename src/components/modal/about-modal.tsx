@@ -19,32 +19,32 @@ const CREDITS: CreditGroup[] = [
       {
         label: "Level blocks",
         //
-        link: "Kenney (Prototype Kit)",
+        link: "Prototype Kit (Kenney)",
         url: "https://kenney.nl/assets/prototype-kit",
       },
       {
         label: "UFO",
-        link: "Kenney (Tower Defence Kit)",
+        link: "Tower Defence Kit (Kenney)",
         url: "https://kenney.nl/assets/tower-defense-kit",
       },
       {
         label: "Astronaut",
-        link: "Aquamea (Lowpoly Little Astronaut)",
+        link: "Lowpoly Little Astronaut (Aquamea)",
         url: "https://aquamea.itch.io/little-austronaut",
       },
     ],
   },
   {
-    title: "Audio",
+    title: "SFX",
     entries: [
       {
         label: "Trigger (click/unclick)",
-        link: "Kenney (UI Audio; Button)",
+        link: "UI Audio (Kenney)",
         url: "https://kenney.nl/assets/ui-audio",
       },
       {
         label: "Level complete",
-        link: "Spell 1",
+        link: "Spell 1 (Bart Kelsey)",
         url: "https://opengameart.org/content/spell-1",
       },
     ],
@@ -54,12 +54,12 @@ const CREDITS: CreditGroup[] = [
     entries: [
       {
         label: "Selection screen",
-        link: "yd (ObservingTheStar)",
+        link: "ObservingTheStar (yd)",
         url: "https://opengameart.org/content/another-space-background-track",
       },
       {
         label: "In-game music",
-        link: "BonoboGames (Space Background Music)",
+        link: "Space Background Music (BonoboGames)",
         url: "https://opengameart.org/content/space-background-music",
       },
     ],
@@ -67,7 +67,14 @@ const CREDITS: CreditGroup[] = [
   {
     title: "UI",
 
-    entries: [{ label: "Icons", link: "MUI (Material UI)", url: "https://mui.com/material-ui/material-icons/" }],
+    entries: [
+      { label: "Icons", link: "Lucide", url: "https://lucide.dev" },
+      {
+        label: "Mobile joystick",
+        link: "react-joystick-component (elmarti)",
+        url: "https://www.npmjs.com/package/react-joystick-component",
+      },
+    ],
   },
 ];
 

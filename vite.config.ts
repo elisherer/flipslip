@@ -38,24 +38,23 @@ export default {
     "import.meta.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
   },
   build: {
-    chunkSizeWarningLimit: 1700,
+    chunkSizeWarningLimit: 1600,
     rolldownOptions: {
-      external: ["iwer", "@iwer/devui", "@iwer/sem"],
+      external: process.env.NODE_ENV !== "production" ? undefined : ["iwer", "@iwer/devui", "@iwer/sem", "r3f-perf"],
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name(id: string) {
+                if (id.includes("node_modules/@react-three") || id.includes("node_modules/three")) return "r3f";
+                if (id.includes("node_modules/")) return "vendor";
+                return null;
+              },
+            },
+          ],
+        },
+      },
     },
-    // rolldownOptions: {
-    //   output: {
-    //     codeSplitting: {
-    //       groups: [
-    //         {
-    //           name(moduleId: string) {
-    //             if (moduleId.includes("node_modules/")) return "vendor";
-    //             return null;
-    //           },
-    //         },
-    //       ],
-    //     },
-    //   },
-    // },
   },
   server: {
     port: 3080,
