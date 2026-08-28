@@ -10,6 +10,7 @@
     "build": "tsc -b && vite build",
     "build:fast": "vite build",
     "preview": "vite preview",
+    "preview:ssl": "vite preview --open https://localhost:4173",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint:fix": "eslint --fix",
     "format": "prettier \"src/**/*.{js,jsx,ts,tsx,css,scss}\" --write",

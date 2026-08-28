@@ -30,9 +30,19 @@ export default {
     }),
   ],
   resolve: {
-    alias: {
-      "@": path.resolve(import.meta.dirname, "./src"),
-    },
+    alias: (() => {
+      const result: Record<string, string> = {
+        "@": path.resolve(import.meta.dirname, "./src"),
+      };
+      // mock unused libs in production
+      if (process.env.NODE_ENV === "production") {
+        const mock = path.resolve(import.meta.dirname, "src/mocks/mocks.ts");
+        ["iwer", "@iwer/devui", "@iwer/sem", "r3f-perf"].forEach(lib => {
+          result[lib] = mock;
+        });
+      }
+      return result;
+    })(),
   },
   define: {
     "import.meta.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
@@ -40,7 +50,6 @@ export default {
   build: {
     chunkSizeWarningLimit: 1600,
     rolldownOptions: {
-      external: process.env.NODE_ENV !== "production" ? undefined : ["iwer", "@iwer/devui", "@iwer/sem", "r3f-perf"],
       output: {
         codeSplitting: {
           groups: [
@@ -59,5 +68,8 @@ export default {
   server: {
     port: 3080,
     host: "0.0.0.0", // exposes host to local network to be able to access site from VR headset
+  },
+  preview: {
+    host: "0.0.0.0",
   },
 };
