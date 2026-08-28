@@ -19,14 +19,20 @@ type LevelProps = {
 
 export default function LevelRenderer({ onFinishLevel }: LevelProps) {
   const [{ levelIndex, debug }, gameApi] = useGameState();
-  const [{ level, toggled, completed }] = useLevelState();
+  const [{ level, toggled, lastTriggerCell, completed }] = useLevelState();
   const [playClick] = useSound(Sounds.CLICK);
   const [playUnclick] = useSound(Sounds.UNCLICK);
+  const [playSwitch] = useSound(Sounds.SWITCH);
   const isVRMode = useXR(state => state.mode === "immersive-vr" || state.mode === "immersive-ar");
 
   useEffect(() => {
-    toggled ? playClick() : playUnclick();
-  }, [toggled]);
+    if (!lastTriggerCell) return;
+    if (lastTriggerCell.trigger === 3 || lastTriggerCell.trigger === 4) {
+      playSwitch();
+    } else {
+      toggled ? playClick() : playUnclick();
+    }
+  }, [toggled, lastTriggerCell]);
 
   useEffect(() => {
     if (completed) onFinishLevel();

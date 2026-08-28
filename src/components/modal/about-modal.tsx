@@ -43,9 +43,14 @@ const CREDITS: CreditGroup[] = [
         url: "https://kenney.nl/assets/ui-audio",
       },
       {
-        label: "Level complete",
+        label: "Switch sound",
         link: "Spell 1 (Bart Kelsey)",
         url: "https://opengameart.org/content/spell-1",
+      },
+      {
+        label: "Level complete",
+        link: "Jingle_Win_Synth_00 (Little Robot Sound Factory)",
+        url: "https://opengameart.org/content/electric-sound-effects-library",
       },
     ],
   },

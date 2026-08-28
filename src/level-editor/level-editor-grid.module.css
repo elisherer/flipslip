@@ -42,6 +42,18 @@
   stroke-width: 1;
 }
 
+.switchTrigger {
+  fill: #29b6f6;
+  stroke: #01579b;
+  stroke-width: 1;
+}
+
+.switchTriggerPushed {
+  fill: #ec407a;
+  stroke: #880e4f;
+  stroke-width: 1;
+}
+
 .edgeOpen {
   fill: transparent;
   cursor: pointer;

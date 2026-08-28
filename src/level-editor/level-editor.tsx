@@ -38,7 +38,7 @@ type EditorMode = "cell" | "trigger" | "player" | "finish";
 
 const MODE_LEGEND: Record<EditorMode, string> = {
   cell: "Click a cell: place/remove it",
-  trigger: "Click a cell: cycle its trigger (none → unpushed → pushed)",
+  trigger: "Click a cell: cycle its trigger (none → unpushed → pushed → switch unpushed → switch pushed)",
   player: "Click a cell (either layer): set that layer's player start",
   finish: "Click a cell: set the finish position",
 };
@@ -257,6 +257,9 @@ export default function LevelEditor({
           </button>
           <button type="button" className={styles.button + " " + styles.active} onClick={handleTryItOut}>
             ▶ Try it out
+          </button>
+          <button type="button" className={styles.button} style={{ border: "1px solid #555" }} onClick={handleCopy}>
+            Copy JSON
           </button>
         </div>
 

@@ -2,7 +2,7 @@ export type KitModelSpec =
   | {
       kit: "prototype";
       model: string;
-      variant?: "a" | "b" | "c";
+      variant?: "a" | "b" | "c" | "p" | "t";
     }
   | {
       kit: "td";

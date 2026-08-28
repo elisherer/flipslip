@@ -1,10 +1,11 @@
-import { Level } from "@/levels/level-schema";
+import { Cell, Level } from "@/levels/level-schema";
 import { Direction } from "@/types/direction";
 
 export type LevelState = {
   level: Level;
   bag: Record<string, boolean>;
   toggled: boolean;
+  lastTriggerCell?: Cell;
   completed: boolean;
   players: {
     prevPosition?: [x: number, y: number, z: number];

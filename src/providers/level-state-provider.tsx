@@ -4,7 +4,7 @@ import { createImmerStateContext, useImmerStateProvider } from "use-immer-state-
 import useSound from "use-sound";
 
 import { Sounds } from "@/assets/sounds";
-import { LayerName, Level, isTriggerPushed, isWallStateOpen } from "@/levels/level-schema";
+import { LayerName, Level, isSwitchTrigger, isTriggerPushed, isWallStateOpen } from "@/levels/level-schema";
 import { Levels } from "@/levels/levels";
 import { useGameState } from "@/providers/game-state-provider";
 import { KEYBOARD_MAP } from "@/providers/keyboard-map";
@@ -93,10 +93,21 @@ const actions = {
     const cell = level.layers[LAYER_FOR_PLAYER[player]][z]?.[x];
     if (!cell) return;
     if (cell.trigger && !isTriggerPushed(cell.trigger, draft.toggled)) {
+      // we store the last trigger cell to let the game play sound effects
+      draft.lastTriggerCell = cell;
       // pushing an unpushed trigger flips the shared bit, which inverts every
       // trigger's pushed state at once -- a pushed trigger can't be re-pushed
       draft.toggled = !draft.toggled;
       console.debug("player " + player + " pushed trigger at " + x + "," + z + ", toggled = " + draft.toggled);
+      if (isSwitchTrigger(cell.trigger)) {
+        const posA = draft.players[0].position;
+        const posB = draft.players[1].position;
+        draft.players[0].position = posB;
+        draft.players[0].prevPosition = undefined;
+        draft.players[1].position = posA;
+        draft.players[1].prevPosition = undefined;
+        console.debug("switch trigger at " + x + "," + z + " swapped players");
+      }
     }
     const [fx, fz] = level.finish.position;
     if (x === fx && z === fz) {

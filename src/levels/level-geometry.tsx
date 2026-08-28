@@ -1,7 +1,7 @@
 import { Grid } from "@react-three/drei";
 import { useMemo } from "react";
 
-import { LAYER_NAMES, Level, isTriggerPushed, isWallStateOpen } from "@/levels/level-schema";
+import { LAYER_NAMES, Level, isSwitchTrigger, isTriggerPushed, isWallStateOpen } from "@/levels/level-schema";
 
 import KitModel from "../components/kit-model";
 
@@ -36,7 +36,7 @@ export default function LevelGeometry({
 
     for (let z = 0; z < level.height; z++) {
       for (let x = 0; x < level.width; x++) {
-        const key = x + "," + z;
+        const key = x + "," + z + "/" + toggled;
         const objects = [];
 
         if (level.layers.ground[z]?.[x] || level.layers.air[z]?.[x]) {
@@ -55,8 +55,10 @@ export default function LevelGeometry({
         LAYER_NAMES.forEach((layerName, i) => {
           const cell = level.layers[layerName][z]?.[x];
           if (!cell) return;
-          const layerKey = i + ":" + key;
+          // key should contain trigger so it will invalidate the model on the level editor when edited
+          const layerKey = i + ":" + key + (cell.trigger ? "/" + cell.trigger : "");
           if (cell.trigger) {
+            const isSwitch = isSwitchTrigger(cell.trigger);
             const pushed = isTriggerPushed(cell.trigger, toggled);
             objects.push(
               <KitModel
@@ -64,6 +66,7 @@ export default function LevelGeometry({
                 position={[0, i * 0.5 - 1, 0]}
                 kit="prototype"
                 model="button-floor-square-small"
+                variant={isSwitch ? "p" : "t"}
                 animate={pushed ? "toggle-on" : "toggle-off"}
                 receiveShadow
                 castShadow

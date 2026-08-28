@@ -7,8 +7,13 @@ export type WallState = 0 | 1 | 2 | 3 | 4 | 5;
 
 export const WALL_STATES: WallState[] = [0, 1, 2, 3, 4, 5];
 
-/** 1 = trigger starts unpushed, 2 = trigger starts pushed. Absent/0/null = no trigger here. */
-export type TriggerState = 1 | 2;
+/**
+ * 1 = toggle trigger starts unpushed, 2 = toggle trigger starts pushed. 3/4 = switch trigger
+ * starts unpushed/pushed -- same shared `toggled` bit as toggle triggers (see
+ * isTriggerPushed), but additionally swaps the ground/air players' positions the moment it
+ * transitions to pushed (see isSwitchTrigger, arriveAt). Absent/0/null = no trigger here.
+ */
+export type TriggerState = 1 | 2 | 3 | 4;
 
 export interface Cell {
   /** Passability to the cell directly to the right (x + 1) */
@@ -71,20 +76,32 @@ export function isWallStateOpen(state: WallState, toggled: boolean): boolean {
   }
 }
 
+/** Whether a trigger is a "switch" trigger (swaps players) rather than a toggle trigger. */
+export function isSwitchTrigger(trigger: TriggerState): boolean {
+  return trigger === 3 || trigger === 4;
+}
+
+/** The trigger's own starting pushed state, independent of its kind. */
+export function triggerStartsPushed(trigger: TriggerState): boolean {
+  return trigger === 2 || trigger === 4;
+}
+
 /**
- * All triggers share the single level-wide `toggled` bit. A trigger's current pushed
- * state is that bit XORed against its own starting state -- so flipping `toggled`
- * (which only happens by pushing a currently-unpushed trigger) inverts every trigger
- * in the level at once: whichever one you pushed becomes pushed, all others flip too.
+ * All triggers (toggle and switch alike) share the single level-wide `toggled` bit. A
+ * trigger's current pushed state is that bit XORed against its own starting state -- so
+ * flipping `toggled` (which only happens by pushing a currently-unpushed trigger) inverts
+ * every trigger in the level at once: whichever one you pushed becomes pushed, all others
+ * flip too. Switch triggers additionally swap the players on that same transition -- see
+ * `arriveAt` in level-state-provider.tsx.
  */
 export function isTriggerPushed(trigger: TriggerState, toggled: boolean): boolean {
-  return (trigger === 2) !== toggled;
+  return triggerStartsPushed(trigger) !== toggled;
 }
 
 export function nextTriggerState(trigger: TriggerState | undefined): TriggerState | undefined {
   if (trigger === undefined) return 1;
-  if (trigger === 1) return 2;
-  return undefined;
+  if (trigger === 4) return undefined;
+  return ((trigger + 1) as TriggerState);
 }
 
 export function createGrid(width: number, height: number): (Cell | null)[][] {

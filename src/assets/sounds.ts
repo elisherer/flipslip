@@ -1,7 +1,8 @@
 export enum Sounds {
   CLICK = "/assets/audio/switch4.ogg",
   UNCLICK = "/assets/audio/switch9.ogg",
-  FINISH = "/assets/audio/spell1_0.ogg",
+  SWITCH = "/assets/audio/spell1_0.ogg",
+  FINISH = "/assets/audio/Jingle_Win_Synth_00.ogg",
 }
 
 export enum Music {

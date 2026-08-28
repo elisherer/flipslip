@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { Cell, WallState } from "@/levels/level-schema";
+import { Cell, WallState, isTriggerPushed } from "@/levels/level-schema";
 
 import styles from "./level-editor-grid.module.css";
 
@@ -114,6 +114,12 @@ export default function LevelEditorGrid({
         const left = x * CELL_SIZE + WALL_THICKNESS / 2;
         const top = z * CELL_SIZE + WALL_THICKNESS / 2;
         const inner = CELL_SIZE - WALL_THICKNESS;
+        const triggerColor = cell?.trigger
+          ? cell.trigger === 1 || cell.trigger === 2
+            ? "#4fca75"
+            : "#a666d8"
+          : undefined;
+        const triggerPushed = cell?.trigger ? isTriggerPushed(cell.trigger, false) : false;
         return (
           <g key={x + ":" + z}>
             <rect
@@ -125,13 +131,28 @@ export default function LevelEditorGrid({
               onClick={() => onCellClick(x, z)}
             />
             {cell?.trigger && (
-              <circle
-                cx={left + inner / 2}
-                cy={top + inner / 2}
-                r={inner * 0.18}
-                className={cell.trigger === 2 ? styles.triggerPushed : styles.trigger}
-                pointerEvents="none"
-              />
+              <>
+                {/* trunk */}
+                <rect
+                  fill={triggerColor}
+                  stroke="black"
+                  width={10}
+                  height={triggerPushed ? 4 : 10}
+                  x={left + 12}
+                  y={top + (triggerPushed ? 18 : 12)}
+                />
+                {/* knob */}
+                <rect
+                  fill={triggerColor}
+                  stroke="black"
+                  width={18}
+                  height={4}
+                  x={left + 8}
+                  y={top + (triggerPushed ? 15 : 10)}
+                />
+                {/* base */}
+                <rect fill="#888" stroke="black" width={18} height={4} x={left + 8} y={top + 22} />
+              </>
             )}
           </g>
         );
