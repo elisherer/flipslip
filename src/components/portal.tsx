@@ -3,6 +3,8 @@ import { useFrame } from "@react-three/fiber";
 import { ComponentProps, useRef } from "react";
 import { DoubleSide, Mesh } from "three";
 
+import { rot } from "@/utils/constants";
+
 const Portal = ({ size = 2, ...props }: { size?: number } & Omit<ComponentProps<"mesh">, "args">) => {
   const texture = useTexture("/assets/textures/portal.png");
   const ref = useRef<Mesh>(null);
@@ -22,7 +24,7 @@ const Portal = ({ size = 2, ...props }: { size?: number } & Omit<ComponentProps<
   });
 
   return (
-    <mesh ref={ref} rotation={[Math.PI / 2, 0, 0]} receiveShadow {...props}>
+    <mesh ref={ref} rotation={rot.x90} receiveShadow {...props}>
       <planeGeometry args={[size, size]} />
       <meshStandardMaterial map={texture} transparent side={DoubleSide} />
     </mesh>

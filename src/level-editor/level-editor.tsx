@@ -6,6 +6,8 @@ import { Toolbar } from "@base-ui/react/toolbar";
 import {
   ChevronRight as ChevronRightIcon,
   Flag as FlagIcon,
+  MouseLeftIcon,
+  MouseRightIcon,
   Square as SquareIcon,
   User as UserIcon,
   Zap as ZapIcon,
@@ -22,6 +24,7 @@ import {
   isValidLevel,
   nextTriggerState,
   nextWallState,
+  prevTriggerState,
   prevWallState,
   resizeLevel,
 } from "@/levels/level-schema";
@@ -37,14 +40,11 @@ const DEFAULT_HEIGHT = 8;
 type EditorMode = "cell" | "trigger" | "player" | "finish";
 
 const MODE_LEGEND: Record<EditorMode, string> = {
-  cell: "Click a cell: place/remove it",
-  trigger: "Click a cell: cycle its trigger (none → unpushed → pushed → switch unpushed → switch pushed)",
-  player: "Click a cell (either layer): set that layer's player start",
-  finish: "Click a cell: set the finish position",
+  cell: "Place/remove it",
+  trigger: "Cycle trigger",
+  player: "Set layer's player start",
+  finish: "Set finish position",
 };
-
-const EDGE_LEGEND =
-  "Click edge: cycle wall (open → wall → green open → green closed → purple open → purple closed)\nRight-click edge: cycle backward";
 
 function updateCell(
   level: Level,
@@ -113,18 +113,21 @@ export default function LevelEditor({
 
   const toggleExists = (layer: LayerName, x: number, z: number) =>
     setLevel(lvl => updateCell(lvl, layer, x, z, cell => (cell ? null : createCell())));
-  const cycleTrigger = (layer: LayerName, x: number, z: number) =>
+  const cycleTrigger = (layer: LayerName, x: number, z: number, backward: boolean) =>
     setLevel(lvl =>
-      updateExistingCell(lvl, layer, x, z, cell => ({ ...cell, trigger: nextTriggerState(cell.trigger) })),
+      updateExistingCell(lvl, layer, x, z, cell => ({
+        ...cell,
+        trigger: (backward ? prevTriggerState : nextTriggerState)(cell.trigger),
+      })),
     );
-  const cycleRight = (layer: LayerName, x: number, z: number, backward: boolean) =>
+  const handleRightEdgeCycle = (layer: LayerName, x: number, z: number, backward: boolean) =>
     setLevel(lvl =>
       updateExistingCell(lvl, layer, x, z, cell => ({
         ...cell,
         right: (backward ? prevWallState : nextWallState)(cell.right),
       })),
     );
-  const cycleDown = (layer: LayerName, x: number, z: number, backward: boolean) =>
+  const handleDownEdgeCycle = (layer: LayerName, x: number, z: number, backward: boolean) =>
     setLevel(lvl =>
       updateExistingCell(lvl, layer, x, z, cell => ({
         ...cell,
@@ -132,7 +135,7 @@ export default function LevelEditor({
       })),
     );
 
-  const handleCellClick = (layer: LayerName, x: number, z: number) => {
+  const handleCellCycle = (layer: LayerName, x: number, z: number, backward: boolean) => {
     switch (mode) {
       case "finish":
         setLevel(lvl => setFinishPosition(lvl, x, z));
@@ -143,7 +146,7 @@ export default function LevelEditor({
         break;
       }
       case "trigger":
-        cycleTrigger(layer, x, z);
+        cycleTrigger(layer, x, z, backward);
         break;
       case "cell":
         toggleExists(layer, x, z);
@@ -286,9 +289,6 @@ export default function LevelEditor({
                               {isDraftLevel(index) ? `Draft ${getDraftNumber(index)}` : `Level ${index + 1}`}
                             </Menu.Item>
                           ))}
-                          <Menu.Item className={styles.menuItem} onClick={() => handleSaveAsDraft(nextDraft)}>
-                            Draft {nextDraft} (new)
-                          </Menu.Item>
                         </Menu.Popup>
                       </Menu.Positioner>
                     </Menu.Portal>
@@ -438,9 +438,16 @@ export default function LevelEditor({
 
         <div className={styles.mainArea}>
           <div className={styles.legend}>
-            {MODE_LEGEND[mode]}
-            {"\n"}
-            {EDGE_LEGEND}
+            CELL
+            <br />
+            <MouseLeftIcon />: {MODE_LEGEND[mode]}
+            <br />
+            <br />
+            EDGE
+            <br />
+            <MouseLeftIcon />: Cycle wall
+            <br />
+            <MouseRightIcon />: Cycle backward
           </div>
           <div className={styles.gridPane}>
             {LAYER_NAMES.map(layerName => {
@@ -455,9 +462,9 @@ export default function LevelEditor({
                     playerPosition={level.players[layerIndex].position}
                     finishPosition={level.finish.position}
                     crosshair={mode !== "cell"}
-                    onCellClick={(x, y) => handleCellClick(layerName, x, y)}
-                    onCycleRight={(x, y, backward) => cycleRight(layerName, x, y, backward)}
-                    onCycleDown={(x, y, backward) => cycleDown(layerName, x, y, backward)}
+                    onCellCycle={(x, y, backward) => handleCellCycle(layerName, x, y, backward)}
+                    onRightEdgeCycle={(x, y, backward) => handleRightEdgeCycle(layerName, x, y, backward)}
+                    onDownEdgeCycle={(x, y, backward) => handleDownEdgeCycle(layerName, x, y, backward)}
                   />
                 </div>
               );

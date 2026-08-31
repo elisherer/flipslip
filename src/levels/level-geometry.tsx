@@ -2,6 +2,7 @@ import { Grid } from "@react-three/drei";
 import { useMemo } from "react";
 
 import { LAYER_NAMES, Level, isSwitchTrigger, isTriggerPushed, isWallStateOpen } from "@/levels/level-schema";
+import { rot } from "@/utils/constants";
 
 import KitModel from "../components/kit-model";
 
@@ -52,18 +53,18 @@ export default function LevelGeometry({
           );
         }
 
-        LAYER_NAMES.forEach((layerName, i) => {
+        LAYER_NAMES.forEach((layerName, l) => {
           const cell = level.layers[layerName][z]?.[x];
           if (!cell) return;
           // key should contain trigger so it will invalidate the model on the level editor when edited
-          const layerKey = i + ":" + key + (cell.trigger ? "/" + cell.trigger : "");
+          const layerKey = l + ":" + key + (cell.trigger ? "/" + cell.trigger : "");
           if (cell.trigger) {
             const isSwitch = isSwitchTrigger(cell.trigger);
             const pushed = isTriggerPushed(cell.trigger, toggled);
             objects.push(
               <KitModel
                 key={layerKey}
-                position={[0, i * 0.5 - 1, 0]}
+                position={[0, l * 0.5 - 1, 0]}
                 kit="prototype"
                 model="button-floor-square-small"
                 variant={isSwitch ? "p" : "t"}
@@ -79,9 +80,20 @@ export default function LevelGeometry({
               <KitModel
                 key={layerKey + ":finish"}
                 position={[0, -0.99, 0]}
-                scale={0.5}
+                scale={0.75}
                 kit="prototype"
                 model="indicator-special-lines"
+                receiveShadow
+              />,
+            );
+            objects.push(
+              <KitModel
+                key={layerKey + ":finish/flag"}
+                position={[0, -0.99, 0]}
+                rotation={rot.y90}
+                scale={0.5}
+                kit="prototype"
+                model="flag"
                 receiveShadow
               />,
             );
@@ -91,7 +103,7 @@ export default function LevelGeometry({
             if (cell.right > 1) {
               const open = isWallStateOpen(neighborRight ? cell.right : 1, toggled);
               objects.push(
-                <mesh key={layerKey + ":right"} position={[0.5, i * 0.5 - 0.75, 0]} rotation={[0, -Math.PI / 2, 0]}>
+                <mesh key={layerKey + ":right"} position={[0.5, l * 0.5 - 0.75, 0]} rotation={rot.y270}>
                   <boxGeometry args={[0.9, 0.5, 0.1]} />
                   <meshStandardMaterial
                     polygonOffset
@@ -108,7 +120,7 @@ export default function LevelGeometry({
                 <KitModel
                   key={layerKey + ":right"}
                   position={[0.5, -0.5, 0]}
-                  rotation={i === 0 ? [Math.PI, 0, 0] : undefined}
+                  rotation={l === 0 ? rot.x180 : undefined}
                   scale={[0.5, 1, 1.1]}
                   kit="prototype"
                   model="wall-low"
@@ -124,7 +136,7 @@ export default function LevelGeometry({
             if (cell.down > 1) {
               const open = isWallStateOpen(neighborBelow ? cell.down : 1, toggled);
               objects.push(
-                <mesh key={layerKey + ":down"} position={[0, i * 0.5 - 0.75, 0.5]}>
+                <mesh key={layerKey + ":down"} position={[0, l * 0.5 - 0.75, 0.5]}>
                   <boxGeometry args={[0.9, 0.5, 0.1]} />
                   <meshStandardMaterial
                     polygonOffset
@@ -143,7 +155,7 @@ export default function LevelGeometry({
                 <KitModel
                   key={layerKey + ":down"}
                   position={[0, -0.5, 0.5]}
-                  rotation={[i === 0 ? Math.PI : 0, Math.PI / 2, 0]}
+                  rotation={l === 0 ? [Math.PI, Math.PI / 2, 0] : rot.y90}
                   opacity={z < level.height - 1 && (cell.trigger || cellBelow?.trigger || isFinish) ? 0.4 : 1}
                   scale={[0.5, 1, 1.1]}
                   kit="prototype"
@@ -160,7 +172,7 @@ export default function LevelGeometry({
               <KitModel
                 key={layerKey + ":left"}
                 position={[-0.5, -0.5, 0]}
-                rotation={i === 0 ? [0, 0, Math.PI] : undefined}
+                rotation={l === 0 ? rot.z180 : undefined}
                 scale={[0.5, 1, 1.1]}
                 kit="prototype"
                 model="wall-low"
@@ -175,7 +187,7 @@ export default function LevelGeometry({
               <KitModel
                 key={layerKey + ":up"}
                 position={[0, -0.5, -0.5]}
-                rotation={[i === 0 ? Math.PI : 0, Math.PI / 2, 0]}
+                rotation={l === 0 ? [Math.PI, Math.PI / 2, 0] : rot.y90}
                 scale={[0.5, 1, 1.1]}
                 kit="prototype"
                 model="wall-low"

@@ -1,6 +1,6 @@
 export default function TriggerIcon({ color, pushed }: { color: string; pushed?: boolean }) {
   return (
-    <g>
+    <g style={{ pointerEvents: "none" }}>
       <rect
         fill={color}
         stroke="black"

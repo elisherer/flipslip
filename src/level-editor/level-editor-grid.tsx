@@ -68,9 +68,9 @@ export default function LevelEditorGrid({
   playerPosition,
   finishPosition,
   crosshair,
-  onCellClick,
-  onCycleRight,
-  onCycleDown,
+  onCellCycle,
+  onRightEdgeCycle,
+  onDownEdgeCycle,
 }: {
   grid: (Cell | null)[][];
   width: number;
@@ -78,9 +78,9 @@ export default function LevelEditorGrid({
   playerPosition: [number, number];
   finishPosition: [number, number];
   crosshair?: boolean;
-  onCellClick: (x: number, z: number) => void;
-  onCycleRight: (x: number, z: number, backward: boolean) => void;
-  onCycleDown: (x: number, z: number, backward: boolean) => void;
+  onCellCycle: (x: number, z: number, backward: boolean) => void;
+  onRightEdgeCycle: (x: number, z: number, backward: boolean) => void;
+  onDownEdgeCycle: (x: number, z: number, backward: boolean) => void;
 }) {
   const svgWidth = width * CELL_SIZE + WALL_THICKNESS;
   const svgHeight = height * CELL_SIZE + WALL_THICKNESS;
@@ -128,7 +128,11 @@ export default function LevelEditorGrid({
               width={inner}
               height={inner}
               className={cell ? ((x + z) % 2 ? styles.cellOpen : styles.cellOpenModulu) : styles.cellNone}
-              onClick={() => onCellClick(x, z)}
+              onClick={() => onCellCycle(x, z, false)}
+              onContextMenu={e => {
+                e.preventDefault();
+                onCellCycle(x, z, true);
+              }}
             />
             {cell?.trigger && (
               <>
@@ -140,6 +144,7 @@ export default function LevelEditorGrid({
                   height={triggerPushed ? 4 : 10}
                   x={left + 12}
                   y={top + (triggerPushed ? 18 : 12)}
+                  pointerEvents="none"
                 />
                 {/* knob */}
                 <rect
@@ -149,9 +154,10 @@ export default function LevelEditorGrid({
                   height={4}
                   x={left + 8}
                   y={top + (triggerPushed ? 15 : 10)}
+                  pointerEvents="none"
                 />
                 {/* base */}
-                <rect fill="#888" stroke="black" width={18} height={4} x={left + 8} y={top + 22} />
+                <rect fill="#888" stroke="black" width={18} height={4} x={left + 8} y={top + 22} pointerEvents="none" />
               </>
             )}
           </g>
@@ -173,10 +179,10 @@ export default function LevelEditorGrid({
                   width={EDGE_HIT}
                   height={inner}
                   className={EDGE_STYLE[cell.right]}
-                  onClick={() => onCycleRight(x, z, false)}
+                  onClick={() => onRightEdgeCycle(x, z, false)}
                   onContextMenu={e => {
                     e.preventDefault();
-                    onCycleRight(x, z, true);
+                    onRightEdgeCycle(x, z, true);
                   }}
                 />
                 {startsClosed(cell.right) && (
@@ -199,10 +205,10 @@ export default function LevelEditorGrid({
                   width={inner}
                   height={EDGE_HIT}
                   className={EDGE_STYLE[cell.down]}
-                  onClick={() => onCycleDown(x, z, false)}
+                  onClick={() => onDownEdgeCycle(x, z, false)}
                   onContextMenu={e => {
                     e.preventDefault();
-                    onCycleDown(x, z, true);
+                    onDownEdgeCycle(x, z, true);
                   }}
                 />
                 {startsClosed(cell.down) && (

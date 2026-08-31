@@ -101,7 +101,13 @@ export function isTriggerPushed(trigger: TriggerState, toggled: boolean): boolea
 export function nextTriggerState(trigger: TriggerState | undefined): TriggerState | undefined {
   if (trigger === undefined) return 1;
   if (trigger === 4) return undefined;
-  return ((trigger + 1) as TriggerState);
+  return (trigger + 1) as TriggerState;
+}
+
+export function prevTriggerState(trigger: TriggerState | undefined): TriggerState | undefined {
+  if (trigger === undefined) return 4;
+  if (trigger === 1) return undefined;
+  return (trigger - 1) as TriggerState;
 }
 
 export function createGrid(width: number, height: number): (Cell | null)[][] {
