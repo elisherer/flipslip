@@ -4,28 +4,30 @@ import { Toggle } from "@base-ui/react/toggle";
 import { ToggleGroup } from "@base-ui/react/toggle-group";
 import { Toolbar } from "@base-ui/react/toolbar";
 import {
-  ChevronRight as ChevronRightIcon,
-  Flag as FlagIcon,
+  ChevronRightIcon,
+  FlagIcon,
+  LayerArrowDownIcon,
+  LayerArrowUpIcon,
   MouseLeftIcon,
   MouseRightIcon,
-  Square as SquareIcon,
-  User as UserIcon,
-  Zap as ZapIcon,
+  SquareIcon,
+  UserIcon,
+  ZapIcon,
 } from "lucide-react";
 import { ChangeEvent, useMemo, useRef, useState } from "react";
 
 import {
   Cell,
   LAYER_NAMES,
+  LAYER_NAMES_REVERSED,
   LayerName,
   Level,
+  WallState,
   createCell,
   createLevel,
   isValidLevel,
   nextTriggerState,
-  nextWallState,
   prevTriggerState,
-  prevWallState,
   resizeLevel,
 } from "@/levels/level-schema";
 import { Levels, getDraftNumber, isDraftLevel, listDraftNumbers, nextDraftNumber, syncDraft } from "@/levels/levels";
@@ -46,6 +48,8 @@ const MODE_LEGEND: Record<EditorMode, string> = {
   finish: "Set finish position",
 };
 
+const WALL_STATES: (0 | WallState)[] = [0, 1, 2, 3, 4, 5];
+
 function updateCell(
   level: Level,
   layer: LayerName,
@@ -60,6 +64,14 @@ function updateCell(
   const nextGrid = grid.slice();
   nextGrid[y] = nextRow;
   return { ...level, layers: { ...level.layers, [layer]: nextGrid } };
+}
+
+function nextWallState(state?: WallState): WallState | undefined {
+  return WALL_STATES[(WALL_STATES.indexOf(state ?? 0) + 1) % WALL_STATES.length] || undefined;
+}
+
+function prevWallState(state?: WallState): WallState | undefined {
+  return WALL_STATES[(WALL_STATES.indexOf(state ?? 0) - 1 + WALL_STATES.length) % WALL_STATES.length] || undefined;
 }
 
 function updateExistingCell(level: Level, layer: LayerName, x: number, z: number, update: (cell: Cell) => Cell): Level {
@@ -434,6 +446,23 @@ export default function LevelEditor({
               <FlagIcon size={18} />
             </Toolbar.Button>
           </ToggleGroup>
+          <Toolbar.Separator className={styles.toolbarSeparator} />
+          <Toolbar.Button
+            aria-label="Copy air → ground"
+            title="Copy air → ground"
+            className={styles.toolbarButton}
+            onClick={() => handleCopyLayer("air", "ground")}
+          >
+            <LayerArrowDownIcon size={18} />
+          </Toolbar.Button>
+          <Toolbar.Button
+            aria-label="Copy ground → air"
+            title="Copy ground → air"
+            className={styles.toolbarButton}
+            onClick={() => handleCopyLayer("ground", "air")}
+          >
+            <LayerArrowUpIcon size={18} />
+          </Toolbar.Button>
         </Toolbar.Root>
 
         <div className={styles.mainArea}>
@@ -450,7 +479,7 @@ export default function LevelEditor({
             <MouseRightIcon />: Cycle backward
           </div>
           <div className={styles.gridPane}>
-            {LAYER_NAMES.map(layerName => {
+            {LAYER_NAMES_REVERSED.map(layerName => {
               const layerIndex = LAYER_NAMES.indexOf(layerName) as 0 | 1;
               return (
                 <div key={layerName} className={styles.layerBlock}>

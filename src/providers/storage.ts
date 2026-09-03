@@ -38,7 +38,7 @@ class Storage {
 }
 
 if (isLocalDev) {
-  (window as any).P = {
+  (window as any).__FS = {
     JSONGzip,
     Storage,
     cheat: (level: number) => {

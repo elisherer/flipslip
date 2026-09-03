@@ -1,11 +1,11 @@
+import { LevelThemeId } from "@/levels/themes/level-theme";
+
 /**
- * 0 = open (passable), 1 = regular wall,
+ * 1 = regular wall,
  * 2 = green toggle wall starting open, 3 = green toggle wall starting closed,
  * 4 = purple toggle wall starting open, 5 = purple toggle wall starting closed.
  */
-export type WallState = 0 | 1 | 2 | 3 | 4 | 5;
-
-export const WALL_STATES: WallState[] = [0, 1, 2, 3, 4, 5];
+export type WallState = 1 | 2 | 3 | 4 | 5;
 
 /**
  * 1 = toggle trigger starts unpushed, 2 = toggle trigger starts pushed. 3/4 = switch trigger
@@ -17,9 +17,9 @@ export type TriggerState = 1 | 2 | 3 | 4;
 
 export interface Cell {
   /** Passability to the cell directly to the right (x + 1) */
-  right: WallState;
+  right?: WallState;
   /** Passability to the cell directly below (y + 1) */
-  down: WallState;
+  down?: WallState;
   /** Optional interactive trigger (toggle button) inside the cell */
   trigger?: TriggerState;
 }
@@ -40,6 +40,7 @@ export interface Finish {
 export interface Level {
   width: number;
   height: number;
+  theme?: LevelThemeId;
   layers: LayerGrid;
   /** player 0 -> ground layer, player 1 -> air layer */
   players: [PlayerStart, PlayerStart];
@@ -50,24 +51,16 @@ export interface Level {
 export type LayerName = keyof LayerGrid;
 
 export const LAYER_NAMES: LayerName[] = ["ground", "air"];
+export const LAYER_NAMES_REVERSED: LayerName[] = ["air", "ground"];
 
 export function createCell(): Cell {
-  return { right: 0, down: 0 };
-}
-
-export function nextWallState(state: WallState): WallState {
-  return WALL_STATES[(WALL_STATES.indexOf(state) + 1) % WALL_STATES.length];
-}
-
-export function prevWallState(state: WallState): WallState {
-  return WALL_STATES[(WALL_STATES.indexOf(state) - 1 + WALL_STATES.length) % WALL_STATES.length];
+  return {};
 }
 
 /** Whether an edge with the given wall state currently lets a player pass through it. */
-export function isWallStateOpen(state: WallState, toggled: boolean): boolean {
+export function isWallStateOpen(state: WallState | undefined, toggled: boolean): boolean {
+  if (!state) return true;
   switch (state) {
-    case 0:
-      return true;
     case 1:
       return false;
     default:

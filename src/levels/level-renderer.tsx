@@ -1,8 +1,6 @@
 import { useXR } from "@react-three/xr";
 import { useEffect } from "react";
-import useSound from "use-sound";
 
-import { Sounds } from "@/assets/sounds";
 import Stars from "@/components/starts";
 import XrButton from "@/components/xr/xr-button";
 import LevelGeometry from "@/levels/level-geometry";
@@ -19,20 +17,8 @@ type LevelProps = {
 
 export default function LevelRenderer({ onFinishLevel }: LevelProps) {
   const [{ levelIndex, debug }, gameApi] = useGameState();
-  const [{ level, toggled, lastTriggerCell, completed }] = useLevelState();
-  const [playClick] = useSound(Sounds.CLICK);
-  const [playUnclick] = useSound(Sounds.UNCLICK);
-  const [playSwitch] = useSound(Sounds.SWITCH);
+  const [{ level, toggled, completed }] = useLevelState();
   const isVRMode = useXR(state => state.mode === "immersive-vr" || state.mode === "immersive-ar");
-
-  useEffect(() => {
-    if (!lastTriggerCell) return;
-    if (lastTriggerCell.trigger === 3 || lastTriggerCell.trigger === 4) {
-      playSwitch();
-    } else {
-      toggled ? playClick() : playUnclick();
-    }
-  }, [toggled, lastTriggerCell]);
 
   useEffect(() => {
     if (completed) onFinishLevel();
@@ -80,8 +66,8 @@ export default function LevelRenderer({ onFinishLevel }: LevelProps) {
           <Stars />
         </group>
         <group position={[-level.width / 2, 0, -level.height / 2]}>
-          <Player index={0} />
-          <Player index={1} />
+          <Player index={0} theme={level.theme} />
+          <Player index={1} theme={level.theme} />
         </group>
         <LevelGeometry level={level} toggled={toggled} debug={debug} />
       </group>

@@ -1,17 +1,175 @@
 import { Grid } from "@react-three/drei";
 import { useMemo } from "react";
 
-import { LAYER_NAMES, Level, isSwitchTrigger, isTriggerPushed, isWallStateOpen } from "@/levels/level-schema";
+import LevelFloor from "@/levels/level-floor";
+import { LAYER_NAMES, Level, isWallStateOpen } from "@/levels/level-schema";
+import LevelTrigger from "@/levels/level-trigger";
+import LevelWall from "@/levels/level-wall";
 import { rot } from "@/utils/constants";
 
 import KitModel from "../components/kit-model";
 
-const WALL_COLORS: Record<number, string> = {
-  1: "white",
-  2: "#79c03d",
-  3: "#79c03d",
-  4: "#863fc2",
-  5: "#863fc2",
+const GROUND_HEIGHT = 0.4;
+const AIR_HEIGHT = 0.25;
+
+const renderBlocks = (level: Level, toggled: boolean) => {
+  const a: any[] = [];
+  const [finishX, finishZ] = level.finish.position;
+
+  for (let z = 0; z < level.height; z++) {
+    for (let x = 0; x < level.width; x++) {
+      const key = x + "," + z + "/" + toggled;
+      const objects = [];
+      if (level.layers.ground[z]?.[x] || level.layers.air[z]?.[x]) {
+        const idx = level.layers.ground[z]?.[x] ? 0 : 1;
+        objects.push(
+          <LevelFloor
+            key={key + ":floor"}
+            theme={level.theme}
+            layerIndex={idx}
+            position={[0, idx === 0 ? 0 : GROUND_HEIGHT - 0.001, 0]}
+          />,
+        );
+      }
+
+      LAYER_NAMES.forEach((layerName, l) => {
+        const cell = level.layers[layerName][z]?.[x];
+        if (!cell) return;
+        const layerHeight = l === 0 ? GROUND_HEIGHT : AIR_HEIGHT;
+        // key should contain trigger so it will invalidate the model on the level editor when edited
+        const layerKey = l + ":" + key + (cell.trigger ? "/" + cell.trigger : "");
+        if (cell.trigger) {
+          objects.push(
+            <LevelTrigger
+              key={layerKey}
+              position={[0, l * GROUND_HEIGHT + 0.01, 0]}
+              theme={level.theme}
+              state={cell.trigger}
+              toggled={toggled}
+              floating={Boolean(level.layers.ground[z]?.[x]) && l === 1}
+              receiveShadow
+              castShadow
+            />,
+          );
+        }
+        let isFinish = x === finishX && z === finishZ;
+        if (layerName === "ground" && isFinish) {
+          objects.push(
+            <KitModel
+              key={layerKey + ":finish"}
+              position={[0, 0.01, 0]}
+              scale={0.75}
+              kit="prototype"
+              model="indicator-special-lines"
+              receiveShadow
+            />,
+          );
+          objects.push(
+            <KitModel
+              key={layerKey + ":finish/flag"}
+              rotation={rot.y90}
+              scale={0.5}
+              kit="prototype"
+              model="flag"
+              receiveShadow
+            />,
+          );
+        }
+        const neighborRight = level.layers[layerName][z]?.[x + 1];
+        if (cell.right || !neighborRight) {
+          if ((cell.right ?? 0) > 1 && neighborRight) {
+            const open = isWallStateOpen(cell.right, toggled);
+            objects.push(
+              <LevelWall
+                key={layerKey + ":right"}
+                position={[0.5, l * GROUND_HEIGHT + layerHeight / 2, 0]}
+                rotation={rot.y90}
+                boxArgs={[0.9, layerHeight, 0.1]}
+                state={cell.right}
+                opacity={open ? 0.5 : 1}
+                layerIndex={l}
+                theme={level.theme}
+              />,
+            );
+          } else {
+            objects.push(
+              <LevelWall
+                key={layerKey + ":right"}
+                position={[0.5, l * GROUND_HEIGHT + layerHeight / 2, 0]}
+                rotation={rot.y90}
+                boxArgs={[1.1, layerHeight, 0.1]}
+                layerIndex={l}
+                theme={level.theme}
+              />,
+            );
+          }
+        }
+        const neighborDown = level.layers[layerName][z + 1]?.[x];
+        if (cell.down || !neighborDown) {
+          const cellBelow = layerName === "air" ? level.layers.ground[z]?.[x] : null;
+          if ((cell.down ?? 0) > 1 && neighborDown) {
+            const open = isWallStateOpen(cell.down, toggled);
+            objects.push(
+              <LevelWall
+                key={layerKey + ":down"}
+                position={[0, l * GROUND_HEIGHT + layerHeight / 2, 0.5]}
+                boxArgs={[0.9, layerHeight, 0.1]}
+                state={cell.down}
+                opacity={
+                  open ? 0.5 : z < level.height - 1 && (cell.trigger || cellBelow?.trigger || isFinish) ? 0.8 : 1
+                }
+                layerIndex={l}
+                theme={level.theme}
+              />,
+            );
+          } else {
+            objects.push(
+              <LevelWall
+                key={layerKey + ":down"}
+                position={[0, l * GROUND_HEIGHT + layerHeight / 2, 0.5]}
+                boxArgs={[1.1, layerHeight, 0.1]}
+                opacity={z < level.height - 1 && (cell.trigger || cellBelow?.trigger || isFinish) ? 0.6 : 1}
+                layerIndex={l}
+                theme={level.theme}
+              />,
+            );
+          }
+        }
+        const neighborLeft = level.layers[layerName][z]?.[x - 1];
+        if (!neighborLeft) {
+          objects.push(
+            <LevelWall
+              key={layerKey + ":left"}
+              position={[-0.5, l * GROUND_HEIGHT + layerHeight / 2, 0]}
+              rotation={rot.y90}
+              boxArgs={[1.1, layerHeight, 0.1]}
+              layerIndex={l}
+              theme={level.theme}
+            />,
+          );
+        }
+        const neighborUp = level.layers[layerName][z - 1]?.[x];
+        if (!neighborUp) {
+          objects.push(
+            <LevelWall
+              key={layerKey + ":up"}
+              position={[0, l * GROUND_HEIGHT + layerHeight / 2, -0.5]}
+              boxArgs={[1.1, layerHeight, 0.1]}
+              layerIndex={l}
+              theme={level.theme}
+            />,
+          );
+        }
+      });
+
+      a.push(
+        <group key={key} position={[x, 0, z]}>
+          {objects}
+        </group>,
+      );
+    }
+  }
+  return a;
 };
 
 /**
@@ -31,191 +189,16 @@ export default function LevelGeometry({
   /** Render static player models at their level-defined start positions (for the level editor's live preview). */
   preview?: boolean;
 }) {
-  const blocks = useMemo(() => {
-    const a: any[] = [];
-    const [finishX, finishZ] = level.finish.position;
-
-    for (let z = 0; z < level.height; z++) {
-      for (let x = 0; x < level.width; x++) {
-        const key = x + "," + z + "/" + toggled;
-        const objects = [];
-
-        if (level.layers.ground[z]?.[x] || level.layers.air[z]?.[x]) {
-          objects.push(
-            <KitModel
-              key={key + ":floor"}
-              position={[0, level.layers.ground[z]?.[x] ? -1.01 : -0.51, 0]}
-              kit="prototype"
-              model="floor-square"
-              receiveShadow
-              castShadow
-            />,
-          );
-        }
-
-        LAYER_NAMES.forEach((layerName, l) => {
-          const cell = level.layers[layerName][z]?.[x];
-          if (!cell) return;
-          // key should contain trigger so it will invalidate the model on the level editor when edited
-          const layerKey = l + ":" + key + (cell.trigger ? "/" + cell.trigger : "");
-          if (cell.trigger) {
-            const isSwitch = isSwitchTrigger(cell.trigger);
-            const pushed = isTriggerPushed(cell.trigger, toggled);
-            objects.push(
-              <KitModel
-                key={layerKey}
-                position={[0, l * 0.5 - 1, 0]}
-                kit="prototype"
-                model="button-floor-square-small"
-                variant={isSwitch ? "p" : "t"}
-                animate={pushed ? "toggle-on" : "toggle-off"}
-                receiveShadow
-                castShadow
-              />,
-            );
-          }
-          let isFinish = x === finishX && z === finishZ;
-          if (layerName === "ground" && isFinish) {
-            objects.push(
-              <KitModel
-                key={layerKey + ":finish"}
-                position={[0, -0.99, 0]}
-                scale={0.75}
-                kit="prototype"
-                model="indicator-special-lines"
-                receiveShadow
-              />,
-            );
-            objects.push(
-              <KitModel
-                key={layerKey + ":finish/flag"}
-                position={[0, -0.99, 0]}
-                rotation={rot.y90}
-                scale={0.5}
-                kit="prototype"
-                model="flag"
-                receiveShadow
-              />,
-            );
-          }
-          const neighborRight = level.layers[layerName][z]?.[x + 1];
-          if (cell.right || !neighborRight) {
-            if (cell.right > 1) {
-              const open = isWallStateOpen(neighborRight ? cell.right : 1, toggled);
-              objects.push(
-                <mesh key={layerKey + ":right"} position={[0.5, l * 0.5 - 0.75, 0]} rotation={rot.y270}>
-                  <boxGeometry args={[0.9, 0.5, 0.1]} />
-                  <meshStandardMaterial
-                    polygonOffset
-                    polygonOffsetFactor={1}
-                    polygonOffsetUnits={1}
-                    color={WALL_COLORS[neighborRight ? cell.right : 1]}
-                    transparent
-                    opacity={open ? 0.4 : 1}
-                  />
-                </mesh>,
-              );
-            } else {
-              objects.push(
-                <KitModel
-                  key={layerKey + ":right"}
-                  position={[0.5, -0.5, 0]}
-                  rotation={l === 0 ? rot.x180 : undefined}
-                  scale={[0.5, 1, 1.1]}
-                  kit="prototype"
-                  model="wall-low"
-                  receiveShadow
-                  castShadow
-                />,
-              );
-            }
-          }
-          const neighborBelow = level.layers[layerName][z + 1]?.[x];
-          if (cell.down || !neighborBelow) {
-            const cellBelow = layerName === "air" ? level.layers.ground[z]?.[x] : null;
-            if (cell.down > 1) {
-              const open = isWallStateOpen(neighborBelow ? cell.down : 1, toggled);
-              objects.push(
-                <mesh key={layerKey + ":down"} position={[0, l * 0.5 - 0.75, 0.5]}>
-                  <boxGeometry args={[0.9, 0.5, 0.1]} />
-                  <meshStandardMaterial
-                    polygonOffset
-                    polygonOffsetFactor={1}
-                    polygonOffsetUnits={1}
-                    color={WALL_COLORS[neighborBelow ? cell.down : 1]}
-                    transparent
-                    opacity={
-                      open ? 0.4 : z < level.height - 1 && (cell.trigger || cellBelow?.trigger || isFinish) ? 0.8 : 1
-                    }
-                  />
-                </mesh>,
-              );
-            } else {
-              objects.push(
-                <KitModel
-                  key={layerKey + ":down"}
-                  position={[0, -0.5, 0.5]}
-                  rotation={l === 0 ? [Math.PI, Math.PI / 2, 0] : rot.y90}
-                  opacity={z < level.height - 1 && (cell.trigger || cellBelow?.trigger || isFinish) ? 0.4 : 1}
-                  scale={[0.5, 1, 1.1]}
-                  kit="prototype"
-                  model="wall-low"
-                  receiveShadow
-                  castShadow
-                />,
-              );
-            }
-          }
-          const neighborLeft = level.layers[layerName][z]?.[x - 1];
-          if (!neighborLeft) {
-            objects.push(
-              <KitModel
-                key={layerKey + ":left"}
-                position={[-0.5, -0.5, 0]}
-                rotation={l === 0 ? rot.z180 : undefined}
-                scale={[0.5, 1, 1.1]}
-                kit="prototype"
-                model="wall-low"
-                receiveShadow
-                castShadow
-              />,
-            );
-          }
-          const neighborAbove = level.layers[layerName][z - 1]?.[x];
-          if (!neighborAbove) {
-            objects.push(
-              <KitModel
-                key={layerKey + ":up"}
-                position={[0, -0.5, -0.5]}
-                rotation={l === 0 ? [Math.PI, Math.PI / 2, 0] : rot.y90}
-                scale={[0.5, 1, 1.1]}
-                kit="prototype"
-                model="wall-low"
-                receiveShadow
-                castShadow
-              />,
-            );
-          }
-        });
-
-        a.push(
-          <group key={key} position={[x, 0, z]}>
-            {objects}
-          </group>,
-        );
-      }
-    }
-    return a;
-  }, [level, toggled, debug]);
+  const blocks = useMemo(() => [renderBlocks(level, false), renderBlocks(level, true)], [level]);
 
   return (
     <>
       <group position={[-level.width / 2, 0, -level.height / 2]}>
-        {blocks}
+        {blocks[toggled ? 1 : 0]}
         {preview && (
           <>
             <group position={[level.players[0].position[0], 0, level.players[0].position[1]]}>
-              <KitModel kit="characters" model="Astronaut.gltf" scale={0.72} position={[0, -1, 0]} />
+              <KitModel kit="characters" model="Astronaut.gltf" scale={0.66} />
             </group>
             <group position={[level.players[1].position[0], 0, level.players[1].position[1]]}>
               <KitModel
@@ -224,7 +207,7 @@ export default function LevelGeometry({
                 model="enemy-ufo-a"
                 variant="a"
                 scale={[0.67, 0.4, 0.67]}
-                position={[0, -0.3, 0]}
+                position={[0, 0.5, 0]}
               />
             </group>
           </>
@@ -235,7 +218,7 @@ export default function LevelGeometry({
           args={[level.width % 2 ? level.width + 1 : level.width, level.height % 2 ? level.height + 1 : level.height]}
           sectionColor="black"
           cellSize={1}
-          position={[-0.5 + (level.width % 2 ? 0.5 : 0), 0.01 - 1, -0.5 + (level.height % 2 ? 0.5 : 0)]}
+          position={[-0.5 + (level.width % 2 ? 0.5 : 0), 0.001, -0.5 + (level.height % 2 ? 0.5 : 0)]}
         />
       )}
     </>

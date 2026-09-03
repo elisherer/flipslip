@@ -4,63 +4,43 @@
   "layers": {
     "ground": [
       [
+        {},
         {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
           "down": 1
         },
         {
-          "right": 0,
           "down": 1
         },
         {
-          "right": 0,
           "down": 5
         },
         {
-          "right": 0,
           "down": 1
         },
         {
-          "right": 0,
           "down": 1
         },
-        {
-          "right": 0,
-          "down": 0
-        }
+        {}
       ],
       [
         {
-          "right": 1,
-          "down": 0
+          "right": 1
         },
+        {},
         {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
           "down": 1
         },
         {
-          "right": 0,
           "down": 2
         },
         {
-          "right": 0,
           "down": 1
         },
         {
-          "right": 1,
-          "down": 0
+          "right": 1
         },
         {
-          "right": 1,
-          "down": 0
+          "right": 1
         }
       ],
       [
@@ -72,45 +52,27 @@
           "right": 1,
           "down": 1
         },
+        {},
+        {},
         {
-          "right": 0,
-          "down": 0
+          "right": 1
         },
         {
-          "right": 0,
-          "down": 0
+          "right": 1
         },
         {
-          "right": 1,
-          "down": 0
-        },
-        {
-          "right": 1,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0,
           "trigger": 1
         }
       ],
       [
         {
-          "right": 1,
-          "down": 0
+          "right": 1
         },
         null,
+        {},
+        {},
         {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 1,
-          "down": 0
+          "right": 1
         },
         {
           "right": 1,
@@ -124,50 +86,40 @@
       ],
       [
         {
-          "right": 1,
-          "down": 0
+          "right": 1
         },
         null,
         {
-          "right": 0,
           "down": 1
         },
         {
-          "right": 0,
-          "down": 1
-        },
-        {
-          "right": 1,
           "down": 1
         },
         {
           "right": 1,
-          "down": 0
+          "down": 1
         },
         {
-          "right": 1,
-          "down": 0
+          "right": 1
+        },
+        {
+          "right": 1
         }
       ],
       [
         {
-          "right": 1,
-          "down": 0
+          "right": 1
         },
         {
-          "right": 0,
           "down": 1
         },
         {
-          "right": 0,
           "down": 1
         },
         {
-          "right": 0,
           "down": 1
         },
         {
-          "right": 0,
           "down": 1
         },
         {
@@ -175,156 +127,50 @@
           "down": 1
         },
         {
-          "right": 1,
-          "down": 0
+          "right": 1
         }
       ],
-      [
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        }
-      ]
+      [{}, {}, {}, {}, {}, {}, {}]
     ],
     "air": [
+      [{}, {}, {}, {}, {}, {}, {}],
       [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
         {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
+          "right": 1
         }
       ],
       [
         {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 1,
-          "down": 0
-        }
-      ],
-      [
-        {
-          "right": 0,
           "down": 1
         },
         {
-          "right": 0,
           "down": 1
         },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        }
+        {},
+        {},
+        {},
+        {},
+        {}
       ],
       [
         {
-          "right": 1,
-          "down": 0
+          "right": 1
         },
         {
           "right": 1,
-          "down": 0,
+
           "trigger": 2
         },
+        {},
+        {},
+        {},
         {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
           "down": 1
         },
         {
@@ -334,19 +180,15 @@
       ],
       [
         {
-          "right": 1,
-          "down": 0
+          "right": 1
         },
         {
-          "right": 1,
-          "down": 0
+          "right": 1
         },
         {
-          "right": 0,
           "down": 1
         },
         {
-          "right": 0,
           "down": 2
         },
         {
@@ -354,94 +196,44 @@
           "down": 1
         },
         {
-          "right": 1,
-          "down": 0
+          "right": 1
         },
-        {
-          "right": 0,
-          "down": 0
-        }
+        {}
       ],
       [
         {
-          "right": 1,
-          "down": 0
+          "right": 1
         },
         {
-          "right": 0,
           "down": 1
         },
         {
-          "right": 0,
           "down": 1
         },
         {
-          "right": 0,
           "down": 5
         },
         {
-          "right": 0,
           "down": 1
         },
         {
           "right": 1,
           "down": 1
         },
-        {
-          "right": 0,
-          "down": 0
-        }
+        {}
       ],
-      [
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        },
-        {
-          "right": 0,
-          "down": 0
-        }
-      ]
+      [{}, {}, {}, {}, {}, {}, {}]
     ]
   },
   "players": [
     {
-      "position": [
-        0,
-        0
-      ]
+      "position": [0, 0]
     },
     {
-      "position": [
-        6,
-        6
-      ]
+      "position": [6, 6]
     }
   ],
   "finish": {
-    "position": [
-      3,
-      3
-    ]
+    "position": [3, 3]
   }
 }

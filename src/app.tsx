@@ -27,10 +27,6 @@ function AppCanvas({ children }: PropsWithChildren<{}>) {
         antialias: settings.hq,
         alpha: true,
       }}
-      camera={{
-        near: 0.1,
-        far: 500,
-      }}
       events={noEvents}
     >
       <PointerEvents batchEvents={false} />

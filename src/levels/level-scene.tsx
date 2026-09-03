@@ -2,7 +2,7 @@ import { IfInSessionMode } from "@react-three/xr";
 import { useEffect } from "react";
 
 import { Music } from "@/assets/sounds";
-import BackgroundMusic from "@/components/BackgroundMusic";
+import BackgroundMusic from "@/components/audio/background-music";
 import Lights from "@/components/lights";
 import LevelRenderer from "@/levels/level-renderer";
 import { isDraftLevel } from "@/levels/levels";

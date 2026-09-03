@@ -1,7 +1,4 @@
-import Howler from "howler";
 import { useEffect, useState } from "react";
-
-Howler.autoSuspend = false;
 
 export const isAudioLocked = () => {
   return new Promise(resolve => {
@@ -11,13 +8,15 @@ export const isAudioLocked = () => {
         await audio.play();
         resolve(false);
       } catch (err) {
+        console.error(err);
         resolve(true);
       }
     };
     try {
-      const context = Howler.ctx;
+      const context = new AudioContext();
       resolve(context.state === "suspended");
     } catch (e) {
+      console.error(e);
       return checkHTML5Audio();
     }
   });

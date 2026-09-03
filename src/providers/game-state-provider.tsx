@@ -73,13 +73,11 @@ export const useGameState = () => {
 };
 
 const GameStateProvider = ({ children, initialLevelIndex }: PropsWithChildren<{ initialLevelIndex?: number }>) => {
-  const [, api, value] = useImmerStateProvider(
+  const [{ progress, settings }, api, value] = useImmerStateProvider(
     initialLevelIndex !== undefined ? { ...initialState, inLevel: true, levelIndex: initialLevelIndex } : initialState,
     actions,
   );
   const audioLocked = useAudioLockStatus();
-  const progress = value[0].progress;
-  const settings = value[0].settings;
   useEffect(() => {
     Storage.saveProgress(progress);
   }, [progress]);

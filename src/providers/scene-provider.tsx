@@ -49,7 +49,7 @@ export const SceneProvider = ({
         <CameraControls
           ref={cameraControlsRef}
           makeDefault
-          distance={6}
+          distance={debug ? 5 : 6}
           minDistance={debug ? 0.1 : 6}
           maxDistance={debug ? 10 : 6}
           enabled={debug}

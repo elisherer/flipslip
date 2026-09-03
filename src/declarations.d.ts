@@ -9,8 +9,8 @@ declare module "*.png" {
 }
 
 declare module "howler" {
-  export default {
-    autoSuspend: boolean,
-    ctx: any,
+  export const Howl: any;
+  export const Howler: {
+    autoSuspend: boolean;
   };
 }

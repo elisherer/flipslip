@@ -70,7 +70,7 @@ interface Level {
   width: number; height: number;
   layers: { ground: (Cell | null)[][]; air: (Cell | null)[][] };
   players: [PlayerStart, PlayerStart]; // player 0 -> ground, player 1 -> air
-  finish: { position: [x, y] };        // single shared finish, same coords in both layers
+  finish: { position: [x, z] };        // single shared finish, same coords in both layers
 }
 ```
 

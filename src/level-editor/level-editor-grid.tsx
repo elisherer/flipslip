@@ -8,7 +8,7 @@ const CELL_SIZE = 40;
 const WALL_THICKNESS = 5;
 const EDGE_HIT = 10;
 
-const EDGE_STYLE: Record<WallState, string> = {
+const EDGE_STYLE: Record<WallState | 0, string> = {
   0: styles.edgeOpen,
   1: styles.edgeWall,
   2: styles.edgeGreen,
@@ -25,7 +25,7 @@ const cellCenter = (x: number, z: number) => {
 };
 
 /** Toggle walls that start closed (3/5) get a hatch overlay in the editor. */
-function startsClosed(state: WallState): boolean {
+function startsClosed(state?: WallState): boolean {
   return state === 3 || state === 5;
 }
 
@@ -178,7 +178,7 @@ export default function LevelEditorGrid({
                   y={top}
                   width={EDGE_HIT}
                   height={inner}
-                  className={EDGE_STYLE[cell.right]}
+                  className={EDGE_STYLE[cell.right ?? 0]}
                   onClick={() => onRightEdgeCycle(x, z, false)}
                   onContextMenu={e => {
                     e.preventDefault();
@@ -204,7 +204,7 @@ export default function LevelEditorGrid({
                   y={top + inner - EDGE_HIT / 2}
                   width={inner}
                   height={EDGE_HIT}
-                  className={EDGE_STYLE[cell.down]}
+                  className={EDGE_STYLE[cell.down ?? 0]}
                   onClick={() => onDownEdgeCycle(x, z, false)}
                   onContextMenu={e => {
                     e.preventDefault();

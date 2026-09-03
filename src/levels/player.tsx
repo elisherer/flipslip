@@ -6,6 +6,7 @@ import { Group, MathUtils, Vector3 } from "three";
 import KitModel from "@/components/kit-model";
 import useThumbstickDirection from "@/components/xr/useThumbstickDirection";
 import { easings } from "@/hooks/easings";
+import { DEFAULT_LEVEL_THEME, LevelThemeId } from "@/levels/themes/level-theme";
 import { JoystickState, useJoystickState } from "@/providers/joystick-state-provider";
 import { KeyControl } from "@/providers/keyboard-map";
 import { canEnterCell, useLevelState } from "@/providers/level-state-provider";
@@ -90,7 +91,11 @@ const DIRECTION_ANGLE: Record<Direction, number> = {
 const CAMERA_DIR = new Vector3(0, Math.PI * 1.5, Math.PI * 0.75);
 CAMERA_DIR.normalize();
 
-export default function Player({ index, ...props }: { index: number } & ComponentProps<"group">) {
+export default function Player({
+  index,
+  theme = DEFAULT_LEVEL_THEME,
+  ...props
+}: { index: number; theme?: LevelThemeId } & ComponentProps<"group">) {
   const [levelState, api] = useLevelState();
 
   const ref = useRef<Group>(null);
@@ -141,7 +146,7 @@ export default function Player({ index, ...props }: { index: number } & Componen
 
     const [tx, ty, tz] = player.position;
 
-    if (index > 0) {
+    if (index > 0 && theme === "space") {
       if (startTime.current === null) {
         startTime.current = state.clock.getElapsedTime();
       }
@@ -218,7 +223,7 @@ export default function Player({ index, ...props }: { index: number } & Componen
 
     setIsMoving(prev => (prev !== movingRef.current ? movingRef.current : prev));
 
-    if (index === 0) {
+    if (index === 0 || theme !== "space") {
       const targetAngle = DIRECTION_ANGLE[player.direction];
       const diff = MathUtils.euclideanModulo(targetAngle - ref.current.rotation.y + Math.PI, Math.PI * 2) - Math.PI;
       if (diff) {
@@ -235,23 +240,36 @@ export default function Player({ index, ...props }: { index: number } & Componen
   return (
     <group ref={ref} {...props}>
       {index > 0 ? (
-        <KitModel
-          receiveShadow={false}
-          position={[0, -0.3, 0]}
-          kit="td"
-          model="enemy-ufo-a"
-          variant="a"
-          scale={[0.67, 0.4, 0.67]}
-        />
+        theme === "space" ? (
+          <KitModel
+            receiveShadow={false}
+            position={[0, 0.5, 0]}
+            kit="td"
+            model="enemy-ufo-a"
+            variant="a"
+            scale={[0.67, 0.4, 0.67]}
+          />
+        ) : (
+          <KitModel
+            receiveShadow={false}
+            position={[0, 0.5, 0]}
+            kit="characters"
+            model="OSG_Scene (1)"
+            scale={0.07}
+            rotation={[0, Math.PI, 0]}
+            animate="Take 01"
+            loop
+            animationTimeScale={5}
+          />
+        )
       ) : (
         <KitModel
           kit="characters"
           model="Astronaut.gltf"
-          scale={0.72}
+          scale={0.6}
           animate={isMoving ? "Walking" : "Idle"}
           loop
           animationTimeScale={isMoving ? 3 : 1}
-          position={[0, -1, 0]}
         />
       )}
     </group>

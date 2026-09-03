@@ -73,14 +73,14 @@ const actions = {
     const [x, , z] = position;
     const [px, , pz] = draft.players[player].position;
 
-    const dir = draft.players[player].direction;
+    //const dir = draft.players[player].direction;
     if (x < px) draft.players[player].direction = Direction.LEFT;
     else if (x > px) draft.players[player].direction = Direction.RIGHT;
     else if (z < pz) draft.players[player].direction = Direction.UP;
     else if (z > pz) draft.players[player].direction = Direction.DOWN;
-    if (draft.players[player].direction !== dir) {
-      console.debug("direction changed from " + dir + " to " + draft.players[player].direction);
-    }
+    // if (draft.players[player].direction !== dir) {
+    //   console.debug("direction changed from " + dir + " to " + draft.players[player].direction);
+    // }
 
     if (!canEnterCell(level, player, draft.toggled, px, pz, x, z)) return;
 
@@ -98,7 +98,7 @@ const actions = {
       // pushing an unpushed trigger flips the shared bit, which inverts every
       // trigger's pushed state at once -- a pushed trigger can't be re-pushed
       draft.toggled = !draft.toggled;
-      console.debug("player " + player + " pushed trigger at " + x + "," + z + ", toggled = " + draft.toggled);
+      //console.debug("player " + player + " pushed trigger at " + x + "," + z + ", toggled = " + draft.toggled);
       if (isSwitchTrigger(cell.trigger)) {
         const posA = draft.players[0].position;
         const posB = draft.players[1].position;
@@ -106,7 +106,7 @@ const actions = {
         draft.players[0].prevPosition = undefined;
         draft.players[1].position = posA;
         draft.players[1].prevPosition = undefined;
-        console.debug("switch trigger at " + x + "," + z + " swapped players");
+        //console.debug("switch trigger at " + x + "," + z + " swapped players");
       }
     }
     const [fx, fz] = level.finish.position;
@@ -120,11 +120,11 @@ const actions = {
   },
   collectItem: (draft: LevelState, player: number, id: string) => {
     draft.bag[id] = true;
-    console.debug("[game-state] action invoked: collectItem(" + player + ", " + id + ")");
+    console.debug("[level-state] action invoked: collectItem(" + player + ", " + id + ")");
   },
   useItem: (draft: LevelState, player: number, id: string) => {
     draft.bag[id] = false;
-    console.debug("[game-state] action invoked: useItem(" + player + ", " + id + ")");
+    console.debug("[level-state] action invoked: useItem(" + player + ", " + id + ")");
   },
 };
 
@@ -137,9 +137,21 @@ export const useLevelState = () => {
 };
 
 const LevelStateProvider = ({ children }: PropsWithChildren<{}>) => {
-  const [{ levelIndex, invalidationFlag }, gameApi] = useGameState();
-  const [, api, value] = useImmerStateProvider(initialState, actions);
-  const [playFinished] = useSound(Sounds.FINISH);
+  const [{ levelIndex, invalidationFlag, audioLocked, settings }, gameApi] = useGameState();
+  const [{ lastTriggerCell, toggled, completed }, api, value] = useImmerStateProvider(initialState, actions);
+  const [playFinished] = useSound(Sounds.FINISH, { soundEnabled: !audioLocked && settings.audio });
+  const [playClick] = useSound(Sounds.CLICK, { soundEnabled: !audioLocked && settings.audio });
+  const [playUnclick] = useSound(Sounds.UNCLICK, { soundEnabled: !audioLocked && settings.audio });
+  const [playSwitch] = useSound(Sounds.SWITCH, { soundEnabled: !audioLocked && settings.audio });
+
+  useEffect(() => {
+    if (!lastTriggerCell) return;
+    if (lastTriggerCell.trigger === 3 || lastTriggerCell.trigger === 4) {
+      playSwitch();
+    } else {
+      toggled ? playClick() : playUnclick();
+    }
+  }, [toggled, lastTriggerCell]);
 
   useEffect(() => {
     const level = Levels[levelIndex];
@@ -147,7 +159,6 @@ const LevelStateProvider = ({ children }: PropsWithChildren<{}>) => {
     console.log("level " + levelIndex + " initialized");
   }, [levelIndex, api, invalidationFlag]);
 
-  const completed = value[0].completed;
   useEffect(() => {
     if (completed) {
       playFinished();
@@ -156,13 +167,9 @@ const LevelStateProvider = ({ children }: PropsWithChildren<{}>) => {
 
   useEffect(() => {
     const keyHandler = (e: KeyboardEvent) => {
-      if (e.key === "1") {
-        gameApi.levelInitialize(0);
-      } else if (e.key === "2") {
-        gameApi.levelInitialize(1);
-      } else if (e.key === "Escape") {
+      if (e.key === "Escape") {
         gameApi.homeScreen();
-      } else if (e.key === "Backspace") {
+      } else if (e.key === "Backspace" || e.key === "r" || e.key === "R") {
         api.initialize();
       }
     };

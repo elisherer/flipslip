@@ -1,7 +1,7 @@
 import { IfInSessionMode } from "@react-three/xr";
 
 import { Music } from "@/assets/sounds";
-import BackgroundMusic from "@/components/BackgroundMusic";
+import BackgroundMusic from "@/components/audio/background-music";
 import Lights from "@/components/lights";
 import Stars from "@/components/starts";
 import { LevelCarousel } from "@/levels/level-carousel";
