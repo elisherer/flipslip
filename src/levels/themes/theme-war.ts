@@ -1,5 +1,6 @@
 import { Color } from "three";
 
+import { WallState } from "@/levels/level-schema";
 import { LevelTheme } from "@/levels/themes/level-theme";
 
 const GREEN = new Color("#79c03d");
@@ -7,7 +8,7 @@ const GREEN_DARK = new Color("#406621");
 const GREEN_MIDDLE = GREEN.clone().lerp(GREEN_DARK, 0.45);
 const PURPLE = new Color("#863fc2");
 const PURPLE_DARK = new Color("#472166");
-const PURPLE_MIDDLE = PURPLE.clone().lerp(PURPLE_DARK, 0.45);
+//const PURPLE_MIDDLE = PURPLE.clone().lerp(PURPLE_DARK, 0.45);
 
 const WALL = new Color(1.3, 0.9, 0.6);
 const WALL_DARK = new Color("#7c5d44");
@@ -23,18 +24,14 @@ const TRIGGER_RING_OUT = new Color("#805040");
 const theme: LevelTheme = {
   wallColors: {
     0: {
-      1: [WALL_DARK, WALL_MIDDLE],
-      2: [GREEN_DARK, GREEN_MIDDLE],
-      3: [GREEN_DARK, GREEN_MIDDLE],
-      4: [PURPLE_DARK, PURPLE_MIDDLE],
-      5: [PURPLE_DARK, PURPLE_MIDDLE],
+      [WallState.REGULAR]: [WALL_DARK, WALL_MIDDLE],
+      [WallState.START_OPEN]: [GREEN_DARK, GREEN_MIDDLE],
+      [WallState.START_CLOSED]: [GREEN_DARK, GREEN_MIDDLE],
     },
     1: {
-      1: [WALL_DARK, WALL],
-      2: [GREEN_DARK, GREEN],
-      3: [GREEN_DARK, GREEN],
-      4: [PURPLE_DARK, PURPLE],
-      5: [PURPLE_DARK, PURPLE],
+      [WallState.REGULAR]: [WALL_DARK, WALL],
+      [WallState.START_OPEN]: [PURPLE_DARK, PURPLE],
+      [WallState.START_CLOSED]: [PURPLE_DARK, PURPLE],
     },
   },
   levelTiles: [TILE_1, TILE_2],

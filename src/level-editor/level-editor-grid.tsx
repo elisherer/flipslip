@@ -8,13 +8,11 @@ const CELL_SIZE = 40;
 const WALL_THICKNESS = 5;
 const EDGE_HIT = 10;
 
-const EDGE_STYLE: Record<WallState | 0, string> = {
-  0: styles.edgeOpen,
-  1: styles.edgeWall,
-  2: styles.edgeGreen,
-  3: styles.edgeGreen,
-  4: styles.edgePurple,
-  5: styles.edgePurple,
+const EDGE_STYLE: Record<WallState | 0, [string, string]> = {
+  0: [styles.edgeOpen, styles.edgeOpen],
+  1: [styles.edgeWall, styles.edgeWall],
+  2: [styles.edgeGreen, styles.edgePurple],
+  3: [styles.edgeGreen, styles.edgePurple],
 };
 
 const cellCenter = (x: number, z: number) => {
@@ -23,11 +21,6 @@ const cellCenter = (x: number, z: number) => {
   const inner = CELL_SIZE - WALL_THICKNESS;
   return [left + inner / 2, top + inner / 2] as const;
 };
-
-/** Toggle walls that start closed (3/5) get a hatch overlay in the editor. */
-function startsClosed(state?: WallState): boolean {
-  return state === 3 || state === 5;
-}
 
 type EditorCell = { x: number; z: number; cell: Cell | null };
 
@@ -65,6 +58,7 @@ export default function LevelEditorGrid({
   grid,
   width,
   height,
+  layerIndex,
   playerPosition,
   finishPosition,
   crosshair,
@@ -75,6 +69,7 @@ export default function LevelEditorGrid({
   grid: (Cell | null)[][];
   width: number;
   height: number;
+  layerIndex: 0 | 1;
   playerPosition: [number, number];
   finishPosition: [number, number];
   crosshair?: boolean;
@@ -178,14 +173,14 @@ export default function LevelEditorGrid({
                   y={top}
                   width={EDGE_HIT}
                   height={inner}
-                  className={EDGE_STYLE[cell.right ?? 0]}
+                  className={EDGE_STYLE[cell.right ?? 0][layerIndex]}
                   onClick={() => onRightEdgeCycle(x, z, false)}
                   onContextMenu={e => {
                     e.preventDefault();
                     onRightEdgeCycle(x, z, true);
                   }}
                 />
-                {startsClosed(cell.right) && (
+                {cell.right === WallState.START_CLOSED && (
                   <rect
                     x={left + inner - EDGE_HIT / 2}
                     y={top}
@@ -204,14 +199,14 @@ export default function LevelEditorGrid({
                   y={top + inner - EDGE_HIT / 2}
                   width={inner}
                   height={EDGE_HIT}
-                  className={EDGE_STYLE[cell.down ?? 0]}
+                  className={EDGE_STYLE[cell.down ?? 0][layerIndex]}
                   onClick={() => onDownEdgeCycle(x, z, false)}
                   onContextMenu={e => {
                     e.preventDefault();
                     onDownEdgeCycle(x, z, true);
                   }}
                 />
-                {startsClosed(cell.down) && (
+                {cell.down === WallState.START_CLOSED && (
                   <rect
                     x={left}
                     y={top + inner - EDGE_HIT / 2}

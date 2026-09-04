@@ -120,10 +120,20 @@ const Hud = ({ onOpenEditor }: { onOpenEditor?: (levelIndex?: number) => void })
                   layout: "directional",
                   keys: [key("W", "KeyW"), key("A", "KeyA"), key("S", "KeyS"), key("D", "KeyD")],
                 },
+                {
+                  label: "Exit",
+                  layout: "row",
+                  keys: [key("Esc", "Escape")],
+                },
+                {
+                  label: "Restart",
+                  layout: "row",
+                  keys: [key("↑", "Backspace")],
+                },
               ],
             }}
             style={{
-              left: "5rem",
+              left: "8rem",
               bottom: "2rem",
             }}
           />

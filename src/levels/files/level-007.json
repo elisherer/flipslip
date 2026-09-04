@@ -1,83 +1,36 @@
 {
-  "width": 9,
-  "height": 9,
+  "width": 10,
+  "height": 5,
   "layers": {
     "ground": [
-      [{}, {}, null, null, {}, null, null, {}, {}],
-      [
-        {},
-        {},
-        {
-          "down": 1
-        },
-        {
-          "down": 1
-        },
-        {
-          "down": 1
-        },
-        {
-          "down": 1
-        },
-        {
-          "down": 1
-        },
-        {},
-        {}
-      ],
+      [null, {}, {}, {}, {}, {}, {}, {}, null, null],
       [
         null,
         {
-          "right": 1
-        },
-        {},
-        {
           "down": 1
-        },
-        {
-          "down": 4
         },
         {
           "down": 1
         },
-        {
-          "right": 1
-        },
         {},
+        {},
+        {},
+        {},
+        {},
+        null,
         null
       ],
+      [{}, {}, {}, null, null, null, null, null, null, null],
       [
         null,
+        {},
+        {},
+        null,
         {
-          "right": 1
-        },
-        {
-          "right": 1
+          "right": 3
         },
         {},
         {},
-        {
-          "right": 1
-        },
-        {
-          "right": 1
-        },
-        {},
-        null
-      ],
-      [
-        {},
-        {
-          "right": 1
-        },
-        {
-          "right": 1
-        },
-        {},
-        {},
-        {
-          "right": 1
-        },
         {
           "right": 1
         },
@@ -86,53 +39,72 @@
       ],
       [
         null,
+        {},
+        {},
+        {},
+        {},
+        null,
         {
-          "right": 1
+          "trigger": 2
         },
         {
-          "right": 1
-        },
-        {
-          "down": 1
-        },
-        {
-          "down": 1
-        },
-        {
-          "right": 1,
-          "down": 1
-        },
-        {
-          "right": 1
+          "right": 3
         },
         {},
-        null
+        {}
+      ]
+    ],
+    "air": [
+      [
+        null,
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {
+          "right": 3
+        },
+        {},
+        {}
       ],
       [
         null,
         {
-          "right": 1
+          "down": 2
         },
         {
-          "down": 1
-        },
-        {
-          "down": 1
-        },
-        {
-          "down": 3
-        },
-        {
-          "down": 1
-        },
-        {
-          "right": 1,
           "down": 1
         },
         {},
-        null
+        {},
+        {},
+        {},
+        {
+          "right": 1
+        },
+        {},
+        {}
       ],
       [
+        {},
+        {},
+        {},
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "trigger": 1
+        }
+      ],
+      [
+        null,
+        {},
+        {},
         {
           "trigger": 1
         },
@@ -140,77 +112,21 @@
         {},
         {},
         {},
-        {},
-        {},
         null,
         null
       ],
-      [{}, {}, null, null, null, null, null, null, null]
-    ],
-    "air": [
-      [{}, {}, null, null, {}, null, null, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [null, {}, {}, {}, {}, {}, {}, {}, null],
-      [null, {}, {}, {}, {}, {}, {}, {}, null],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [null, {}, {}, {}, {}, {}, {}, {}, null],
-      [
-        null,
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {
-          "down": 1
-        },
-        null
-      ],
-      [
-        {},
-        {},
-        {},
-        {},
-        {
-          "down": 4
-        },
-        {
-          "down": 1
-        },
-        {
-          "right": 1,
-          "down": 1
-        },
-        {},
-        {}
-      ],
-      [
-        {},
-        {},
-        null,
-        null,
-        {
-          "trigger": 2
-        },
-        {},
-        {
-          "right": 3
-        },
-        {},
-        {}
-      ]
+      [null, {}, {}, {}, {}, {}, {}, {}, null, null]
     ]
   },
   "players": [
     {
-      "position": [0, 0]
+      "position": [9, 4]
     },
     {
-      "position": [8, 8]
+      "position": [9, 0]
     }
   ],
   "finish": {
-    "position": [4, 4]
+    "position": [0, 2]
   }
 }

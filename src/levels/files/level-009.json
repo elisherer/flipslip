@@ -1,216 +1,98 @@
 {
-  "width": 8,
-  "height": 6,
+  "width": 5,
+  "height": 5,
   "layers": {
     "ground": [
+      [{}, {}, null, {}, null],
       [
-        null,
-        null,
+        {},
+        {
+          "right": 1
+        },
+        {
+          "right": 1
+        },
         {
           "down": 1
         },
-        null,
-        null,
-        null,
-        null,
-        null
+        {}
       ],
       [
         null,
+        {
+          "right": 1,
+          "down": 2
+        },
+        {
+          "right": 1
+        },
+        {},
+        null
+      ],
+      [
+        {},
         {
           "right": 3
         },
         {
           "right": 1
         },
-        null,
-        {
-          "trigger": 1
-        },
-        null,
-        null,
-        null
+        {},
+        {}
       ],
-      [
-        {
-          "right": 1
-        },
-        {
-          "right": 1
-        },
-        {
-          "right": 1
-        },
-        null,
-        {},
-        null,
-        null,
-        null
-      ],
-      [
-        {},
-        {
-          "right": 1
-        },
-        {
-          "right": 1,
-
-          "trigger": 2
-        },
-        {
-          "right": 3
-        },
-        {},
-        null,
-        null,
-        null
-      ],
-      [
-        null,
-        {
-          "right": 1
-        },
-        {
-          "right": 1
-        },
-        {
-          "right": 1,
-          "down": 1
-        },
-        {},
-        null,
-        null,
-        null
-      ],
-      [
-        null,
-        null,
-        {},
-        {},
-        {
-          "right": 1
-        },
-        {},
-        null,
-        null
-      ]
+      [{}, {}, null, {}, {}]
     ],
     "air": [
       [
-        null,
-        null,
-        {
-          "right": 1,
-          "down": 1
-        },
-        {
-          "down": 5
-        },
-        {
-          "down": 1
-        },
         {},
-        null,
-        null
-      ],
-      [
+        {},
         null,
         {},
         {
-          "right": 1
-        },
-        {
-          "right": 1
-        },
-        {
-          "right": 1
-        },
-        {
-          "right": 1
-        },
-        {},
-        null
-      ],
-      [
-        {},
-        {},
-        {
-          "right": 1
-        },
-        {
-          "right": 1,
-          "down": 4
-        },
-        {
-          "right": 1
-        },
-        {
-          "right": 1,
-
           "trigger": 1
-        },
-        {},
-        {}
+        }
       ],
       [
         {},
         {},
         {
-          "right": 1
+          "right": 3
         },
         {
-          "right": 1,
-          "down": 1
-        },
-        {
-          "right": 1
-        },
-        {
-          "right": 1
-        },
-        {
-          "right": 1
+          "down": 2
         },
         {}
       ],
       [
         null,
         {},
-        {},
-        {},
         {
           "right": 1
-        },
-        {
-          "right": 2,
-          "down": 1
         },
         {},
         null
       ],
       [
-        null,
-        null,
         {},
         {},
         {
           "right": 1
         },
         {},
-        null,
-        null
-      ]
+        {}
+      ],
+      [{}, {}, null, {}, {}]
     ]
   },
   "players": [
     {
-      "position": [0, 2]
+      "position": [0, 0]
     },
     {
-      "position": [7, 3]
+      "position": [4, 4]
     }
   ],
   "finish": {
-    "position": [3, 3]
+    "position": [2, 2]
   }
 }

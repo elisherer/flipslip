@@ -48,11 +48,23 @@ export default function LevelCompleteModal({
   const handleKeyDown = (index: number) => (e: KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === "ArrowRight" || e.key === "ArrowDown") {
       e.preventDefault();
+      e.stopPropagation();
       moveFocus(index, 1);
     } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
       e.preventDefault();
+      e.stopPropagation();
       moveFocus(index, -1);
-    }
+    } /*else if (e.key === "Enter" && index === 0) {
+      e.preventDefault();
+      e.stopPropagation();
+      gameApi.homeScreen();
+      setCompleteDialogOpen(false);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      gameApi.homeScreen();
+      setCompleteDialogOpen(false);
+    }*/
   };
 
   return (

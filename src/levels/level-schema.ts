@@ -2,10 +2,13 @@ import { LevelThemeId } from "@/levels/themes/level-theme";
 
 /**
  * 1 = regular wall,
- * 2 = green toggle wall starting open, 3 = green toggle wall starting closed,
- * 4 = purple toggle wall starting open, 5 = purple toggle wall starting closed.
+ * 2 = toggle wall starting open, 3 = toggle wall starting closed,
  */
-export type WallState = 1 | 2 | 3 | 4 | 5;
+export enum WallState {
+  REGULAR = 1,
+  START_OPEN,
+  START_CLOSED,
+}
 
 /**
  * 1 = toggle trigger starts unpushed, 2 = toggle trigger starts pushed. 3/4 = switch trigger
@@ -40,6 +43,7 @@ export interface Finish {
 export interface Level {
   width: number;
   height: number;
+  tutorial?: number;
   theme?: LevelThemeId;
   layers: LayerGrid;
   /** player 0 -> ground layer, player 1 -> air layer */
@@ -65,7 +69,7 @@ export function isWallStateOpen(state: WallState | undefined, toggled: boolean):
       return false;
     default:
       // 2/4 start open, 3/5 start closed -- each wall carries its own starting state
-      return (state === 2 || state === 4) !== toggled;
+      return (state === 2) !== toggled;
   }
 }
 
@@ -142,6 +146,7 @@ export function resizeLevel(level: Level, width: number, height: number): Level 
   return {
     width,
     height,
+    tutorial: level.tutorial,
     layers: {
       ground: resizeGrid(level.layers.ground, width, height),
       air: resizeGrid(level.layers.air, width, height),

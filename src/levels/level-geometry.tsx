@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import LevelFloor from "@/levels/level-floor";
 import { LAYER_NAMES, Level, isWallStateOpen } from "@/levels/level-schema";
 import LevelTrigger from "@/levels/level-trigger";
+import LevelTutorials from "@/levels/level-tutorials";
 import LevelWall from "@/levels/level-wall";
 import { rot } from "@/utils/constants";
 
@@ -212,6 +213,7 @@ export default function LevelGeometry({
             </group>
           </>
         )}
+        <LevelTutorials level={level} />
       </group>
       {debug && (
         <Grid

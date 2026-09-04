@@ -54,6 +54,7 @@ export function LevelCarousel({ vr }: { vr?: boolean }) {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      if (inLevel) return;
       if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
         setSelectedIndex(i => Math.max(0, i - 1));
       } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
@@ -64,7 +65,7 @@ export function LevelCarousel({ vr }: { vr?: boolean }) {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [selectedIndex, maxUnlockedIndex, gameApi]);
+  }, [selectedIndex, maxUnlockedIndex, gameApi, inLevel]);
 
   const vrDirection = useThumbstickDirection("right", !!vr);
   useEffect(() => {

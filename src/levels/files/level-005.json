@@ -3,58 +3,130 @@
   "height": 7,
   "layers": {
     "ground": [
-      [{}, null, null, null, null],
-      [{}, null, null, null, null],
-      [{}, null, null, null, null],
-      [{}, {}, {}, {}, {}],
       [
         {
-          "down": 5
+          "right": 1
         },
-        {},
-        {
-          "down": 2
-        },
-        {},
-        {}
-      ],
-      [{}, null, {}, null, null],
-      [
-        {
-          "right": 2,
-
-          "trigger": 1
-        },
-        {},
-        {},
+        null,
+        null,
         null,
         null
-      ]
+      ],
+      [
+        {
+          "right": 1
+        },
+        {},
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "right": 1
+        },
+        {
+          "down": 1
+        },
+        {
+          "down": 1
+        },
+        {},
+        null
+      ],
+      [
+        {},
+        {
+          "right": 1
+        },
+        {
+          "right": 3,
+          "down": 1
+        },
+        {},
+        null
+      ],
+      [
+        null,
+        {},
+        {
+          "right": 1
+        },
+        {
+          "down": 1
+        },
+        {}
+      ],
+      [
+        null,
+        null,
+        {},
+        {
+          "right": 1
+        },
+        {}
+      ],
+      [null, null, null, {}, {}]
     ],
     "air": [
-      [null, null, null, null, {}],
-      [null, null, null, null, {}],
-      [null, null, null, null, {}],
-      [{}, {}, {}, {}, {}],
+      [{}, {}, null, null, null],
       [
-        {},
-        {},
         {
-          "down": 5
+          "right": 1
         },
         {},
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "right": 1
+        },
+        {
+          "down": 1
+        },
+        {
+          "down": 1
+        },
+        {},
+        null
+      ],
+      [
+        {},
+        {
+          "right": 1
+        },
+        {
+          "down": 1
+        },
+        {},
+        null
+      ],
+      [
+        null,
+        {},
+        {
+          "right": 1
+        },
+        {
+          "down": 1
+        },
         {}
       ],
-      [null, null, {}, null, null],
       [
         null,
         null,
         {},
         {
-          "trigger": 2
+          "right": 1
         },
-        null
-      ]
+        {
+          "down": 1,
+          "trigger": 1
+        }
+      ],
+      [null, null, null, {}, {}]
     ]
   },
   "players": [
@@ -62,10 +134,10 @@
       "position": [0, 0]
     },
     {
-      "position": [4, 0]
+      "position": [4, 6]
     }
   ],
   "finish": {
-    "position": [2, 6]
+    "position": [2, 3]
   }
 }

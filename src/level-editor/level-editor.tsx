@@ -48,7 +48,7 @@ const MODE_LEGEND: Record<EditorMode, string> = {
   finish: "Set finish position",
 };
 
-const WALL_STATES: (0 | WallState)[] = [0, 1, 2, 3, 4, 5];
+const WALL_STATES: (0 | WallState)[] = [0, WallState.REGULAR, WallState.START_OPEN, WallState.START_CLOSED];
 
 function updateCell(
   level: Level,
@@ -488,6 +488,7 @@ export default function LevelEditor({
                     grid={level.layers[layerName]}
                     width={level.width}
                     height={level.height}
+                    layerIndex={layerIndex}
                     playerPosition={level.players[layerIndex].position}
                     finishPosition={level.finish.position}
                     crosshair={mode !== "cell"}
